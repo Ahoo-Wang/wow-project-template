@@ -1,0 +1,14 @@
+@startuml
+
+actor User
+
+rectangle DemoService{
+    package Demo{
+        usecase CreateDemo
+        usecase UpdateDemo
+    }
+}
+
+User --> CreateDemo
+User --> UpdateDemo
+@enduml
