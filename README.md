@@ -32,6 +32,18 @@
 - 修改 `api/{package}/DemoService`
 - 修改 `domain/{package}/DemoBoundedContext`
 
+## 启动服务
+
+<p align="center" style="text-align:center">
+  <img src="./document/assets/run-server.png" alt="启动服务"/>
+</p>
+
+> 访问：http://localhost:8080/swagger-ui.html
+
+<p align="center" style="text-align:center">
+  <img src="./document/assets/swagger-ui.png" alt="Swagger-UI"/>
+</p>
+
 ## 生成 `server` 部署包
 
 ```shell
