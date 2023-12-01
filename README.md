@@ -54,3 +54,11 @@ gradle domain:jacocoTestCoverageVerification
 <p align="center" style="text-align:center">
   <img src="./document/assets/CI-Flow.png" alt="Wow-CI-Flow"/>
 </p>
+
+## 设计文档
+
+### 用例图
+
+<p align="center" style="text-align:center">
+  <img src="./document/assets/UseCase.svg" alt="Wow-UseCase"/>
+</p>
