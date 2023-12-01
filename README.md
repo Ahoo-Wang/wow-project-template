@@ -20,8 +20,8 @@
 
 [IDEA 配置目录](https://www.jetbrains.com/help/idea/directories-used-by-the-ide-to-store-settings-caches-plugins-and-logs.html#config-directory)
 
-- 项目模板目录：`<IDE config home>/projectTemplates`
-- 将模板压缩包放到项目模板
+- IDEA 项目模板目录：`<IDE config home>/projectTemplates`
+- 将模板压缩包放到 IDEA 项目模板目录下
   - 模板压缩包: https://github.com/Ahoo-Wang/wow-project-template/releases/download/v0.0.1/wow-project-template.zip
 - [使用模板创建项目](https://www.jetbrains.com/help/idea/saving-project-as-template.html#create-project-from-template)
 - 修改 `settings.gradle.kts` 文件，将 `rootProject.name` 修改为项目名称
