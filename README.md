@@ -11,7 +11,7 @@
 | server                    | 宿主服务，应用程序的启动点。负责整合其他模块，并提供应用程序的入口。涉及配置依赖项、连接数据库、启动 API 服务                                  |
 | code-coverage-report      | 测试覆盖率，这个模块用于生成测试覆盖率报告，帮助开发团队了解项目测试的全面性和质量。                                                 |
 | dependencies              | 依赖项管理，这个模块负责管理项目的依赖关系，确保各个模块能够正确地引用和使用所需的外部库和工具。                                           |
-| bom                       | BOM（Bill of Materials）                                                                     |
+| bom                       | 项目的 BOM（Bill of Materials）                                                                 |
 | gradle/libs.versions.toml | 依赖版本配置文件                                                                                   |
 
 ## IDEA 项目模板
@@ -23,7 +23,15 @@
 1. 项目模板目录：`<IDE config home>/projectTemplates`
 2. 将模板压缩包放到项目模板
 3. [使用模板创建项目](https://www.jetbrains.com/help/idea/saving-project-as-template.html#create-project-from-template)
+4. 修改 `settings.gradle.kts` 文件，将 `rootProject.name` 修改为项目名称
+5. 修改 `api/{package}/DemoService`
+6. 修改 `domain/{package}/DemoBoundedContext`
 
+## 生成 `server` 部署包
+
+```shell
+gradle server:installDist
+```
 
 ## 验证测试覆盖率
 
