@@ -1,4 +1,4 @@
-# Wow 项目模版
+# 基于 Wow 框架的 DDD 项目模版
 
 用于快速构建基于 [Wow 框架](https://github.com/Ahoo-Wang/Wow) 的项目模板。
 
