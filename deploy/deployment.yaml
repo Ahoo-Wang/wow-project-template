@@ -69,10 +69,10 @@ spec:
           resources:
             limits:
               cpu: "4"
-              memory: 2048Mi
+              memory: 2560Mi
             requests:
               cpu: '2'
-              memory: 1792Mi
+              memory: 2048Mi
           volumeMounts:
             - mountPath: /etc/localtime
               name: volume-localtime
