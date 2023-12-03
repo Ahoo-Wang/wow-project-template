@@ -15,7 +15,6 @@ data class CreateDemo(
     val data: String
 )
 
-
 data class DemoCreated(
     val data: String
 )

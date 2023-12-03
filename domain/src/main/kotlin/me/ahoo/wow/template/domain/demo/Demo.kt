@@ -7,6 +7,7 @@ import me.ahoo.wow.template.api.demo.DemoCreated
 import me.ahoo.wow.template.api.demo.DemoUpdated
 import me.ahoo.wow.template.api.demo.UpdateDemo
 
+@Suppress("unused")
 @AggregateRoot
 class Demo(private val state: DemoState) {
 

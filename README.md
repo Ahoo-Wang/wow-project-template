@@ -44,12 +44,6 @@
   <img src="./document/assets/swagger-ui.png" alt="Swagger-UI"/>
 </p>
 
-## 生成 `server` 部署包
-
-```shell
-gradle server:installDist
-```
-
 ## 验证测试覆盖率
 
 ```shell
@@ -67,6 +61,47 @@ gradle domain:jacocoTestCoverageVerification
 <p align="center" style="text-align:center">
   <img src="./document/assets/CI-Flow.png" alt="Wow-CI-Flow"/>
 </p>
+
+### 测试阶段
+
+> 代码风格检查(Check CodeStyle)
+
+```shell
+./gradlew detekt
+```
+> 领域模型单元测试 (Check Domain)
+
+```shell
+./gradlew domain:check
+```
+> 测试覆盖率验证(Check CodeCoverage)
+
+```shell
+./gradlew domain:jacocoTestCoverageVerification
+```
+### 构建阶段
+
+> 生成部署包 (Build Server)
+
+```shell
+gradle server:installDist
+```
+
+> 发布 Docker 镜像 (Push Image)
+
+[Dockerfile](server/Dockerfile)
+
+### 部署阶段
+
+> 部署到 Kubernetes (Deploy Kubernetes)
+
+[deploy](./deploy)
+
+### 流水线配置
+
+```yaml
+
+```
 
 ## 设计文档
 
