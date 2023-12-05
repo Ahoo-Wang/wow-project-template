@@ -15,7 +15,7 @@ dokka = "1.9.10"
 kotlin = "1.9.21"
 publishPlugin = "1.3.0"
 ksp = "1.9.21-1.0.15"
-kover= "0.7.4"
+kover= "0.7.5"
 testRetry= "1.5.8"
 
 [libraries]
