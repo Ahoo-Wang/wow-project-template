@@ -29,10 +29,24 @@ jobs:
           server-id: github
           settings-path: ${{ github.workspace }}
 
-      - name: Build Code Coverage Report
-        run: ./gradlew code-coverage-report:codeCoverageReport --stacktrace
+#      - name: Build Code Coverage Report
+#        run: ./gradlew code-coverage-report:codeCoverageReport --stacktrace
+#
+#      - name: Upload Code Coverage Report to Codecov
+#        uses: codecov/codecov-action@v3
+#        with:
+#          token: ${{ secrets.CODECOV_TOKEN }}
+#          flags: unittests # optional
+#          name: codecov-umbrella # optional
+#          fail_ci_if_error: true # optional (default = false)
+#          verbose: true # optional (default = false)
+#          files: ./code-coverage-report/build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml
+#          path_to_write_report: ./coverage/codecov_report.txt
 
-      - name: Upload Code Coverage Report to Codecov
+      - name: Build KCode Coverage Report
+        run: ./gradlew domain:koverXmlReport --stacktrace
+
+      - name: Upload KCode Coverage Report to Codecov
         uses: codecov/codecov-action@v3
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
@@ -40,5 +54,5 @@ jobs:
           name: codecov-umbrella # optional
           fail_ci_if_error: true # optional (default = false)
           verbose: true # optional (default = false)
-          files: ./code-coverage-report/build/reports/jacoco/codeCoverageReport/codeCoverageReport.xml
+          files: ./domain/build/reports/kover/report.xml
           path_to_write_report: ./coverage/codecov_report.txt
