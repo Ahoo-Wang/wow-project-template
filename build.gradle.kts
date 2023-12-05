@@ -25,6 +25,7 @@ plugins {
     alias(libs.plugins.testRetry)
     jacoco
     base
+    alias(libs.plugins.kover)
 }
 val dependenciesProject = project(":dependencies")
 val bomProjects = setOf(
@@ -32,7 +33,7 @@ val bomProjects = setOf(
     dependenciesProject,
 )
 
-val serverProjects = setOf<Project>()
+val serverProjects = setOf(project(":server"))
 
 val codeCoverageReportProject = project(":code-coverage-report")
 val publishProjects = subprojects - serverProjects - codeCoverageReportProject
@@ -79,6 +80,7 @@ configure(libraryProjects) {
         withSourcesJar()
     }
     apply(plugin = "org.jetbrains.kotlin.jvm")
+    apply(plugin = "org.jetbrains.kotlinx.kover")
     configure<KotlinJvmProjectExtension> {
         jvmToolchain(17)
     }
