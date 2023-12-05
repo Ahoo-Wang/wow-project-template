@@ -30,7 +30,7 @@ jobs:
           settings-path: ${{ github.workspace }}
 
       - name: Build Code Coverage Report
-        run: ./gradlew domain:jacocoTestCoverageVerification --stacktrace
+        run: ./gradlew code-coverage-report:codeCoverageReport --stacktrace
 
       - name: Upload Code Coverage Report to Codecov
         uses: codecov/codecov-action@v3

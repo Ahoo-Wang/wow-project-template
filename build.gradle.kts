@@ -32,7 +32,7 @@ val bomProjects = setOf(
     dependenciesProject,
 )
 
-val serverProjects = setOf<Project>()
+val serverProjects = setOf(project(":server"))
 
 val codeCoverageReportProject = project(":code-coverage-report")
 val publishProjects = subprojects - serverProjects - codeCoverageReportProject
