@@ -30,7 +30,7 @@
   - Mac OS:`~/Library/Application\ Support/JetBrains/<PRODUCT><VERSION/projectTemplates/`
   - Linux: `~/.config/JetBrains/<PRODUCT><VERSION>/projectTemplates/`
 - 将模板压缩包放到 IDEA 项目模板目录下
-    - 模板压缩包: https://gitee.com/AhooWang/wow-project-template/releases/download/v0.0.3/wow-project-template.zip
+    - 模板压缩包: https://gitee.com/AhooWang/wow-project-template/releases/download/v0.0.4/wow-project-template.zip
 
 ## 创建项目
 
@@ -48,7 +48,7 @@
   <img src="./document/assets/run-server.png" alt="启动服务"/>
 </p>
 
-> 访问：http://localhost:8080/swagger-ui.html
+> 访问：[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
 
 <p align="center" style="text-align:center">
   <img src="./document/assets/swagger-ui.png" alt="Swagger-UI"/>
