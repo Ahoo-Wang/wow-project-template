@@ -19,7 +19,7 @@
 | [Dockerfile](server/Dockerfile)                 | **server Docker 构建镜像**，通过 Dockerfile 文件定义了应用程序的容器化构建步骤，方便部署和扩展。                                                                   |
 | [document](document)                            | **项目文档**，包括 UML 图和上下文映射图，为团队成员提供了对整个项目结构和业务逻辑的清晰理解。                                                                               |
 
-## IDEA 项目模板
+## 安装模板
 
 [IDEA 项目模板](https://www.jetbrains.com/help/idea/saving-project-as-template.html)
 
@@ -31,8 +31,13 @@
   - Linux: `~/.config/JetBrains/<PRODUCT><VERSION>/projectTemplates/`
 - 将模板压缩包放到 IDEA 项目模板目录下
     - 模板压缩包: https://gitee.com/AhooWang/wow-project-template/releases/download/v0.0.3/wow-project-template.zip
-- [使用模板创建项目](https://www.jetbrains.com/help/idea/saving-project-as-template.html#create-project-from-template)
-  - ![创建项目](./document/assets/new-project.png)
+
+## 创建项目
+
+> [使用模板创建项目](https://www.jetbrains.com/help/idea/saving-project-as-template.html#create-project-from-template)
+
+![创建项目](./document/assets/new-project.png)
+
 - 修改 `settings.gradle.kts` 文件，将 `rootProject.name` 修改为项目名称
 - 修改 `api/{package}/DemoService`
 - 修改 `domain/{package}/DemoBoundedContext`
