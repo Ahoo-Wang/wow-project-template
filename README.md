@@ -101,11 +101,21 @@
 
 [Dockerfile](server/Dockerfile)
 
+```shell
+docker login --username=<username> --password=<******> <registry>
+docker build -t <registry>/<image>:<tag> server
+docker push <registry>/<image>:<tag>
+```
+
 ### 部署阶段
 
 > 部署到 Kubernetes (Deploy Kubernetes)
 
 [deploy](./deploy)
+
+```shell [部署到 Kubernetes (Deploy Kubernetes)]
+kubectl apply -f deploy
+```
 
 ### 流水线配置（阿里云效）
 
