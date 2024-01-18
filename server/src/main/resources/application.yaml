@@ -31,6 +31,8 @@ cosid:
   generator:
     enabled: true
 wow:
+  kafka:
+    enabled: false
   command:
     bus:
       type: in_memory
