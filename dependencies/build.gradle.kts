@@ -15,6 +15,7 @@ dependencies {
     api(platform(libs.springBootDependencies))
     api(platform(libs.cosidBom))
     api(platform(libs.wowBom))
+    api(platform(libs.coapiBom))
     constraints {
         api(libs.guava)
         api(libs.swaggerAnnotations)

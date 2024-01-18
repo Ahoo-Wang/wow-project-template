@@ -1,7 +1,7 @@
-package me.ahoo.wow.template.api
+package me.ahoo.wow.template
 
 import me.ahoo.wow.api.annotation.BoundedContext
-import me.ahoo.wow.template.api.DemoService.DEMO_AGGREGATE_NAME
+import me.ahoo.wow.template.DemoService.DEMO_AGGREGATE_NAME
 import me.ahoo.wow.template.api.demo.CreateDemo
 
 @BoundedContext(
