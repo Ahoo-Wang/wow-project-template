@@ -16,6 +16,7 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.testretry.TestRetryPlugin
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 
 plugins {
     alias(libs.plugins.publishPlugin)
@@ -140,6 +141,7 @@ configure(publishProjects) {
             val publishName = if (isBom) "mavenBom" else "mavenLibrary"
             val publishComponentName = if (isBom) "javaPlatform" else "java"
             create<MavenPublication>(publishName) {
+                artifactId = project.archivesName.get()
                 from(components[publishComponentName])
                 pom {
                     name.set(rootProject.name)
