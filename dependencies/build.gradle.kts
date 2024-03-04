@@ -16,6 +16,7 @@ dependencies {
     api(platform(libs.cosidBom))
     api(platform(libs.wowBom))
     api(platform(libs.coapiBom))
+    api(platform(libs.coskyBom))
     constraints {
         api(libs.guava)
         api(libs.swaggerAnnotations)
