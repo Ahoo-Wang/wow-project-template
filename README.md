@@ -30,7 +30,7 @@
   - Mac OS:`~/Library/Application\ Support/JetBrains/<PRODUCT><VERSION/projectTemplates/`
   - Linux: `~/.config/JetBrains/<PRODUCT><VERSION>/projectTemplates/`
 - 将模板压缩包放到 IDEA 项目模板目录下
-    - 模板压缩包: https://gitee.com/AhooWang/wow-project-template/releases/download/v1.2.0/wow-project-template.zip
+    - 模板压缩包: https://gitee.com/AhooWang/wow-project-template/releases/download/v1.2.1/wow-project-template.zip
 
 ## 创建项目
 
@@ -121,7 +121,7 @@ kubectl apply -f deploy
 
 ```yaml
 sources:
-  wow_project_template_repo:
+  repo:
     type: codeup
     name: Wow 项目模板代码源
     endpoint: <your-project-repo>
@@ -211,7 +211,7 @@ stages:
                 - key: REPLICAS
                   value: 2
                 - key: SERVICE_NAME
-                  value: demo-service
+                  value: "<service-name>"
 ```
 
 ## 设计文档
