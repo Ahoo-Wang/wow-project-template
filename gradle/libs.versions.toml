@@ -27,7 +27,7 @@ cosidBom = { module = "me.ahoo.cosid:cosid-bom", version.ref = "cosid" }
 wowBom = { module = "me.ahoo.wow:wow-bom", version.ref = "wow" }
 coapiBom = { module = "me.ahoo.coapi:coapi-bom", version.ref = "coapi" }
 cosecBom = { module = "me.ahoo.cosec:cosec-bom", version.ref = "cosec" }
-coskyBom = { module = "me.ahoo.cosec:cosky-bom", version.ref = "cosky" }
+coskyBom = { module = "me.ahoo.cosky:cosky-bom", version.ref = "cosky" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
 swaggerAnnotations = { module = "io.swagger.core.v3:swagger-annotations", version.ref = "swagger" }
 springDocStarterWebfluxUi = { module = "org.springdoc:springdoc-openapi-starter-webflux-ui", version.ref = "springDoc" }
