@@ -19,6 +19,7 @@ dependencies {
     api(platform(libs.cocacheBom))
     api(platform(libs.cosecBom))
     api(platform(libs.coskyBom))
+    api(platform(libs.simbaBom))
     constraints {
         api(libs.guava)
         api(libs.swaggerAnnotations)
