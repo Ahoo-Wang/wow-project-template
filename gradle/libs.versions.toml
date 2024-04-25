@@ -21,7 +21,7 @@ kotlin = "1.9.23"
 publishPlugin = "2.0.0"
 ksp = "1.9.23-1.0.20"
 kover= "0.7.6"
-testRetry= "1.5.8"
+testRetry= "1.5.9"
 
 [libraries]
 springBootDependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "springBoot" }
