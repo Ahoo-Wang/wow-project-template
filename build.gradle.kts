@@ -16,7 +16,6 @@ import org.gradle.api.tasks.testing.logging.TestExceptionFormat
 import org.gradle.testretry.TestRetryPlugin
 import org.jetbrains.dokka.gradle.DokkaPlugin
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
-import org.jetbrains.kotlin.gradle.plugin.mpp.pm20.util.archivesName
 
 plugins {
     alias(libs.plugins.publishPlugin)
@@ -86,7 +85,7 @@ configure(libraryProjects) {
         jvmToolchain(17)
     }
     tasks.withType<org.jetbrains.kotlin.gradle.tasks.KotlinCompile> {
-        kotlinOptions {
+        compilerOptions {
             freeCompilerArgs = listOf("-Xjsr305=strict", "-Xjvm-default=all-compatibility")
         }
     }
@@ -141,7 +140,7 @@ configure(publishProjects) {
             val publishName = if (isBom) "mavenBom" else "mavenLibrary"
             val publishComponentName = if (isBom) "javaPlatform" else "java"
             create<MavenPublication>(publishName) {
-                artifactId = project.archivesName.get()
+                artifactId = project.getArchivesName()
                 from(components[publishComponentName])
                 pom {
                     name.set(rootProject.name)
@@ -202,3 +201,4 @@ nexusPublishing {
 }
 
 fun getPropertyOf(name: String) = project.properties[name]?.toString()
+fun Project.getArchivesName() = "${rootProject.name.lowercase()}-${project.name}"
