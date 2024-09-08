@@ -15,7 +15,7 @@ mockk = "1.13.12"
 detektFormatting = "1.23.6"
 springDoc = "2.6.0"
 # plugins
-detekt = "1.23.6"
+detekt = "1.23.7"
 dokka = "1.9.20"
 kotlin = "2.0.10"
 publishPlugin = "2.0.0"
