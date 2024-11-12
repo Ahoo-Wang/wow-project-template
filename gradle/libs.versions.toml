@@ -2,7 +2,7 @@
 # libraries
 springBoot = "3.3.5"
 cosid = "2.9.9"
-wow = "3.15.5"
+wow = "3.16.0"
 coapi="1.6.9"
 cocache = "2.5.2"
 cosec = "2.8.2"
