@@ -42,6 +42,23 @@
 - 修改 `api/{package}/DemoService`
 - 修改 `domain/{package}/DemoBoundedContext`
 
+## Git
+
+```shell
+git init
+git remote add origin <your-repo-url>
+# 如果远端仓库有内容，需要先拉取
+git pull origin master
+# gradlew 脚本被注释，需要重新从模板项目中Copy过来
+chmod +x gradlew
+# 清理构建目录
+gradle clean
+git add .
+git commit -m "Initial commit"
+# 推送到远端仓库
+git push -u origin master
+```
+
 ## 启动服务
 
 <p align="center" style="text-align:center">
