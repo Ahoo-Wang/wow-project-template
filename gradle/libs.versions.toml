@@ -16,7 +16,7 @@ detektFormatting = "1.23.7"
 springDoc = "2.7.0"
 # plugins
 detekt = "1.23.7"
-dokka = "1.9.20"
+dokka = "2.0.0"
 kotlin = "2.0.21"
 publishPlugin = "2.0.0"
 ksp = "2.0.21-1.0.28"
