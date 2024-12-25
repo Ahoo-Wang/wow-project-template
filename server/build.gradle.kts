@@ -31,13 +31,6 @@ tasks.jar.configure {
 application {
     mainClass.set("me.ahoo.wow.template.server.DemoApplicationKt")
     applicationDefaultJvmArgs = listOf(
-        "-Xms1792M",
-        "-Xmx1792M",
-        "-XX:MaxMetaspaceSize=256M",
-        "-XX:MaxDirectMemorySize=512M",
-        "-Xss1m",
-        "-server",
-        "-XX:+UseZGC",
         "-Xlog:gc*:file=logs/$applicationName-gc.log:time,tags:filecount=10,filesize=32M",
         "-XX:+HeapDumpOnOutOfMemoryError",
         "-XX:HeapDumpPath=data",

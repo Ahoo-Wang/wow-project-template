@@ -32,7 +32,7 @@ spec:
             - name: TZ
               value: Asia/Shanghai
             - name: JAVA_OPTS
-              value: -Xms1792M  -Xmx1792M
+              value: -Xms1792M -Xmx1792M -XX:MaxMetaspaceSize=256M -XX:MaxDirectMemorySize=512M -Xss1m -server -XX:+UseZGC
           ports:
             - name: http
               protocol: TCP
