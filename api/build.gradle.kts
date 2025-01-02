@@ -6,6 +6,7 @@ dependencies {
     ksp(platform(project(":dependencies")))
     api(libs.swaggerAnnotations)
     api("me.ahoo.wow:wow-api")
+    api("me.ahoo.wow:wow-apiclient")
     api("com.fasterxml.jackson.core:jackson-annotations")
     api("jakarta.validation:jakarta.validation-api")
     api("me.ahoo.coapi:coapi-api")
