@@ -13,7 +13,7 @@ swagger = "2.2.27"
 hamcrest = "3.0"
 mockk = "1.13.14"
 detektFormatting = "1.23.7"
-springDoc = "2.8.0"
+springDoc = "2.8.1"
 # plugins
 detekt = "1.23.7"
 dokka = "2.0.0"
