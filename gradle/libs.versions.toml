@@ -20,7 +20,7 @@ dokka = "2.0.0"
 kotlin = "2.0.21"
 publishPlugin = "2.0.0"
 ksp = "2.0.21-1.0.28"
-kover= "0.9.0"
+kover= "0.9.1"
 testRetry= "1.6.0"
 
 [libraries]
