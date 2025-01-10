@@ -11,7 +11,7 @@ simba = "2.6.2"
 guava = "33.4.0-jre"
 swagger = "2.2.27"
 hamcrest = "3.0"
-mockk = "1.13.14"
+mockk = "1.13.16"
 detekt-formatting = "1.23.7"
 springdoc = "2.8.1"
 # plugins
