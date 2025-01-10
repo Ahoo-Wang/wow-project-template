@@ -12,19 +12,19 @@
  */
 
 dependencies {
-    api(platform(libs.springBootDependencies))
-    api(platform(libs.cosidBom))
-    api(platform(libs.wowBom))
-    api(platform(libs.coapiBom))
-    api(platform(libs.cocacheBom))
-    api(platform(libs.cosecBom))
-    api(platform(libs.coskyBom))
-    api(platform(libs.simbaBom))
+    api(platform(libs.spring.boot.dependencies))
+    api(platform(libs.cosid.bom))
+    api(platform(libs.wow.bom))
+    api(platform(libs.coapi.bom))
+    api(platform(libs.cocache.bom))
+    api(platform(libs.cosec.bom))
+    api(platform(libs.cosky.bom))
+    api(platform(libs.simba.bom))
     constraints {
         api(libs.guava)
-        api(libs.swaggerAnnotations)
+        api(libs.swagger.annotations)
         api(libs.hamcrest)
         api(libs.mockk)
-        api(libs.detektFormatting)
+        api(libs.detekt.formatting)
     }
 }

@@ -4,7 +4,7 @@ plugins {
 dependencies {
     api(platform(project(":dependencies")))
     ksp(platform(project(":dependencies")))
-    api(libs.swaggerAnnotations)
+    api(libs.swagger.annotations)
     api("me.ahoo.wow:wow-api")
     api("me.ahoo.wow:wow-apiclient")
     api("com.fasterxml.jackson.core:jackson-annotations")

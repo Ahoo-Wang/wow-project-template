@@ -1,6 +1,6 @@
 [versions]
 # libraries
-springBoot = "3.4.1"
+spring-boot = "3.4.1"
 cosid = "2.10.2"
 wow = "5.1.2"
 coapi="1.9.2"
@@ -12,41 +12,41 @@ guava = "33.4.0-jre"
 swagger = "2.2.27"
 hamcrest = "3.0"
 mockk = "1.13.14"
-detektFormatting = "1.23.7"
-springDoc = "2.8.1"
+detekt-formatting = "1.23.7"
+springdoc = "2.8.1"
 # plugins
 detekt = "1.23.7"
 dokka = "2.0.0"
 kotlin = "2.0.21"
-publishPlugin = "2.0.0"
+publish-plugin = "2.0.0"
 ksp = "2.0.21-1.0.28"
 kover= "0.9.1"
-testRetry= "1.6.0"
+test-retry = "1.6.0"
 
 [libraries]
-springBootDependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "springBoot" }
-cosidBom = { module = "me.ahoo.cosid:cosid-bom", version.ref = "cosid" }
-wowBom = { module = "me.ahoo.wow:wow-bom", version.ref = "wow" }
-coapiBom = { module = "me.ahoo.coapi:coapi-bom", version.ref = "coapi" }
-cocacheBom = { module = "me.ahoo.cocache:cocache-bom", version.ref = "cocache" }
-cosecBom = { module = "me.ahoo.cosec:cosec-bom", version.ref = "cosec" }
-coskyBom = { module = "me.ahoo.cosky:cosky-bom", version.ref = "cosky" }
-simbaBom = { module = "me.ahoo.simba:simba-bom", version.ref = "simba" }
+spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
+cosid-bom = { module = "me.ahoo.cosid:cosid-bom", version.ref = "cosid" }
+wow-bom = { module = "me.ahoo.wow:wow-bom", version.ref = "wow" }
+coapi-bom = { module = "me.ahoo.coapi:coapi-bom", version.ref = "coapi" }
+cocache-bom = { module = "me.ahoo.cocache:cocache-bom", version.ref = "cocache" }
+cosec-bom = { module = "me.ahoo.cosec:cosec-bom", version.ref = "cosec" }
+cosky-bom = { module = "me.ahoo.cosky:cosky-bom", version.ref = "cosky" }
+simba-bom = { module = "me.ahoo.simba:simba-bom", version.ref = "simba" }
 guava = { module = "com.google.guava:guava", version.ref = "guava" }
-swaggerAnnotations = { module = "io.swagger.core.v3:swagger-annotations", version.ref = "swagger" }
-springDocStarterWebfluxUi = { module = "org.springdoc:springdoc-openapi-starter-webflux-ui", version.ref = "springDoc" }
+swagger-annotations = { module = "io.swagger.core.v3:swagger-annotations", version.ref = "swagger" }
+springdoc-openapi-starter-webflux-ui = { module = "org.springdoc:springdoc-openapi-starter-webflux-ui", version.ref = "springdoc" }
 hamcrest = { module = "org.hamcrest:hamcrest", version.ref = "hamcrest" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-detektFormatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detektFormatting" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt-formatting" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 dokka = { id = "org.jetbrains.dokka", version.ref = "dokka" }
 kotlin = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
-kotlinSpring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
-kotlinkapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
+kotlin-spring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }
+kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }
-publishPlugin = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "publishPlugin" }
-testRetry = { id = "org.gradle.test-retry", version.ref = "testRetry" }
+publish-plugin = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "publish-plugin" }
+test-retry = { id = "org.gradle.test-retry", version.ref = "test-retry" }
 
