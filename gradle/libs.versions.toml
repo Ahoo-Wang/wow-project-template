@@ -3,7 +3,7 @@
 spring-boot = "3.4.2"
 cosid = "2.10.2"
 wow = "5.1.6"
-coapi="1.9.2"
+coapi = "1.9.2"
 cocache = "2.6.2"
 cosec = "2.9.9"
 cosky = "4.6.1"
@@ -20,7 +20,7 @@ dokka = "2.0.0"
 kotlin = "2.0.21"
 publish-plugin = "2.0.0"
 ksp = "2.0.21-1.0.28"
-kover= "0.9.1"
+kover = "0.9.1"
 test-retry = "1.6.2"
 
 [libraries]
