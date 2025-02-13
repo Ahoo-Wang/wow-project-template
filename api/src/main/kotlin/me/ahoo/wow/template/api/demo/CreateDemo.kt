@@ -7,7 +7,7 @@ import me.ahoo.wow.api.annotation.CreateAggregate
 @CreateAggregate
 @CommandRoute(
     method = CommandRoute.Method.POST,
-    path = "",
+    action = "",
     summary = "创建Demo"
 )
 data class CreateDemo(

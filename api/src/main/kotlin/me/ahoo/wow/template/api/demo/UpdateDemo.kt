@@ -5,7 +5,7 @@ import me.ahoo.wow.api.annotation.CommandRoute
 
 @CommandRoute(
     appendIdPath = CommandRoute.AppendPath.ALWAYS,
-    path = "",
+    action = "",
     summary = "更新Demo"
 )
 data class UpdateDemo(
