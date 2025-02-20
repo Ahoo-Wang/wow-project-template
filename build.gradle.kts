@@ -54,7 +54,7 @@ allprojects {
     }
     apply<BasePlugin>()
     base {
-        archivesName.set("${rootProject.name}-${project.name}")
+        archivesName.set(project.getArchivesName())
     }
 }
 
