@@ -63,6 +63,7 @@ dependencies {
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui")
 //    implementation("me.ahoo.cosid:cosid-mongo")
 //    implementation("me.ahoo.cosid:cosid-spring-redis")
+//    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     implementation("me.ahoo.cosid:cosid-spring-boot-starter")
 //    implementation("me.ahoo.cosec:cosec-webflux")
 //    implementation("me.ahoo.cosec:cosec-spring-boot-starter")
