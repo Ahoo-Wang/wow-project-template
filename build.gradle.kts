@@ -48,7 +48,7 @@ allprojects {
     }
     tasks.withType<Jar> {
         manifest {
-            attributes["Implementation-Title"] = project.name
+            attributes["Implementation-Title"] = project.getArchivesName()
             attributes["Implementation-Version"] = project.version
         }
     }
