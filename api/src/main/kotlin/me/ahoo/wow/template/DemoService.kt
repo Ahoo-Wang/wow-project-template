@@ -5,8 +5,8 @@ import me.ahoo.wow.template.DemoService.DEMO_AGGREGATE_NAME
 import me.ahoo.wow.template.api.demo.CreateDemo
 
 @BoundedContext(
-    DemoService.SERVICE_NAME,
-    DemoService.SERVICE_ALIAS,
+    name = DemoService.SERVICE_NAME,
+    alias = DemoService.SERVICE_ALIAS,
     aggregates = [
         BoundedContext.Aggregate(DEMO_AGGREGATE_NAME, packageScopes = [CreateDemo::class])
     ],
