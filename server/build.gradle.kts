@@ -29,7 +29,7 @@ tasks.jar.configure {
     }
 }
 application {
-    mainClass.set("me.ahoo.wow.template.server.DemoApplicationKt")
+    mainClass.set("me.ahoo.wow.template.server.ServerKt")
     applicationDefaultJvmArgs = listOf(
         "-Xlog:gc*:file=logs/$applicationName-gc.log:time,tags:filecount=10,filesize=32M",
         "-XX:+HeapDumpOnOutOfMemoryError",

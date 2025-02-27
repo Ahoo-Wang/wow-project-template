@@ -8,10 +8,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication
 
 @BoundedContext(name = DemoService.SERVICE_NAME)
 @SpringBootApplication(
-    scanBasePackageClasses = [DemoBoundedContext::class, DemoApplication::class],
+    scanBasePackageClasses = [DemoBoundedContext::class, Server::class],
 )
-class DemoApplication
+class Server
 
 fun main(args: Array<String>) {
-    SpringApplication.run(arrayOf(DemoApplication::class.java), args)
+    SpringApplication.run(arrayOf(Server::class.java), args)
 }
