@@ -70,6 +70,7 @@ dependencies {
 //    implementation("me.ahoo.cosky:cosky-spring-cloud-starter-discovery")
 //    implementation("me.ahoo.cosky:cosky-spring-cloud-starter-config")
 //    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
+//    implementation("me.ahoo.cocache:cocache-spring-boot-starter")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
