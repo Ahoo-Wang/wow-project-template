@@ -10,7 +10,7 @@ dependencies {
     api("com.fasterxml.jackson.core:jackson-annotations")
     api("jakarta.validation:jakarta.validation-api")
     api("me.ahoo.coapi:coapi-api")
-    api("me.ahoo.cocache:cocache-api")
+    api("me.ahoo.wow:wow-cocache")
     api("io.projectreactor:reactor-core")
     implementation("org.springframework:spring-web")
     ksp("me.ahoo.wow:wow-compiler")
