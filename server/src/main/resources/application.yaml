@@ -12,6 +12,8 @@ management:
           - cosid
           - cosidGenerator
           - cosidStringGenerator
+          - cocache
+          - cocacheClient
 springdoc:
   show-actuator: true
 
