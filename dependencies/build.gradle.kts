@@ -22,6 +22,7 @@ dependencies {
     api(platform(libs.simba.bom))
     constraints {
         api(libs.guava)
+        api(libs.kotlin.logging)
         api(libs.swagger.annotations)
         api(libs.hamcrest)
         api(libs.mockk)
