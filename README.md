@@ -42,6 +42,12 @@
 - 修改 `api/{package}/DemoService`
 - 修改 `domain/{package}/DemoBoundedContext`
 
+> WARN: IDEA 基于模版创建项目会将 `gradlew` 脚本被注释，需要重新从模板项目中Copy过来。
+
+```shell
+chmod +x ./gradlew
+```
+
 ## Git
 
 ```shell
