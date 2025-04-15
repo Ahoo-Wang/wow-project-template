@@ -117,7 +117,7 @@ configure(libraryProjects) {
         detektPlugins(dependenciesProject)
         implementation("com.google.guava:guava")
         implementation("org.slf4j:slf4j-api")
-        testImplementation("org.hamcrest:hamcrest")
+        testImplementation("org.assertj:assertj-core")
         testImplementation("io.mockk:mockk") {
             exclude(group = "org.slf4j", module = "slf4j-api")
         }
