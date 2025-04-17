@@ -1,9 +1,9 @@
 package me.ahoo.wow.template.domain.demo
 
+import me.ahoo.test.asserts.assert
 import me.ahoo.wow.template.api.demo.DemoCreated
 import me.ahoo.wow.template.api.demo.UpdateDemo
 import me.ahoo.wow.test.SagaVerifier.sagaVerifier
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class DemoSagaTest {
@@ -14,7 +14,7 @@ class DemoSagaTest {
         sagaVerifier<DemoSaga>()
             .whenEvent(event)
             .expectCommandBody<UpdateDemo> {
-                assertThat(it.data).isEqualTo("updated")
+                it.data.assert().isEqualTo("updated")
             }
             .verify()
     }
