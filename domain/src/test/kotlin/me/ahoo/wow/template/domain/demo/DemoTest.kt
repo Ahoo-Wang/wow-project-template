@@ -1,5 +1,6 @@
 package me.ahoo.wow.template.domain.demo
 
+import me.ahoo.test.asserts.assert
 import me.ahoo.wow.id.generateGlobalId
 import me.ahoo.wow.template.api.demo.CreateDemo
 import me.ahoo.wow.template.api.demo.DemoCreated
@@ -7,7 +8,6 @@ import me.ahoo.wow.template.api.demo.DemoUpdated
 import me.ahoo.wow.template.api.demo.UpdateDemo
 import me.ahoo.wow.test.aggregate.whenCommand
 import me.ahoo.wow.test.aggregateVerifier
-import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 
 class DemoTest {
@@ -23,7 +23,7 @@ class DemoTest {
             .expectNoError()
             .expectEventType(DemoCreated::class.java)
             .expectState {
-                assertThat(it.data).isEqualTo(command.data)
+                it.data.assert().isEqualTo(command.data)
             }
             .verify()
     }
@@ -41,7 +41,7 @@ class DemoTest {
             .expectNoError()
             .expectEventType(DemoUpdated::class.java)
             .expectState {
-                assertThat(it.data).isEqualTo(command.data)
+                it.data.assert().isEqualTo(command.data)
             }
             .verify()
     }
