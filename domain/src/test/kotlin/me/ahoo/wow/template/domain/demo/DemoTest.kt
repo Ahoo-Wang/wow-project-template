@@ -1,7 +1,6 @@
 package me.ahoo.wow.template.domain.demo
 
 import me.ahoo.test.asserts.assert
-import me.ahoo.wow.id.generateGlobalId
 import me.ahoo.wow.template.api.demo.CreateDemo
 import me.ahoo.wow.template.api.demo.DemoCreated
 import me.ahoo.wow.template.api.demo.DemoUpdated
@@ -31,7 +30,6 @@ class DemoTest {
     @Test
     fun onUpdate() {
         val command = UpdateDemo(
-            id = generateGlobalId(),
             data = "data"
         )
 

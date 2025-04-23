@@ -1,8 +1,8 @@
 package me.ahoo.wow.template.api.demo
 
-import jakarta.validation.constraints.NotBlank
 import me.ahoo.wow.api.annotation.CommandRoute
 import me.ahoo.wow.api.annotation.CreateAggregate
+import me.ahoo.wow.api.annotation.Event
 
 @CreateAggregate
 @CommandRoute(
@@ -11,10 +11,10 @@ import me.ahoo.wow.api.annotation.CreateAggregate
     summary = "创建Demo"
 )
 data class CreateDemo(
-    @field:NotBlank
-    val data: String
-)
+    override val data: String
+) : IDemoInfo
 
+@Event
 data class DemoCreated(
-    val data: String
-)
+    override val data: String
+) : IDemoInfo

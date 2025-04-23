@@ -1,12 +1,12 @@
 package me.ahoo.wow.template.domain.demo
 
-import me.ahoo.wow.api.Identifier
 import me.ahoo.wow.api.annotation.OnSourcing
 import me.ahoo.wow.template.api.demo.DemoCreated
 import me.ahoo.wow.template.api.demo.DemoUpdated
+import me.ahoo.wow.template.api.demo.IDemoState
 
-class DemoState(override val id: String) : Identifier {
-    var data: String? = null
+class DemoState(override val id: String) : IDemoState {
+    override var data: String = ""
         private set
 
     @OnSourcing

@@ -1,6 +1,5 @@
 package me.ahoo.wow.template.api.demo
 
-import jakarta.validation.constraints.NotBlank
 import me.ahoo.wow.api.annotation.CommandRoute
 
 @CommandRoute(
@@ -9,9 +8,7 @@ import me.ahoo.wow.api.annotation.CommandRoute
     summary = "更新Demo"
 )
 data class UpdateDemo(
-    @CommandRoute.PathVariable val id: String,
-    @field:NotBlank
-    val data: String
-)
+    override val data: String
+) : IDemoInfo
 
-data class DemoUpdated(val data: String)
+data class DemoUpdated(override val data: String) : IDemoInfo
