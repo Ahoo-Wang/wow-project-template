@@ -13,7 +13,7 @@ kotlin-logging = "7.0.7"
 swagger = "2.2.30"
 springdoc = "2.8.6"
 fluent-assert = "0.1.0"
-mockk = "1.14.0"
+mockk = "1.14.2"
 detekt-formatting = "1.23.8"
 # plugins
 detekt = "1.23.8"
