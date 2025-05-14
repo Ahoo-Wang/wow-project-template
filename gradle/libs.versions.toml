@@ -10,7 +10,7 @@ cosky = "4.8.8"
 simba = "2.8.8"
 guava = "33.4.8-jre"
 kotlin-logging = "7.0.7"
-swagger = "2.2.31"
+swagger = "2.2.32"
 springdoc = "2.8.8"
 # test
 fluent-assert = "0.1.1"
