@@ -12,11 +12,12 @@ guava = "33.4.8-jre"
 kotlin-logging = "7.0.7"
 swagger = "2.2.31"
 springdoc = "2.8.8"
+# test
 fluent-assert = "0.1.0"
 mockk = "1.14.2"
-detekt-formatting = "1.23.8"
 # plugins
 detekt = "1.23.8"
+detekt-formatting = "1.23.8"
 dokka = "2.0.0"
 kotlin = "2.1.21"
 publish-plugin = "2.0.0"
