@@ -13,6 +13,7 @@ class DemoSagaTest {
         val event = DemoCreated("data")
         sagaVerifier<DemoSaga>()
             .whenEvent(event)
+            .expectCommandType(UpdateDemo::class)
             .expectCommandBody<UpdateDemo> {
                 it.data.assert().isEqualTo("updated")
             }
