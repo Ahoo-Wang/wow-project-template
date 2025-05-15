@@ -20,7 +20,7 @@ class DemoTest {
         aggregateVerifier<Demo, DemoState>()
             .whenCommand(command)
             .expectNoError()
-            .expectEventType(DemoCreated::class.java)
+            .expectEventType(DemoCreated::class)
             .expectState {
                 it.data.assert().isEqualTo(command.data)
             }
@@ -37,7 +37,7 @@ class DemoTest {
             .given(DemoCreated("old"))
             .whenCommand(command)
             .expectNoError()
-            .expectEventType(DemoUpdated::class.java)
+            .expectEventType(DemoUpdated::class)
             .expectState {
                 it.data.assert().isEqualTo(command.data)
             }
