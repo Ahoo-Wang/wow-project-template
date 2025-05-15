@@ -1,6 +1,7 @@
 # 基于 Wow 框架的 DDD 项目模版
 
 [![codecov](https://codecov.io/gh/Ahoo-Wang/wow-project-template/graph/badge.svg?token=lvvGMBqmMh)](https://codecov.io/gh/Ahoo-Wang/wow-project-template)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Ahoo-Wang/wow-project-template)
 
 用于快速构建基于 [Wow 框架](https://github.com/Ahoo-Wang/Wow) 的 DDD 项目模板。
 
