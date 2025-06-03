@@ -114,6 +114,7 @@ configure(libraryProjects) {
     }
     dependencies {
         api(platform(dependenciesProject))
+        testImplementation(platform(rootProject.libs.junit.bom))
         detektPlugins(dependenciesProject)
         implementation("com.google.guava:guava")
         implementation("org.slf4j:slf4j-api")
@@ -124,6 +125,7 @@ configure(libraryProjects) {
         testImplementation("ch.qos.logback:logback-classic")
         testImplementation("org.junit.jupiter:junit-jupiter-api")
         testImplementation("org.junit.jupiter:junit-jupiter-params")
+        testRuntimeOnly("org.junit.platform:junit-platform-launcher")
         testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
         detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting")
     }
