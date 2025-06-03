@@ -13,6 +13,7 @@ kotlin-logging = "7.0.7"
 swagger = "2.2.32"
 springdoc = "2.8.8"
 # test
+junit = "5.13.0"
 fluent-assert = "0.1.2"
 mockk = "1.14.2"
 # plugins
@@ -38,6 +39,7 @@ guava = { module = "com.google.guava:guava", version.ref = "guava" }
 kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
 swagger-annotations = { module = "io.swagger.core.v3:swagger-annotations", version.ref = "swagger" }
 springdoc-bom = { module = "org.springdoc:springdoc-openapi-bom", version.ref = "springdoc" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 fluent-assert-bom = { module = "me.ahoo.test:fluent-assert-bom", version.ref = "fluent-assert" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt-formatting" }
