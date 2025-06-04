@@ -46,6 +46,7 @@ application {
 
 dependencies {
     implementation(platform(project(":dependencies")))
+    testImplementation(platform(libs.junit.bom))
     ksp(platform(project(":dependencies")))
     kapt(platform(project(":dependencies")))
     ksp("me.ahoo.wow:wow-compiler")
@@ -77,6 +78,8 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-webflux")
     kapt("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
 }
 
 tasks.withType<Test> {
