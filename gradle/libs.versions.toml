@@ -18,7 +18,7 @@ fluent-assert = "0.1.2"
 mockk = "1.14.2"
 # plugins
 kotlin = "2.1.21"
-ksp = "2.1.21-2.0.1"
+ksp = "2.1.21-2.0.2"
 dokka = "2.0.0"
 detekt = "1.23.8"
 detekt-formatting = "1.23.8"
