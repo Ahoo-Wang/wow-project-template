@@ -58,6 +58,7 @@ dependencies {
     implementation("me.ahoo.wow:wow-mock")
     implementation("me.ahoo.wow:wow-opentelemetry")
     implementation("me.ahoo.wow:wow-webflux")
+    implementation("me.ahoo.wow:wow-cosec")
     implementation("me.ahoo.wow:wow-spring-boot-starter")
 //    implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
     implementation("me.ahoo.coapi:coapi-spring-boot-starter")
