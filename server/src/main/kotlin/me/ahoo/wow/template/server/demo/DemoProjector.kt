@@ -7,7 +7,7 @@ import me.ahoo.wow.template.api.demo.DemoCreated
 @ProjectionProcessorComponent
 class DemoProjector {
     companion object {
-        private val log = KotlinLogging.logger {  }
+        private val log = KotlinLogging.logger { }
     }
 
     fun onEvent(event: DemoCreated) {
