@@ -21,7 +21,6 @@ kotlin = "2.2.0"
 ksp = "2.1.21-2.0.2"
 dokka = "2.0.0"
 detekt = "1.23.8"
-detekt-formatting = "1.23.8"
 publish-plugin = "2.0.0"
 kover = "0.9.1"
 test-retry = "1.6.2"
@@ -42,7 +41,7 @@ springdoc-bom = { module = "org.springdoc:springdoc-openapi-bom", version.ref = 
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 fluent-assert-bom = { module = "me.ahoo.test:fluent-assert-bom", version.ref = "fluent-assert" }
 mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
-detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt-formatting" }
+detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 
 [plugins]
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
