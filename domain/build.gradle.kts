@@ -9,7 +9,6 @@ dependencies {
     api("io.github.oshai:kotlin-logging-jvm")
     ksp("me.ahoo.wow:wow-compiler")
     testImplementation("me.ahoo.wow:wow-test")
-    testImplementation("io.projectreactor:reactor-test")
 }
 
 tasks.jacocoTestCoverageVerification {
