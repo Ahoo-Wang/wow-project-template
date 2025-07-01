@@ -3,7 +3,7 @@
 spring-boot = "3.5.3"
 cosid = "2.13.1"
 wow = "5.21.2"
-coapi = "1.12.5"
+coapi = "1.12.6"
 cocache = "3.10.2"
 cosec = "3.0.0"
 cosky = "4.9.5"
