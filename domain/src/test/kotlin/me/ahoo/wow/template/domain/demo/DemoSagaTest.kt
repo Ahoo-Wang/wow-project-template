@@ -15,7 +15,7 @@ class DemoSagaTest {
             .whenEvent(event)
             .expectCommandType(UpdateDemo::class)
             .expectCommandBody<UpdateDemo> {
-                it.data.assert().isEqualTo("updated")
+                data.assert().isEqualTo("updated")
             }
             .verify()
     }

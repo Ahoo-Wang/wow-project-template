@@ -22,7 +22,7 @@ class DemoTest {
             .expectNoError()
             .expectEventType(DemoCreated::class)
             .expectState {
-                it.data.assert().isEqualTo(command.data)
+                data.assert().isEqualTo(command.data)
             }
             .verify()
     }
@@ -39,7 +39,7 @@ class DemoTest {
             .expectNoError()
             .expectEventType(DemoUpdated::class)
             .expectState {
-                it.data.assert().isEqualTo(command.data)
+                data.assert().isEqualTo(command.data)
             }
             .verify()
     }
