@@ -72,19 +72,19 @@ data class DemoCreated(
 @AggregateRoot
 class Demo(private val state: DemoState) {
 
-    @OnCommand
-    fun onCreate(command: CreateDemo): DemoCreated {
-        return DemoCreated(
-            data = command.data,
-        )
-    }
+  @OnCommand
+  fun onCreate(command: CreateDemo): DemoCreated {
+    return DemoCreated(
+      data = command.data,
+    )
+  }
 
-    @OnCommand
-    fun onUpdate(command: UpdateDemo): DemoUpdated {
-        return DemoUpdated(
-            data = command.data
-        )
-    }
+  @OnCommand
+  fun onUpdate(command: UpdateDemo): DemoUpdated {
+    return DemoUpdated(
+      data = command.data
+    )
+  }
 }
 ```
 
@@ -92,93 +92,95 @@ class Demo(private val state: DemoState) {
 
 ```kotlin
 class DemoState(override val id: String) : IDemoState {
-    override var data: String = ""
-        private set
+  override var data: String = ""
+    private set
 
-    @OnSourcing
-    fun onCreated(event: DemoCreated) {
-        data = event.data
-    }
+  @OnSourcing
+  fun onCreated(event: DemoCreated) {
+    data = event.data
+  }
 
-    @OnSourcing
-    fun onUpdated(event: DemoUpdated) {
-        data = event.data
-    }
+  @OnSourcing
+  fun onUpdated(event: DemoUpdated) {
+    data = event.data
+  }
 }
 ```
 
 #### 2.3 聚合根单元测试规范
 
 ```kotlin
-class DemoTest {
+import me.ahoo.test.asserts.assert
+import me.ahoo.wow.template.api.demo.CreateDemo
+import me.ahoo.wow.template.api.demo.DemoCreated
+import me.ahoo.wow.template.api.demo.DemoUpdated
+import me.ahoo.wow.template.api.demo.UpdateDemo
+import me.ahoo.wow.test.AggregateSpec
 
-    @Test
-    fun onCreate() {
-        val command = CreateDemo(
-            data = "data"
+class DemoSpec : AggregateSpec<Demo, DemoState>({
+  on {
+    val create = CreateDemo(
+      data = "data"
+    )
+    whenCommand(create) {
+      expectNoError()
+      expectEventType(DemoCreated::class)
+      expectState {
+        data.assert().isEqualTo(create.data)
+      }
+      fork {
+        val update = UpdateDemo(
+          data = "newData"
         )
-
-        aggregateVerifier<Demo, DemoState>()
-            .whenCommand(command)
-            .expectNoError()
-            .expectEventType(DemoCreated::class)
-            .expectState {
-                it.data.assert().isEqualTo(command.data)
-            }
-            .verify()
+        whenCommand(update) {
+          expectNoError()
+          expectEventType(DemoUpdated::class)
+          expectState {
+            data.assert().isEqualTo(update.data)
+          }
+        }
+      }
     }
-
-    @Test
-    fun onUpdate() {
-        val command = UpdateDemo(
-            data = "data"
-        )
-
-        aggregateVerifier<Demo, DemoState>()
-            .given(DemoCreated("old"))
-            .whenCommand(command)
-            .expectNoError()
-            .expectEventType(DemoUpdated::class)
-            .expectState {
-                it.data.assert().isEqualTo(command.data)
-            }
-            .verify()
-    }
-}
+  }
+})
 ```
 
 #### 2.4 Saga编码规范
 
 ```kotlin
-@StatelessSagaComponent
+@StatelessSaga
 class DemoSaga {
-    companion object {
-        private val log = KotlinLogging.logger { }
-    }
+  companion object {
+    private val log = KotlinLogging.logger { }
+  }
 
-    @OnEvent
-    fun onCreated(event: DemoCreated, aggregateId: AggregateId): CommandBuilder {
-        log.debug { "onCreated: $event" }
-        return UpdateDemo(
-            data = "updated"
-        ).commandBuilder().aggregateId(aggregateId.id)
-    }
+  @OnEvent
+  fun onCreated(event: DemoCreated, aggregateId: AggregateId): CommandBuilder {
+    log.debug { "onCreated: $event" }
+    return UpdateDemo(
+      data = "updated"
+    ).commandBuilder().aggregateId(aggregateId.id)
+  }
 }
 ```
 #### 2.5 Saga单元测试规范
 
 ```kotlin
-class DemoSagaTest {
+import me.ahoo.test.asserts.assert
+import me.ahoo.wow.template.api.demo.DemoCreated
+import me.ahoo.wow.template.api.demo.UpdateDemo
+import me.ahoo.wow.test.SagaSpec
 
-    @Test
-    fun onCreated() {
-        val event = DemoCreated("data")
-        sagaVerifier<DemoSaga>()
-            .whenEvent(event)
-            .expectCommandBody<UpdateDemo> {
-                it.data.assert().isEqualTo("updated")
-            }
-            .verify()
+class DemoSagaSpec : SagaSpec<DemoSaga>({
+  on {
+    val demoCreated = DemoCreated("data")
+    whenEvent(demoCreated) {
+      expectNoError()
+      expectCommandType(UpdateDemo::class)
+      expectCommandBody<UpdateDemo> {
+        data.assert().isEqualTo("updated")
+      }
     }
-}
+  }
+})
 ```
