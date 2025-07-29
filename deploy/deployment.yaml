@@ -21,6 +21,11 @@ spec:
       annotations:
         instrumentation.opentelemetry.io/inject-java: "true"
     spec:
+      tolerations:
+        - key: dedicated
+          operator: Equal
+          value: "stateless"
+          effect: NoSchedule
       imagePullSecrets:
         - name: image-registry
       containers:
