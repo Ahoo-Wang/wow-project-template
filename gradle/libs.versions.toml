@@ -1,6 +1,6 @@
 [versions]
 # libraries
-spring-boot = "3.5.4"
+spring-boot = "3.5.5"
 cosid = "2.13.3"
 wow = "6.0.8"
 coapi = "1.12.8"
