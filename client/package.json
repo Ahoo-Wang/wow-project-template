@@ -1,0 +1,69 @@
+{
+  "name": "@ahoo-wang/demo-service",
+  "version": "0.0.1",
+  "description": "Integration Test Fetcher",
+  "keywords": [
+    "fetcher",
+    "http",
+    "client",
+    "examples",
+    "sse",
+    "server-sent-events"
+  ],
+  "author": "Ahoo-Wang",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/Ahoo-Wang/fetcher/tree/master/examples",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ahoo-Wang/fetcher.git",
+    "directory": "integration-test"
+  },
+  "bugs": {
+    "url": "https://github.com/Ahoo-Wang/fetcher/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.umd.js",
+  "module": "./dist/index.es.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.es.js",
+      "require": "./dist/index.umd.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "vite build",
+    "test": "vitest run --coverage",
+    "lint": "eslint . --fix",
+    "format": "prettier --write .",
+    "clean": "rm -rf dist",
+    "generate": "fetcher-generator generate -i http://localhost:8080/v3/api-docs -o src"
+  },
+  "dependencies": {
+    "@ahoo-wang/fetcher": "^2.3.0",
+    "@ahoo-wang/fetcher-cosec": "^2.3.0",
+    "@ahoo-wang/fetcher-decorator": "^2.3.0",
+    "@ahoo-wang/fetcher-eventstream": "^2.3.0",
+    "@ahoo-wang/fetcher-wow": "^2.3.0"
+  },
+  "devDependencies": {
+    "@ahoo-wang/fetcher-generator": "^2.3.0",
+    "@eslint/js": "^9.36.0",
+    "@types/node": "^24.5.2",
+    "@vitest/coverage-v8": "^3.2.4",
+    "@vitest/ui": "^3.2.4",
+    "eslint": "^9.36.0",
+    "globals": "^16.4.0",
+    "prettier": "^3.6.2",
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.1",
+    "unplugin-dts": "1.0.0-beta.6",
+    "vite": "^7.1.7",
+    "vite-bundle-analyzer": "^1.2.3",
+    "vitest": "^3.2.4"
+  }
+}
