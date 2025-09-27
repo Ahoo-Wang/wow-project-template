@@ -1,25 +1,22 @@
 {
-  "name": "@ahoo-wang/demo-service",
+  "name": "@ahoo-wang/wow-client",
   "version": "0.0.1",
-  "description": "Integration Test Fetcher",
+  "description": "WOW Project Client",
   "keywords": [
-    "fetcher",
-    "http",
+    "wow",
     "client",
-    "examples",
-    "sse",
-    "server-sent-events"
+    "typescript"
   ],
   "author": "Ahoo-Wang",
   "license": "Apache-2.0",
-  "homepage": "https://github.com/Ahoo-Wang/fetcher/tree/master/examples",
+  "homepage": "https://github.com/Ahoo-Wang/wow-project-template",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Ahoo-Wang/fetcher.git",
-    "directory": "integration-test"
+    "url": "https://github.com/Ahoo-Wang/wow-project-template.git",
+    "directory": "client"
   },
   "bugs": {
-    "url": "https://github.com/Ahoo-Wang/fetcher/issues"
+    "url": "https://github.com/Ahoo-Wang/wow-project-template/issues"
   },
   "type": "module",
   "main": "./dist/index.umd.js",
