@@ -47,7 +47,7 @@
     "release:minor": "pnpm version minor && pnpm publish --access public --no-git-checks",
     "release:major": "pnpm version major && pnpm publish --access public --no-git-checks"
   },
-  "dependencies": {
+  "peerDependencies": {
     "@ahoo-wang/fetcher": "^2.3.1",
     "@ahoo-wang/fetcher-cosec": "^2.3.1",
     "@ahoo-wang/fetcher-decorator": "^2.3.1",
