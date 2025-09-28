@@ -42,7 +42,10 @@
     "clean:generated": "rm -rf src/generated",
     "generate": "fetcher-generator generate -i http://localhost:8080/v3/api-docs -o src/generated",
     "prepublishOnly": "pnpm clean:dist && pnpm generate && pnpm build ",
-    "release": "pnpm publish --no-git-checks"
+    "release": "pnpm publish --access public --no-git-checks",
+    "release:patch": "pnpm version patch && pnpm publish --access public --no-git-checks",
+    "release:minor": "pnpm version minor && pnpm publish --access public --no-git-checks",
+    "release:major": "pnpm version major && pnpm publish --access public --no-git-checks"
   },
   "dependencies": {
     "@ahoo-wang/fetcher": "^2.3.1",
