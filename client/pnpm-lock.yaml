@@ -13,7 +13,7 @@ importers:
         version: 2.3.1
       '@ahoo-wang/fetcher-cosec':
         specifier: ^2.3.1
-        version: 2.3.1
+        version: 2.3.2(@ahoo-wang/fetcher-storage@2.3.1)(@ahoo-wang/fetcher@2.3.1)
       '@ahoo-wang/fetcher-decorator':
         specifier: ^2.3.1
         version: 2.3.1
@@ -69,8 +69,11 @@ importers:
 
 packages:
 
-  '@ahoo-wang/fetcher-cosec@2.3.1':
-    resolution: {integrity: sha512-2umYbcdq3XSEPbJwvWsydzV+y+tXELfnrfzCL920AFJpfS2VLlpC3bMBhIxnf3Sq6nXoNIaD0oyQjEvqEkcLDQ==}
+  '@ahoo-wang/fetcher-cosec@2.3.2':
+    resolution: {integrity: sha512-q5kb/RbJkjNsUBGYbGkDTYBZeGMimtBgagLjd1MX+shA6FMXGLDm7qEy/k7JKbHz/egiGUQrI4RU6OfnDpTVcQ==}
+    peerDependencies:
+      '@ahoo-wang/fetcher': 2.3.2
+      '@ahoo-wang/fetcher-storage': 2.3.2
 
   '@ahoo-wang/fetcher-decorator@2.3.1':
     resolution: {integrity: sha512-gIAwj+fcdjfB/+h2BOGXrNEn2bqtE4+j0KXYWF4Na/jHf14iYD91H2c0RClNdaqigCMvmds9RCtxA0Yef4hIng==}
@@ -1440,7 +1443,7 @@ packages:
 
 snapshots:
 
-  '@ahoo-wang/fetcher-cosec@2.3.1':
+  '@ahoo-wang/fetcher-cosec@2.3.2(@ahoo-wang/fetcher-storage@2.3.1)(@ahoo-wang/fetcher@2.3.1)':
     dependencies:
       '@ahoo-wang/fetcher': 2.3.1
       '@ahoo-wang/fetcher-storage': 2.3.1
