@@ -12,7 +12,7 @@
 | [api](./api)                                    | **API 层**，定义聚合命令（Command）、领域事件（Domain Event）以及查询视图模型（Query View Model）。充当各个模块之间通信的“发布语言”，同时提供详细的 API 文档，助力开发者理解和使用接口。             |
 | [domain](./domain)                              | **领域层**，包含聚合根和业务约束的实现。聚合根充当领域模型的入口点，负责协调领域对象的操作，确保业务规则的正确执行。业务约束包括领域对象的验证规则、领域事件的处理等。模块内附有详细的领域模型文档，助力团队深入了解业务逻辑。                 |
 | [server](./server)                              | **宿主服务**，应用程序的启动点。负责整合其他模块，并提供应用程序的入口。涉及配置依赖项、连接数据库、启动 API 服务等任务。此外，server 模块提供了容器化部署的支持，包括 Docker 构建镜像和 Kubernetes 部署文件，简化了部署过程。 |
-| [client](./client)                              | **客户端库**，使用 [fetcher-generator](https://github.com/Ahoo-Wang/fetcher) 自动生成的 TypeScript 客户端库，提供类型安全的 API 调用接口，方便前端或其他服务与后端交互。      |
+| [client](./client)                              | **客户端库**，使用 [fetcher-generator](https://github.com/Ahoo-Wang/fetcher) 自动生成的 TypeScript 客户端库，提供类型安全的 API 调用接口，方便前端或其他服务与后端交互。支持自动生成命令客户端和查询客户端，包含完整的类型定义和错误处理。 |
 | [code-coverage-report](./code-coverage-report)  | **测试覆盖率**，用于生成详细的测试覆盖率报告，以及验证覆盖率是否符合要求。帮助开发团队了解项目测试的全面性和质量。                                                                       |
 | [dependencies](./dependencies)                  | **依赖项管理**，这个模块负责管理项目的依赖关系，确保各个模块能够正确地引用和使用所需的外部库和工具。                                                                              |
 | [bom](./bom)                                    | **项目的 BOM（Bill of Materials）**                                                                                                    |
@@ -32,7 +32,7 @@
   - Mac OS:`~/Library/Application\ Support/JetBrains/<PRODUCT><VERSION/projectTemplates/`
   - Linux: `~/.config/JetBrains/<PRODUCT><VERSION>/projectTemplates/`
 - 将模板压缩包放到 IDEA 项目模板目录下
-    - 模板压缩包: https://gitee.com/AhooWang/wow-project-template/releases/download/v6.2.3/wow-project-template.zip
+    - 模板压缩包: https://gitee.com/AhooWang/wow-project-template/releases/download/v6.2.8/wow-project-template.zip
 
 ## 创建项目
 
@@ -78,6 +78,38 @@ git push -u origin master
 <p align="center" style="text-align:center">
   <img src="./document/assets/swagger-ui.png" alt="Swagger-UI"/>
 </p>
+
+## 使用客户端
+
+客户端库提供类型安全的 API 调用接口，支持命令和查询操作。
+
+1. **生成客户端代码**：
+
+   ```shell
+   cd client
+   pnpm install
+   pnpm generate
+   ```
+
+2. **构建客户端库**：
+
+   ```shell
+   pnpm build
+   ```
+
+3. **在项目中使用**：
+
+   ```typescript
+   import { DemoCommandClient, demoQueryClientFactory } from '@ahoo-wang/wow-client';
+   const demoCommandClient = new DemoCommandClient()
+   // 发送命令
+   await demoCommandClient.createDemo({ /* 参数 */ });
+
+   const demoQueryClient = demoQueryClientFactory.createSnapshotQueryClient()
+   // 查询数据
+   ```
+
+   详细使用说明请参考 [client/README.md](./client/README.md)。
 
 ## 验证测试覆盖率
 
