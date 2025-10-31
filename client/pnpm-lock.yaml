@@ -9,7 +9,7 @@ importers:
   .:
     dependencies:
       '@ahoo-wang/fetcher':
-        specifier: ^2.3.4
+        specifier: ^2.3.4 || ^3.0.0
         version: 2.16.5
       '@ahoo-wang/fetcher-cosec':
         specifier: ^2.3.4
