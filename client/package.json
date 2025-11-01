@@ -50,7 +50,7 @@
   "peerDependencies": {
     "@ahoo-wang/fetcher": "^2.3.4",
     "@ahoo-wang/fetcher-cosec": "^2.3.4",
-    "@ahoo-wang/fetcher-decorator": "^2.3.4",
+    "@ahoo-wang/fetcher-decorator": "^2.3.4 || ^3.0.0",
     "@ahoo-wang/fetcher-eventstream": "^2.3.4",
     "@ahoo-wang/fetcher-wow": "^2.3.4"
   },

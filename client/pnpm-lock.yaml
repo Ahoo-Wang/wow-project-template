@@ -15,7 +15,7 @@ importers:
         specifier: ^2.3.4
         version: 2.16.5(@ahoo-wang/fetcher-eventbus@2.10.0(@ahoo-wang/fetcher@2.16.5))(@ahoo-wang/fetcher-storage@2.3.1)(@ahoo-wang/fetcher@2.16.5)
       '@ahoo-wang/fetcher-decorator':
-        specifier: ^2.3.4
+        specifier: ^2.3.4 || ^3.0.0
         version: 2.16.5(@ahoo-wang/fetcher@2.16.5)
       '@ahoo-wang/fetcher-eventstream':
         specifier: ^2.3.4
