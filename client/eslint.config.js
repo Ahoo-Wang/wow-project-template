@@ -16,19 +16,20 @@ import globals from "globals";
 import tseslint from "typescript-eslint";
 
 export default tseslint.config(
-  {
-    ignores: ["**/dist/**", "**/**.test.ts", "**/node_modules/**"],
-  },
-  {
-    files: ["**/*.{ts,tsx}"],
-    extends: [js.configs.recommended, ...tseslint.configs.recommended],
-    languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
+    {
+        ignores: ["**/dist/**", "**/**.test.ts", "**/node_modules/**"],
     },
-    rules: {
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-empty-object-type": "off",
+    {
+        files: ["**/*.{ts,tsx}"],
+        extends: [js.configs.recommended, ...tseslint.configs.recommended],
+        languageOptions: {
+            ecmaVersion: 2020,
+            globals: globals.browser,
+        },
+        rules: {
+            "@typescript-eslint/no-explicit-any": "off",
+            "@typescript-eslint/no-empty-object-type": "off",
+            "@typescript-eslint/no-duplicate-enum-values": "off"
+        },
     },
-  },
 );
