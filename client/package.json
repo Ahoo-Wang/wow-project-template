@@ -55,7 +55,7 @@
     "@ahoo-wang/fetcher-wow": "^3.0.0"
   },
   "devDependencies": {
-    "@ahoo-wang/fetcher-generator": "^3.0.0",
+    "@ahoo-wang/fetcher-generator": "^3.0.1",
     "@eslint/js": "^9.39.1",
     "@types/node": "^24.10.0",
     "@vitest/coverage-v8": "^3.2.4",
