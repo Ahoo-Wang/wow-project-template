@@ -18,7 +18,7 @@ importers:
         specifier: ^2.3.4
         version: 2.16.5(@ahoo-wang/fetcher@2.16.5)
       '@ahoo-wang/fetcher-eventstream':
-        specifier: ^2.3.4
+        specifier: ^2.3.4 || ^3.0.0
         version: 2.16.5(@ahoo-wang/fetcher@2.16.5)
       '@ahoo-wang/fetcher-wow':
         specifier: ^2.3.4
