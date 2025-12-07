@@ -15,7 +15,7 @@ springdoc = "2.8.14"
 # test
 junit = "5.14.1"
 fluent-assert = "0.2.5"
-mockk = "1.14.6"
+mockk = "1.14.7"
 # plugins
 kotlin = "2.2.21"
 ksp = "2.3.3"
