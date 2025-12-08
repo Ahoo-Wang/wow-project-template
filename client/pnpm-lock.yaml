@@ -62,7 +62,7 @@ importers:
         version: 7.2.6(@types/node@24.10.1)(yaml@2.8.2)
       vite-bundle-analyzer:
         specifier: ^1.2.3
-        version: 1.2.3
+        version: 1.3.1
       vitest:
         specifier: ^3.2.4
         version: 3.2.4(@types/node@24.10.1)(@vitest/ui@3.2.4)(yaml@2.8.2)
@@ -1286,8 +1286,8 @@ packages:
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
-  vite-bundle-analyzer@1.2.3:
-    resolution: {integrity: sha512-8nhwDGHWMKKgg6oegAOpDgTT7/yzTVzeYzLF4y8WBJoYu9gO7h29UpHiQnXD2rAvfQzDy5Wqe/Za5cgqhnxi5g==}
+  vite-bundle-analyzer@1.3.1:
+    resolution: {integrity: sha512-39J8a+d1KTi9fPt0a7MqqEJibMekdIDCW2nohiyQPSiww+xEBRHKSX4fdpwSvia9KDiFg7THjQRTs0xefzB+lg==}
     hasBin: true
 
   vite-node@3.2.4:
@@ -2549,7 +2549,7 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  vite-bundle-analyzer@1.2.3: {}
+  vite-bundle-analyzer@1.3.1: {}
 
   vite-node@3.2.4(@types/node@24.10.1)(yaml@2.8.2):
     dependencies:
