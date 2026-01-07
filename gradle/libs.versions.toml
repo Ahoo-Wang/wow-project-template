@@ -11,7 +11,7 @@ simba = "2.9.8"
 guava = "33.5.0-jre"
 kotlin-logging = "7.0.14"
 swagger = "2.2.41"
-springdoc = "2.8.14"
+springdoc = "2.8.15"
 # test
 junit = "6.0.2"
 fluent-assert = "0.2.6"
