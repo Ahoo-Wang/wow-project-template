@@ -10,7 +10,7 @@ cosky = "4.9.9"
 simba = "2.9.8"
 guava = "33.5.0-jre"
 kotlin-logging = "7.0.14"
-swagger = "2.2.41"
+swagger = "2.2.42"
 springdoc = "2.8.15"
 # test
 junit = "6.0.2"
