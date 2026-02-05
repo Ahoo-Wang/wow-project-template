@@ -26,7 +26,7 @@ importers:
     devDependencies:
       '@ahoo-wang/fetcher-generator':
         specifier: ^3.10.2
-        version: 3.10.2(@ahoo-wang/fetcher-decorator@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher-eventstream@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher-openapi@2.3.1)(@ahoo-wang/fetcher-wow@3.10.2(@ahoo-wang/fetcher-decorator@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher-eventstream@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher@3.10.2)
+        version: 3.10.3(@ahoo-wang/fetcher-decorator@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher-eventstream@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher-openapi@2.3.1)(@ahoo-wang/fetcher-wow@3.10.2(@ahoo-wang/fetcher-decorator@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher-eventstream@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher@3.10.2)
       '@eslint/js':
         specifier: ^9.39.2
         version: 9.39.2
@@ -91,8 +91,8 @@ packages:
     peerDependencies:
       '@ahoo-wang/fetcher': ^3.0.0
 
-  '@ahoo-wang/fetcher-generator@3.10.2':
-    resolution: {integrity: sha512-30actj6akzo1GDkXnZSpy60k1O2u1/1hvO7TAX9ZfUxzFrDUMABm50L0OnQD83LnOrVljihCCj7wq9C3r6R/lg==}
+  '@ahoo-wang/fetcher-generator@3.10.3':
+    resolution: {integrity: sha512-oYamJQs7PPHUc33B/hws3F3V0koH2Bdtat5pdw2kJebd8Y39LI6Q0nQDDSFX+pEEmhWj0nYGoMQo9gZ6Jrxe8w==}
     hasBin: true
     peerDependencies:
       '@ahoo-wang/fetcher': ^3.0.0
@@ -1323,7 +1323,7 @@ snapshots:
     dependencies:
       '@ahoo-wang/fetcher': 3.10.2
 
-  '@ahoo-wang/fetcher-generator@3.10.2(@ahoo-wang/fetcher-decorator@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher-eventstream@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher-openapi@2.3.1)(@ahoo-wang/fetcher-wow@3.10.2(@ahoo-wang/fetcher-decorator@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher-eventstream@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher@3.10.2)':
+  '@ahoo-wang/fetcher-generator@3.10.3(@ahoo-wang/fetcher-decorator@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher-eventstream@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher-openapi@2.3.1)(@ahoo-wang/fetcher-wow@3.10.2(@ahoo-wang/fetcher-decorator@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher-eventstream@3.10.2(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher@3.10.2))(@ahoo-wang/fetcher@3.10.2)':
     dependencies:
       '@ahoo-wang/fetcher': 3.10.2
       '@ahoo-wang/fetcher-decorator': 3.10.2(@ahoo-wang/fetcher@3.10.2)
