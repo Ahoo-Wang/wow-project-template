@@ -22,11 +22,12 @@ spring:
   application:
     name: demo-service
   jackson:
-    serialization:
-      write-durations-as-timestamps: true
-      write-dates-as-timestamps: true
     mapper:
       accept-case-insensitive-enums: true
+    datatype:
+      datetime:
+        write-durations-as-timestamps: true
+        write-dates-as-timestamps: true
 logging:
   level:
     me.ahoo.wow: debug
