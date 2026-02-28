@@ -1,7 +1,7 @@
 [versions]
 # libraries
 spring-boot = "4.0.3"
-cosid = "2.15.2"
+cosid = "3.0.2"
 wow = "6.19.0"
 coapi = "2.0.1"
 cocache = "3.10.5"
