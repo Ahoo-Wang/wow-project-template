@@ -68,6 +68,7 @@ dependencies {
 //    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
     implementation("me.ahoo.cosid:cosid-spring-boot-starter")
 //    implementation("me.ahoo.cosec:cosec-openapi")
+//    implementation("me.ahoo.cosec:cosec-opentelemetry")
 //    implementation("me.ahoo.cosec:cosec-webflux")
 //    implementation("me.ahoo.cosec:cosec-spring-boot-starter")
 //    implementation("me.ahoo.cosky:cosky-spring-cloud-starter-discovery")
