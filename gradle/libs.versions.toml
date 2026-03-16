@@ -17,7 +17,7 @@ junit = "6.0.3"
 fluent-assert = "0.2.6"
 mockk = "1.14.9"
 # plugins
-kotlin = "2.3.10"
+kotlin = "2.3.20"
 ksp = "2.3.6"
 dokka = "2.1.0"
 detekt = "1.23.8"
