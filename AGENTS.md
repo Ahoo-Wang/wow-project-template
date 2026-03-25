@@ -80,8 +80,56 @@ pnpm clean                  # clean dist & generated
 
 **Testing**:
 - Extend `SagaSpec` for saga tests
-- Use `me.ahoo.test.asserts.assert` for assertions
+- Use `me.ahoo.test.asserts.assert` for assertions (FluentAssert library)
 - Test naming: `ClassNameSpec`
+
+## FluentAssert (Kotlin Assertions)
+
+This project uses [FluentAssert](https://github.com/Ahoo-Wang/FluentAssert) for Kotlin test assertions.
+
+### Quick Start
+```kotlin
+import me.ahoo.test.asserts.assert
+
+// Instead of: assertThat(value).isEqualTo(expected)
+// Use: value.assert().isEqualTo(expected)
+42.assert().isGreaterThan(0)
+"hello".assert().startsWith("hel")
+listOf(1, 2, 3).assert().hasSize(3).contains(2)
+```
+
+### Supported Types
+- **Primitives**: `Boolean`, `Int`, `Long`, `Double`, `BigDecimal`, etc.
+- **Strings**: `startsWith`, `endsWith`, `contains`, `hasLength`, `matches`
+- **Collections**: `hasSize`, `contains`, `doesNotContain`, `allMatch`, `element`
+- **Maps**: `containsKey`, `containsValue`, `containsEntry`
+- **Optional**: `isPresent`, `isEmpty`, `contains`
+- **Time**: `Instant`, `LocalDate`, `LocalDateTime`, `Duration`, etc.
+- **Exceptions**: `assertThrownBy<ExceptionType> { code }.assert().hasMessage(...)`
+- **I/O**: `Path`, `File`, `URL`, `URI`
+
+### Saga Test Example
+```kotlin
+import me.ahoo.test.asserts.assert
+import me.ahoo.wow.test.SagaSpec
+
+class DemoSagaSpec : SagaSpec<DemoSaga>({
+    on {
+        val demoCreated = DemoCreated("data")
+        whenEvent(demoCreated) {
+            expectNoError()
+            expectCommandBody<UpdateDemo> {
+                data.assert().isEqualTo("updated")
+            }
+        }
+    }
+})
+```
+
+### Key Points
+- Import: `import me.ahoo.test.asserts.assert`
+- Null-safe: all extension functions accept nullable types
+- Chaining: assertions return AssertJ objects, chain naturally
 
 ## TypeScript Code Style
 
