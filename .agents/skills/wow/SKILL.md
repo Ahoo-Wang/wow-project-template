@@ -513,12 +513,15 @@ dependencies {
 
 ## References
 
-For detailed documentation on specific topics, consult these reference files:
+### Internal References
 
 | Reference | When to Use |
 |-----------|-------------|
 | `references/annotations.md` | Annotation parameters, @Retry, @Event revision, naming conventions, all aggregate patterns |
 | `references/dsl.md` | Complete Query DSL operators (100+), pagination, nested queries, date operators, query rewriting |
 | `references/testing.md` | AggregateSpec/SagaSpec DSL, fork/ref patterns, FluentAssert, mockk usage, default commands |
+| `references/modeling.md` | Aggregate patterns: Simple/Complex aggregation, single class pattern, inheritance pattern |
+| `references/command-gateway.md` | Wait strategies, idempotency, validation, LocalFirst mode, CommandRewriter |
+| `references/prepare-key.md` | Uniqueness constraints for EventSourcing, TTL support, user registration scenarios |
 
 These references are loaded as needed - you don't need to read them proactively.
