@@ -1,0 +1,20 @@
+{
+  "skill_name": "fluent-assert",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Write a test for a function that returns a List<String>. I need to assert the list is not empty, has exactly 3 elements, contains \"foo\" and \"bar\", and each element starts with a lowercase letter.",
+      "expected_output": "Kotlin test code using FluentAssert with proper import and chained assertions"
+    },
+    {
+      "id": 2,
+      "prompt": "Write JUnit 5 test that verifies a function throws IllegalArgumentException with message \"Invalid input\" when null is passed. Use FluentAssert for the exception assertion.",
+      "expected_output": "Kotlin test code with assertThrownBy<FluentAssert> and hasMessage assertion"
+    },
+    {
+      "id": 3,
+      "prompt": "In my Kotlin saga test, I need to assert that the command body has a field named 'data' that is not null and equals \"updated\". The command is UpdateDemo. Show me the expectCommandBody block.",
+      "expected_output": "expectCommandBody<UpdateDemo> { data.assert().isNotNull().isEqualTo(\"updated\") }"
+    }
+  ]
+}
