@@ -3,18 +3,18 @@
   "evals": [
     {
       "id": 1,
-      "prompt": "Write a test for a function that returns a List<String>. I need to assert the list is not empty, has exactly 3 elements, contains \"foo\" and \"bar\", and each element starts with a lowercase letter.",
-      "expected_output": "Kotlin test code using FluentAssert with proper import and chained assertions"
+      "prompt": "Write a test for a function that returns a List<String>. Assert the list is not empty, has exactly 3 elements, contains \"foo\" and \"bar\", and each element starts with a lowercase letter.",
+      "expected_output": "Kotlin test using FluentAssert with isNotEmpty, hasSize, contains, allMatch"
     },
     {
       "id": 2,
-      "prompt": "Write JUnit 5 test that verifies a function throws IllegalArgumentException with message \"Invalid input\" when null is passed. Use FluentAssert for the exception assertion.",
-      "expected_output": "Kotlin test code with assertThrownBy<FluentAssert> and hasMessage assertion"
+      "prompt": "Write a JUnit 5 test that verifies a list does NOT contain \"forbidden\". Assert the list has size 2 and contains exactly \"a\" and \"b\" in that order.",
+      "expected_output": "Kotlin test with doesNotContain, hasSize, containsExactly"
     },
     {
       "id": 3,
-      "prompt": "In my Kotlin saga test, I need to assert that the command body has a field named 'data' that is not null and equals \"updated\". The command is UpdateDemo. Show me the expectCommandBody block.",
-      "expected_output": "expectCommandBody<UpdateDemo> { data.assert().isNotNull().isEqualTo(\"updated\") }"
+      "prompt": "Write a test that checks a nullable String is null, and another that checks a nullable Int is not null and greater than 0.",
+      "expected_output": "Two tests: nullableString.assert().isNull() and nullableInt.assert().isNotNull().isGreaterThan(0)"
     }
   ]
 }
