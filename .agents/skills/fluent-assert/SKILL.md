@@ -141,6 +141,13 @@ value.assert().isEqualTo(expected)
 ### ❌ Don't forget the import
 The `.assert()` extension is NOT from AssertJ - it's from `me.ahoo.test.asserts.assert`.
 
+## References
+
+For complete API documentation, see:
+
+- [`references/API.md`](references/API.md) - Concise overview with supported types and examples
+- [`references/FULL-API.md`](references/FULL-API.md) - Complete API reference with all assertion methods
+
 ## Integration with Wow/Saga Tests
 
 In Wow framework saga tests using `SagaSpec`:
