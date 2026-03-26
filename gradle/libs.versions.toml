@@ -19,7 +19,7 @@ mockk = "1.14.9"
 # plugins
 kotlin = "2.3.20"
 ksp = "2.3.6"
-dokka = "2.1.0"
+dokka = "2.2.0"
 detekt = "1.23.8"
 publish-plugin = "2.0.0"
 kover = "0.9.8"
