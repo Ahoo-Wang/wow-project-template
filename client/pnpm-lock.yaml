@@ -26,7 +26,7 @@ importers:
     devDependencies:
       '@ahoo-wang/fetcher-generator':
         specifier: ^3.13.12
-        version: 3.13.12(@ahoo-wang/fetcher-decorator@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher-eventstream@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher-openapi@2.3.1)(@ahoo-wang/fetcher-wow@3.13.12(@ahoo-wang/fetcher-decorator@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher-eventstream@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher@3.13.12)
+        version: 3.13.15(@ahoo-wang/fetcher-decorator@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher-eventstream@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher-openapi@2.3.1)(@ahoo-wang/fetcher-wow@3.13.12(@ahoo-wang/fetcher-decorator@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher-eventstream@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher@3.13.12)
       '@eslint/js':
         specifier: ^9.39.4
         version: 9.39.4
@@ -91,8 +91,8 @@ packages:
     peerDependencies:
       '@ahoo-wang/fetcher': ^3.0.0
 
-  '@ahoo-wang/fetcher-generator@3.13.12':
-    resolution: {integrity: sha512-q46M5d6arESYPx4XTxSezxY5X0gzL6Z5Jrcrz1KhU7PK+5IPk2nyicpM49TwgGM1XSfO7Yz0rCM97aZ006LgRA==}
+  '@ahoo-wang/fetcher-generator@3.13.15':
+    resolution: {integrity: sha512-qVDt2vZ3CLhC0lXSsVhdZGQU55Y13Kyh6NU3BY/53FATQ/ZOyBhI0mGPeuDMyuZ15n9oh3wmPLY4bxKtJqnHjg==}
     hasBin: true
     peerDependencies:
       '@ahoo-wang/fetcher': ^3.0.0
@@ -964,8 +964,8 @@ packages:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
 
-  minimatch@10.2.4:
-    resolution: {integrity: sha512-oRjTw/97aTBN0RHbYCdtF1MQfvusSIBQM0IZEgzl6426+8jSC0nF1a/GmnVLpfB9yyr6g6FTqWqiZVbxrtaCIg==}
+  minimatch@10.2.5:
+    resolution: {integrity: sha512-MULkVLfKGYDFYejP07QOurDLLQpcjk7Fw+7jXS2R2czRQzR56yHRveU5NDJEOviH+hETZKSkIk5c+T23GjFUMg==}
     engines: {node: 18 || 20 || >=22}
 
   minimatch@3.1.5:
@@ -1327,7 +1327,7 @@ snapshots:
     dependencies:
       '@ahoo-wang/fetcher': 3.13.12
 
-  '@ahoo-wang/fetcher-generator@3.13.12(@ahoo-wang/fetcher-decorator@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher-eventstream@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher-openapi@2.3.1)(@ahoo-wang/fetcher-wow@3.13.12(@ahoo-wang/fetcher-decorator@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher-eventstream@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher@3.13.12)':
+  '@ahoo-wang/fetcher-generator@3.13.15(@ahoo-wang/fetcher-decorator@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher-eventstream@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher-openapi@2.3.1)(@ahoo-wang/fetcher-wow@3.13.12(@ahoo-wang/fetcher-decorator@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher-eventstream@3.13.12(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher@3.13.12))(@ahoo-wang/fetcher@3.13.12)':
     dependencies:
       '@ahoo-wang/fetcher': 3.13.12
       '@ahoo-wang/fetcher-decorator': 3.13.12(@ahoo-wang/fetcher@3.13.12)
@@ -1608,7 +1608,7 @@ snapshots:
 
   '@ts-morph/common@0.28.1':
     dependencies:
-      minimatch: 10.2.4
+      minimatch: 10.2.5
       path-browserify: 1.0.1
       tinyglobby: 0.2.15
 
@@ -1694,7 +1694,7 @@ snapshots:
       '@typescript-eslint/types': 8.57.2
       '@typescript-eslint/visitor-keys': 8.57.2
       debug: 4.4.3
-      minimatch: 10.2.4
+      minimatch: 10.2.5
       semver: 7.7.4
       tinyglobby: 0.2.15
       ts-api-utils: 2.5.0(typescript@5.9.3)
@@ -2114,7 +2114,7 @@ snapshots:
     dependencies:
       semver: 7.7.4
 
-  minimatch@10.2.4:
+  minimatch@10.2.5:
     dependencies:
       brace-expansion: 5.0.5
 
