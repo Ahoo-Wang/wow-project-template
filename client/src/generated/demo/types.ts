@@ -1,23 +1,107 @@
-/** - key: demo.ApiVersion */
+/**
+ * - key: demo.ApiVersion
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "string",
+ *   "enum": [
+ *     "V2",
+ *     "V3"
+ *   ]
+ * }
+ * ```
+ */
 export enum ApiVersion {
-    V2 = 'V2',
-    V3 = 'V3'
+    V2 = `V2`,
+    V3 = `V3`
 }
 
-/** - key: demo.Link */
+/**
+ * - key: demo.Link
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object",
+ *   "properties": {
+ *     "href": {
+ *       "type": "string"
+ *     },
+ *     "templated": {
+ *       "type": "boolean"
+ *     }
+ *   }
+ * }
+ * ```
+ */
 export interface Link {
     href: string;
     templated: boolean;
 }
 
-/** - key: demo.SecurityContext */
+/**
+ * - key: demo.SecurityContext
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object"
+ * }
+ * ```
+ */
 export type SecurityContext = Record<string, any>;
-/** - key: demo.StringLinkMap */
+/**
+ * - key: demo.StringLinkMap
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object",
+ *   "additionalProperties": {
+ *     "$ref": "#/components/schemas/demo.Link"
+ *   }
+ * }
+ * ```
+ */
 export type StringLinkMap = Record<string, Link>;
-/** - key: demo.StringObjectMap */
+/**
+ * - key: demo.StringObjectMap
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object"
+ * }
+ * ```
+ */
 export type StringObjectMap = Record<string, any>;
+/**
+ * - key: demo.StringStringListMap
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object",
+ *   "additionalProperties": {
+ *     "type": "array",
+ *     "items": {
+ *       "type": "string"
+ *     }
+ *   }
+ * }
+ * ```
+ */
+export type StringStringListMap = Record<string, string[]>;
 
-/** - key: demo.WebServerNamespace */
+/**
+ * - key: demo.WebServerNamespace
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object",
+ *   "properties": {
+ *     "value": {
+ *       "type": "string"
+ *     }
+ *   }
+ * }
+ * ```
+ */
 export interface WebServerNamespace {
     value: string;
 }

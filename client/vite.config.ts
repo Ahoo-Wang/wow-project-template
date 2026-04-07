@@ -11,40 +11,40 @@
  * limitations under the License.
  */
 
-import { defineConfig } from "vite";
+import {defineConfig} from "vite";
 import dts from "unplugin-dts/vite";
 
 export default defineConfig({
-  build: {
-    sourcemap: true,
-    lib: {
-      entry: "src/index.ts",
-      name: "ExampleService",
-      fileName: (format) => `index.${format}.js`,
-    },
-    rollupOptions: {
-      external: [
-        "@ahoo-wang/fetcher",
-        "@ahoo-wang/fetcher-decorator",
-        "@ahoo-wang/fetcher-eventstream",
-        "@ahoo-wang/fetcher-cosec",
-        "@ahoo-wang/fetcher-wow",
-      ],
-      output: {
-        globals: {
-          "@ahoo-wang/fetcher": "Fetcher",
-          "@ahoo-wang/fetcher-decorator": "FetcherDecorator",
-          "@ahoo-wang/fetcher-eventstream": "FetcherEventStream",
-          "@ahoo-wang/fetcher-cosec": "FetcherCoSec",
-          "@ahoo-wang/fetcher-wow": "FetcherWow",
+    build: {
+        sourcemap: true,
+        lib: {
+            entry: "src/index.ts",
+            name: "ExampleService",
+            fileName: (format) => `index.${format}.js`,
         },
-      },
+        rolldownOptions: {
+            external: [
+                "@ahoo-wang/fetcher",
+                "@ahoo-wang/fetcher-decorator",
+                "@ahoo-wang/fetcher-eventstream",
+                "@ahoo-wang/fetcher-cosec",
+                "@ahoo-wang/fetcher-wow",
+            ],
+            output: {
+                globals: {
+                    "@ahoo-wang/fetcher": "Fetcher",
+                    "@ahoo-wang/fetcher-decorator": "FetcherDecorator",
+                    "@ahoo-wang/fetcher-eventstream": "FetcherEventStream",
+                    "@ahoo-wang/fetcher-cosec": "FetcherCoSec",
+                    "@ahoo-wang/fetcher-wow": "FetcherWow",
+                },
+            },
+        },
     },
-  },
-  plugins: [
-    dts({
-      outDirs: "dist",
-      tsconfigPath: "./tsconfig.json",
-    }),
-  ],
+    plugins: [
+        dts({
+            outDirs: "dist",
+            tsconfigPath: "./tsconfig.json",
+        }),
+    ],
 });
