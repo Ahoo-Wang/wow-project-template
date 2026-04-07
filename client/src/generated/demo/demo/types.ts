@@ -1,6 +1,23 @@
 /**
  * 创建Demo
  * - key: demo.demo.CreateDemo
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object",
+ *   "properties": {
+ *     "data": {
+ *       "type": "string",
+ *       "minLength": 1
+ *     }
+ *   },
+ *   "required": [
+ *     "data"
+ *   ],
+ *   "title": "创建Demo",
+ *   "description": ""
+ * }
+ * ```
  */
 export interface CreateDemo {
     /**
@@ -10,26 +27,70 @@ export interface CreateDemo {
     data: string;
 }
 
-/** - key: demo.demo.DemoAggregatedFields */
+/**
+ * - key: demo.demo.DemoAggregatedFields
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "string",
+ *   "enum": [
+ *     "",
+ *     "aggregateId",
+ *     "tenantId",
+ *     "ownerId",
+ *     "spaceId",
+ *     "version",
+ *     "eventId",
+ *     "firstOperator",
+ *     "operator",
+ *     "firstEventTime",
+ *     "eventTime",
+ *     "tags",
+ *     "deleted",
+ *     "state",
+ *     "state.data",
+ *     "state.id"
+ *   ]
+ * }
+ * ```
+ */
 export enum DemoAggregatedFields {
-    AGGREGATE_ID = 'aggregateId',
-    TENANT_ID = 'tenantId',
-    OWNER_ID = 'ownerId',
-    VERSION = 'version',
-    EVENT_ID = 'eventId',
-    FIRST_OPERATOR = 'firstOperator',
-    OPERATOR = 'operator',
-    FIRST_EVENT_TIME = 'firstEventTime',
-    EVENT_TIME = 'eventTime',
-    DELETED = 'deleted',
-    STATE = 'state',
-    STATE_DATA = 'state.data',
-    STATE_ID = 'state.id'
+    AGGREGATE_ID = `aggregateId`,
+    TENANT_ID = `tenantId`,
+    OWNER_ID = `ownerId`,
+    SPACE_ID = `spaceId`,
+    VERSION = `version`,
+    EVENT_ID = `eventId`,
+    FIRST_OPERATOR = `firstOperator`,
+    OPERATOR = `operator`,
+    FIRST_EVENT_TIME = `firstEventTime`,
+    EVENT_TIME = `eventTime`,
+    TAGS = `tags`,
+    DELETED = `deleted`,
+    STATE = `state`,
+    STATE_DATA = `state.data`,
+    STATE_ID = `state.id`
 }
 
 /**
  * demo_created
  * - key: demo.demo.DemoCreated
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object",
+ *   "properties": {
+ *     "data": {
+ *       "type": "string",
+ *       "minLength": 1
+ *     }
+ *   },
+ *   "required": [
+ *     "data"
+ *   ],
+ *   "title": "demo_created"
+ * }
+ * ```
  */
 export interface DemoCreated {
     /**
@@ -39,7 +100,27 @@ export interface DemoCreated {
     data: string;
 }
 
-/** - key: demo.demo.DemoState */
+/**
+ * - key: demo.demo.DemoState
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object",
+ *   "properties": {
+ *     "data": {
+ *       "type": "string",
+ *       "minLength": 1
+ *     },
+ *     "id": {
+ *       "type": "string"
+ *     }
+ *   },
+ *   "required": [
+ *     "id"
+ *   ]
+ * }
+ * ```
+ */
 export interface DemoState {
     /**
      * - String Constraints
@@ -52,6 +133,22 @@ export interface DemoState {
 /**
  * demo_updated
  * - key: demo.demo.DemoUpdated
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object",
+ *   "properties": {
+ *     "data": {
+ *       "type": "string",
+ *       "minLength": 1
+ *     }
+ *   },
+ *   "required": [
+ *     "data"
+ *   ],
+ *   "title": "demo_updated"
+ * }
+ * ```
  */
 export interface DemoUpdated {
     /**
@@ -64,6 +161,23 @@ export interface DemoUpdated {
 /**
  * 更新Demo
  * - key: demo.demo.UpdateDemo
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object",
+ *   "properties": {
+ *     "data": {
+ *       "type": "string",
+ *       "minLength": 1
+ *     }
+ *   },
+ *   "required": [
+ *     "data"
+ *   ],
+ *   "title": "更新Demo",
+ *   "description": ""
+ * }
+ * ```
  */
 export interface UpdateDemo {
     /**
