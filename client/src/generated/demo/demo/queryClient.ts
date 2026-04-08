@@ -1,5 +1,6 @@
-import { QueryClientFactory, QueryClientOptions, ResourceAttributionPathSpec } from "@ahoo-wang/fetcher-wow";
-import { DemoAggregatedFields, DemoCreated, DemoState, DemoUpdated } from "./types";
+import type { QueryClientOptions} from "@ahoo-wang/fetcher-wow";
+import { QueryClientFactory, ResourceAttributionPathSpec } from "@ahoo-wang/fetcher-wow";
+import type { DemoAggregatedFields, DemoCreated, DemoState, DemoUpdated } from "./types";
 import { DEMO_BOUNDED_CONTEXT_ALIAS } from "../boundedContext";
 
 const DEFAULT_QUERY_CLIENT_OPTIONS: QueryClientOptions = {
