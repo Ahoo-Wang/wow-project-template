@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.ksp)
+    alias(libs.plugins.kotlin.spring)
 }
 dependencies {
     api(platform(project(":dependencies")))
