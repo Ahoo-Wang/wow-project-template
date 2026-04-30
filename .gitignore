@@ -26,3 +26,4 @@ build
 .DS_Store
 /jte-classes/
 /.kotlin/
+/.idea/
