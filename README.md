@@ -21,34 +21,15 @@
 | [Dockerfile](server/Dockerfile)                 | **server Docker 构建镜像**，通过 Dockerfile 文件定义了应用程序的容器化构建步骤，方便部署和扩展。                                                                                               |
 | [document](document)                            | **项目文档**，包括 UML 图和上下文映射图，为团队成员提供了对整个项目结构和业务逻辑的清晰理解。                                                                                                           |
 
-## 安装模板
-
-[IDEA 项目模板](https://www.jetbrains.com/help/idea/saving-project-as-template.html)
-
-[IDEA 配置目录](https://www.jetbrains.com/help/idea/directories-used-by-the-ide-to-store-settings-caches-plugins-and-logs.html#config-directory)
-
-- IDEA 项目模板目录：`<IDE config home>/projectTemplates`
-  - Windows: `C:\Users\<USERNAME>\AppData\Roaming\JetBrains\<PRODUCT><VERSION>\projectTemplates\`
-  - Mac OS:`~/Library/Application\ Support/JetBrains/<PRODUCT><VERSION/projectTemplates/`
-  - Linux: `~/.config/JetBrains/<PRODUCT><VERSION>/projectTemplates/`
-- 将模板压缩包放到 IDEA 项目模板目录下
-    - 模板压缩包: https://gitee.com/AhooWang/wow-project-template/releases/download/v8.3.6/wow-project-template.zip
-
 ## 创建项目
 
-> [使用模板创建项目](https://www.jetbrains.com/help/idea/saving-project-as-template.html#create-project-from-template)
+[![Use this template](https://img.shields.io/badge/Use%20this%20template-2ea44f?style=for-the-badge&logo=github)](https://github.com/new?template_name=wow-project-template&template_owner=Ahoo-Wang)
 
-![创建项目](./document/assets/new-project.png)
+点击上方按钮，基于 [Wow 项目模板](https://github.com/Ahoo-Wang/wow-project-template) 创建新仓库，然后克隆到本地即可开始编写领域模型。
 
 - 修改 `settings.gradle.kts` 文件，将 `rootProject.name` 修改为项目名称
 - 修改 `api/{package}/DemoService`
 - 修改 `domain/{package}/DemoBoundedContext`
-
-> WARN: IDEA 基于模版创建项目会将 `gradlew` 脚本被注释，需要重新从模板项目中Copy过来。
-
-```shell
-chmod +x ./gradlew
-```
 
 ## Git
 

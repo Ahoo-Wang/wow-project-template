@@ -37,38 +37,72 @@ Invoke these skills when working on relevant tasks:
 # Generate API docs
 ./gradlew dokkaHtml
 
+# Build server distribution
+./gradlew server:installDist
+
 # Clean build
 ./gradlew clean build
 ```
 
-## Module Structure
+## Module Structure & Dependency Flow
 
-- **`api`** - Public API contracts, commands, events, and state interfaces (publishable library)
-- **`domain`** - Aggregate roots, state classes, and sagas (publishable library)
-- **`server`** - Spring Boot application, projectors, controllers (not published)
-- **`dependencies`** - BOM/dependency management (JavaPlatform)
-- **`bom`** - Bill of Materials for consumers
-- **`code-coverage-report`** - Aggregated coverage reports
+```
+dependencies (BOM/platform) → api → domain → server
+                                        ↓
+                                     client (TypeScript, auto-generated)
+```
+
+- **`dependencies`** - Centralized BOM/dependency management via Gradle platform. All version catalog entries in `gradle/libs.versions.toml`.
+- **`api`** - Public API contracts: commands, events, state interfaces, and client interfaces (publishable library). Uses KSP (`wow-compiler`).
+- **`domain`** - Aggregate roots, state classes, and sagas (publishable library). Depends on `api`. Uses KSP (`wow-compiler`). 80% test coverage required.
+- **`server`** - Spring Boot WebFlux application, projectors, controllers (not published). Uses both KSP and kapt.
+- **`bom`** - Bill of Materials for consumers.
+- **`code-coverage-report`** - Aggregated coverage reports.
+- **`client`** - Auto-generated TypeScript client library via `fetcher-generator`. Build with `pnpm generate && pnpm build`.
 
 ## Architecture (Wow Framework Patterns)
 
+### Service Definition
+
+Each bounded context is defined by a service object that declares constants and aggregate scopes:
+
+```kotlin
+@BoundedContext(name = SERVICE_NAME, alias = SERVICE_ALIAS,
+    aggregates = [BoundedContext.Aggregate(aggregateName, packageScopes = [CommandClass::class])])
+object DemoService {
+    const val SERVICE_NAME = "demo-service"
+    const val SERVICE_ALIAS = "demo"
+    const val DEMO_AGGREGATE_NAME = "demo"
+}
+```
+
+### API Module Conventions
+
+- **Contract interfaces** define shared fields: `IDemoInfo` (data), `IDemoState` extends `Identifier` + `IDemoInfo`
+- **Commands** are data classes with `@CommandRoute`, `@CreateAggregate` annotations, implementing contract interfaces. Use Jakarta validation (`@NotBlank`).
+- **Events** are data classes with `@Event` annotation. Naming: past tense of the command (e.g., `CreateDemo` → `DemoCreated`).
+- **Service interfaces** use Spring `@HttpExchange` for type-safe HTTP client contracts.
+
 ### Aggregate Root (`domain` module)
+
 - Aggregate class: `@AggregateRoot` annotation, takes state as constructor parameter
 - Command handlers: `@OnCommand` methods that return events
-- State class: `@OnSourcing` methods that apply events to state
+- State class: `@OnSourcing` methods that apply events to state. Mutable properties with `private set`.
 
-### API Module
-- Commands: data classes implementing Wow command interfaces
-- Events: data classes for domain events
-- State interfaces: `IDemoState` for read models
-- Service interfaces: `DemoApi` for client contracts
+### Saga (`domain` module)
+
+- `@StatelessSaga` annotation on the class
+- `@OnEvent` methods receive events and return `CommandBuilder` to send follow-up commands
 
 ### Server Module
-- Projectors: `@ProjectionProcessor` for read model updates
-- Controllers: Standard Spring WebFlux controllers
-- Main class: `ServerKt` in `me.ahoo.wow.template.server`
+
+- **Controllers** implement the API service interface (e.g., `DemoController : DemoApi`) and are annotated with `@RestController`. Wow auto-generates command/query routes from the interface.
+- **Projectors**: `@ProjectionProcessor` for read model updates from events
+- **Inter-service clients**: `@CoApi(serviceId)` interfaces extending the API service interface (e.g., `DemoClient : DemoApi`)
+- Main class: `ServerKt` in `me.ahoo.wow.template.server`, uses `@BoundedContext` and `@SpringBootApplication` with `scanBasePackageClasses`
 
 ### Testing (Given-When-Expect)
+
 ```kotlin
 class DemoSpec : AggregateSpec<Demo, DemoState>({
     on {
@@ -94,23 +128,39 @@ class DemoSpec : AggregateSpec<Demo, DemoState>({
 - `me.ahoo.wow.test.AggregateSpec` - Aggregate test base
 - `me.ahoo.wow.test.SagaSpec` - Saga test base
 
-## Key Dependencies
+`fork` creates a branching state to test subsequent commands on the same aggregate.
 
-- **Wow Framework**: `me.ahoo.wow:wow-*` (api, spring, webflux, test, compiler)
-- **KSP**: Annotation processing via `me.ahoo.wow:wow-compiler`
-- **Spring Boot**: WebFlux-based reactive stack
-- **Kotlin**: JVM 17 target with `-Xjsr305=strict`
+### Code Generation (KSP)
 
-## Code Generation
-
-KSP generates:
+KSP with `wow-compiler` runs in both `api` and `domain` modules, generating:
 - `AggregatesMetadata.kt` - Aggregate metadata registration
 - `*Properties.kt` - State property accessors
 
 Run `./gradlew build` to regenerate after annotation changes.
 
-## Configuration
+## Default Configuration
+
+The default `application.yaml` uses **in-memory** implementations for all infrastructure:
+- Command bus: `in_memory`
+- Event bus: `in_memory`
+- Event sourcing store: `in_memory`
+- Snapshot storage: `in_memory`
+
+To use production backends, uncomment the relevant dependencies in `server/build.gradle.kts` (Mongo, Kafka, Redis, Elasticsearch) and update `application.yaml`.
+
+## Key Dependencies
+
+- **Wow Framework**: `me.ahoo.wow:wow-*` (api, spring, webflux, test, compiler)
+- **CoApi**: `me.ahoo.coapi:coapi-*` (type-safe HTTP client auto-configuration)
+- **CoSec**: `me.ahoo.cosec:cosec-*` (authorization, optional)
+- **CoCache**: `me.ahoo.cocache:cocache-*` (distributed caching, optional)
+- **CoSiD**: `me.ahoo.cosid:cosid-*` (distributed ID generation)
+- **Spring Boot**: WebFlux-based reactive stack, Spring Boot 4.x
+- **Kotlin**: JVM 17 target with `-Xjsr305=strict`, `-Xjvm-default=all-compatibility`
+
+## Configuration Files
 
 - Detekt config: `config/detekt/detekt.yml`
 - Logback: `config/logback.xml`
 - Spring: `server/src/main/resources/application.yaml`
+- Version catalog: `gradle/libs.versions.toml`
