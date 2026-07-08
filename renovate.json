@@ -7,7 +7,8 @@
   "commitMessageTopic": "{{depName}}",
   "rangeStrategy": "bump",
   "lockFileMaintenance": { "enabled": false },
-  "prConcurrentLimit": 5,
+  "prHourlyLimit": 10,
+  "prConcurrentLimit": 10,
   "packageRules": [
     {
       "description": "Group Spring ecosystem updates into a single PR",
