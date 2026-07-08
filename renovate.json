@@ -12,13 +12,18 @@
   "packageRules": [
     {
       "description": "Group Spring ecosystem updates into a single PR",
-      "matchPackagePatterns": ["^org\\.springframework"],
-      "groupName": "spring"
+      "groupName": "spring",
+      "matchPackageNames": ["/^org\\.springframework/"]
     },
     {
       "description": "Group Kotlin-related updates into a single PR",
-      "matchPackagePatterns": ["^org\\.jetbrains\\.kotlin"],
-      "groupName": "kotlin"
+      "groupName": "kotlin",
+      "matchPackageNames": ["/^org\\.jetbrains\\.kotlin/"]
+    },
+    {
+      "description": "Group @ahoo-wang/fetcher ecosystem updates into a single PR",
+      "groupName": "ahoo-wang-fetcher",
+      "matchPackageNames": ["/^@ahoo-wang\\/fetcher/"]
     }
   ]
 }
