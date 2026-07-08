@@ -17,9 +17,9 @@
       "matchPackageNames": ["/^org\\.springframework/"]
     },
     {
-      "description": "Group Kotlin-related updates into a single PR",
-      "groupName": "kotlin",
-      "matchPackageNames": ["/^org\\.jetbrains\\.kotlin/"]
+      "description": "Group Kotlin + KSP updates (KSP version must match Kotlin version)",
+      "groupName": "kotlin-ksp",
+      "matchPackageNames": ["/^org\\.jetbrains\\.kotlin/", "/^com\\.google\\.devtools\\.ksp/"]
     },
     {
       "description": "Group @ahoo-wang/fetcher ecosystem updates into a single PR",
