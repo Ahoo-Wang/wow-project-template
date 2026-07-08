@@ -5,6 +5,7 @@
   "labels": ["dependencies"],
   "commitMessagePrefix": "fix(deps)",
   "commitMessageTopic": "{{depName}}",
+  "gitAuthor": "Ahoo Wang <4384159+Ahoo-Wang@users.noreply.github.com>",
   "rangeStrategy": "bump",
   "lockFileMaintenance": { "enabled": false },
   "prHourlyLimit": 10,
