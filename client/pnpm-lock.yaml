@@ -12,8 +12,8 @@ importers:
         specifier: ^3.0.1
         version: 3.16.1
       '@ahoo-wang/fetcher-cosec':
-        specifier: ^3.0.1
-        version: 3.16.1(@ahoo-wang/fetcher-eventbus@2.10.0(@ahoo-wang/fetcher@3.16.1))(@ahoo-wang/fetcher-storage@2.3.1)(@ahoo-wang/fetcher@3.16.1)
+        specifier: ^3.16.10
+        version: 3.16.10(@ahoo-wang/fetcher-eventbus@2.10.0(@ahoo-wang/fetcher@3.16.1))(@ahoo-wang/fetcher-storage@2.3.1)(@ahoo-wang/fetcher@3.16.1)
       '@ahoo-wang/fetcher-decorator':
         specifier: ^3.0.1
         version: 3.16.1(@ahoo-wang/fetcher@3.16.1)
@@ -72,8 +72,8 @@ importers:
 
 packages:
 
-  '@ahoo-wang/fetcher-cosec@3.16.1':
-    resolution: {integrity: sha512-UyO6+dmeErlAK2CPkgr5rl4vmfY1Vz8SCUKgCCtVOolvd16LpvxcLjk5AM/KlY2EyfMREeR8WTAt7bF87rIkwQ==}
+  '@ahoo-wang/fetcher-cosec@3.16.10':
+    resolution: {integrity: sha512-yDZviR08NHFHyJRx3gwOXwjYotw+1n32bO9nFVYAxvvaWYpl6Kx9BA43wV8Y9tHlZWwcAP1la4M3ZIKJ6MsKCQ==}
     engines: {node: '>=18.0.0'}
     peerDependencies:
       '@ahoo-wang/fetcher': ^3.0.0
@@ -1558,7 +1558,7 @@ packages:
 
 snapshots:
 
-  '@ahoo-wang/fetcher-cosec@3.16.1(@ahoo-wang/fetcher-eventbus@2.10.0(@ahoo-wang/fetcher@3.16.1))(@ahoo-wang/fetcher-storage@2.3.1)(@ahoo-wang/fetcher@3.16.1)':
+  '@ahoo-wang/fetcher-cosec@3.16.10(@ahoo-wang/fetcher-eventbus@2.10.0(@ahoo-wang/fetcher@3.16.1))(@ahoo-wang/fetcher-storage@2.3.1)(@ahoo-wang/fetcher@3.16.1)':
     dependencies:
       '@ahoo-wang/fetcher': 3.16.1
       '@ahoo-wang/fetcher-eventbus': 2.10.0(@ahoo-wang/fetcher@3.16.1)
