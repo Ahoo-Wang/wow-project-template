@@ -22,6 +22,11 @@
       "matchPackageNames": ["/^org\\.jetbrains\\.kotlin/", "/^com\\.google\\.devtools\\.ksp/"]
     },
     {
+      "description": "Pin Kotlin until KSP releases a matching 2.4.0-x version",
+      "matchPackageNames": ["org.jetbrains.kotlin.jvm", "org.jetbrains.kotlin.plugin.spring"],
+      "allowedVersions": "< 2.4.0"
+    },
+    {
       "description": "Group @ahoo-wang/fetcher ecosystem updates into a single PR",
       "groupName": "ahoo-wang-fetcher",
       "matchPackageNames": ["/^@ahoo-wang\\/fetcher/"]
