@@ -52,7 +52,7 @@
     "@ahoo-wang/fetcher-cosec": "^3.0.1",
     "@ahoo-wang/fetcher-decorator": "^3.0.1",
     "@ahoo-wang/fetcher-eventstream": "^3.0.1",
-    "@ahoo-wang/fetcher-wow": "^3.0.1"
+    "@ahoo-wang/fetcher-wow": "^3.16.10"
   },
   "devDependencies": {
     "@ahoo-wang/fetcher-generator": "^3.16.10",
