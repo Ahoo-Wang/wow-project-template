@@ -14,7 +14,7 @@ swagger = "2.2.52"
 springdoc = "3.0.3"
 # test
 junit = "6.1.1"
-fluent-assert = "0.2.8"
+fluent-assert = "1.0.0"
 mockk = "1.14.11"
 # plugins
 kotlin = "2.3.20"
