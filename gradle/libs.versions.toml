@@ -13,7 +13,7 @@ kotlin-logging = "8.0.4"
 swagger = "2.2.52"
 springdoc = "3.0.3"
 # test
-junit = "6.1.1"
+junit = "6.1.2"
 fluent-assert = "1.0.0"
 mockk = "1.14.11"
 # plugins
