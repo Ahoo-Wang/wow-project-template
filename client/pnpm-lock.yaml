@@ -64,8 +64,8 @@ importers:
         specifier: 8.1.5
         version: 8.1.5(@types/node@24.13.3)(esbuild@0.27.7)(yaml@2.8.4)
       vite-bundle-analyzer:
-        specifier: ^1.3.8
-        version: 1.3.8
+        specifier: ^1.3.9
+        version: 1.3.9
       vitest:
         specifier: ^4.1.10
         version: 4.1.10(@types/node@24.13.3)(@vitest/coverage-v8@4.1.10)(@vitest/ui@4.1.10)(vite@8.1.5(@types/node@24.13.3)(esbuild@0.27.7)(yaml@2.8.4))
@@ -1568,8 +1568,8 @@ packages:
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
 
-  vite-bundle-analyzer@1.3.8:
-    resolution: {integrity: sha512-IIk7WPhoYs7pyo75jwI+dFt7yykgjK7NY+dqnJtiZnyqP2k6NgPb3TY80FLFjtgnfk/o+OjI18+anKyeviCbRA==}
+  vite-bundle-analyzer@1.3.9:
+    resolution: {integrity: sha512-hhy975B+ToseJaSJp3mURHriZUrMgaM2qx0BkP62kN6Yp46rw7EE3dl8ExFWYdn00OIwe7GbsA5PknvstNWG4Q==}
     hasBin: true
 
   vite@8.1.5:
@@ -2989,7 +2989,7 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  vite-bundle-analyzer@1.3.8: {}
+  vite-bundle-analyzer@1.3.9: {}
 
   vite@8.1.5(@types/node@24.13.3)(esbuild@0.27.7)(yaml@2.8.4):
     dependencies:
