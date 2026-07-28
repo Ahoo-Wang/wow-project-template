@@ -7,6 +7,7 @@
   "commitMessageTopic": "{{depName}}",
   "gitAuthor": "Ahoo Wang <4384159+Ahoo-Wang@users.noreply.github.com>",
   "rangeStrategy": "bump",
+  "recreateClosed": true,
   "lockFileMaintenance": { "enabled": false },
   "prHourlyLimit": 10,
   "prConcurrentLimit": 10,
