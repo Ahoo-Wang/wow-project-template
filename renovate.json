@@ -27,6 +27,11 @@
       "allowedVersions": "< 2.4.0"
     },
     {
+      "description": "Pin typescript until typescript-eslint supports TS 7 (typescript-eslint/typescript-eslint#10940)",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "< 7.0.0"
+    },
+    {
       "description": "Group @ahoo-wang/fetcher ecosystem updates into a single PR",
       "groupName": "ahoo-wang-fetcher",
       "matchPackageNames": ["/^@ahoo-wang\\/fetcher/"]
