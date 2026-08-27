@@ -63,7 +63,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v7
         with:
-          node-version: '24.19.0'
+          node-version: '24.20.0'
 
       - name: Set up pnpm
         run: corepack enable && corepack prepare pnpm@9 --activate
