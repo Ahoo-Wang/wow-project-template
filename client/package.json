@@ -60,7 +60,7 @@
     "@types/node": "^24.13.6",
     "@vitest/coverage-v8": "^4.1.11",
     "@vitest/ui": "^4.1.11",
-    "eslint": "^10.10.0",
+    "eslint": "^10.11.0",
     "globals": "^17.12.0",
     "prettier": "^3.9.8",
     "rimraf": "^6.1.3",
