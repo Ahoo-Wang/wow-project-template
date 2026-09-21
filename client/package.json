@@ -48,14 +48,14 @@
     "release:major": "pnpm version major && pnpm publish --access public --no-git-checks"
   },
   "peerDependencies": {
-    "@ahoo-wang/fetcher": "^5.0.1",
-    "@ahoo-wang/fetcher-cosec": "^5.0.1",
-    "@ahoo-wang/fetcher-decorator": "^5.0.1",
-    "@ahoo-wang/fetcher-eventstream": "^5.0.1",
-    "@ahoo-wang/fetcher-wow": "^5.0.1"
+    "@ahoo-wang/fetcher": "^5.1.2",
+    "@ahoo-wang/fetcher-cosec": "^5.1.2",
+    "@ahoo-wang/fetcher-decorator": "^5.1.2",
+    "@ahoo-wang/fetcher-eventstream": "^5.1.2",
+    "@ahoo-wang/fetcher-wow": "^5.1.2"
   },
   "devDependencies": {
-    "@ahoo-wang/fetcher-generator": "^5.0.1",
+    "@ahoo-wang/fetcher-generator": "^5.1.2",
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.13.6",
     "@vitest/coverage-v8": "^4.1.11",
