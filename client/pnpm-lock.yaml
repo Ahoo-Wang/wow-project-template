@@ -9,24 +9,24 @@ importers:
   .:
     dependencies:
       '@ahoo-wang/fetcher':
-        specifier: ^5.0.1
-        version: 5.0.1
+        specifier: ^5.1.2
+        version: 5.1.2
       '@ahoo-wang/fetcher-cosec':
-        specifier: ^5.0.1
-        version: 5.0.1(@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher-storage@5.0.0(@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.0.1)))(@ahoo-wang/fetcher@5.0.1)
+        specifier: ^5.1.2
+        version: 5.1.2(@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher-storage@5.0.0(@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.1.2)))(@ahoo-wang/fetcher@5.1.2)
       '@ahoo-wang/fetcher-decorator':
-        specifier: ^5.0.1
-        version: 5.0.1(@ahoo-wang/fetcher@5.0.1)
+        specifier: ^5.1.2
+        version: 5.1.2(@ahoo-wang/fetcher@5.1.2)
       '@ahoo-wang/fetcher-eventstream':
-        specifier: ^5.0.1
-        version: 5.0.1(@ahoo-wang/fetcher@5.0.1)
+        specifier: ^5.1.2
+        version: 5.1.2(@ahoo-wang/fetcher@5.1.2)
       '@ahoo-wang/fetcher-wow':
-        specifier: ^5.0.1
-        version: 5.0.1(@ahoo-wang/fetcher-decorator@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher-eventstream@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher@5.0.1)
+        specifier: ^5.1.2
+        version: 5.1.2(@ahoo-wang/fetcher-decorator@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher-eventstream@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher@5.1.2)
     devDependencies:
       '@ahoo-wang/fetcher-generator':
-        specifier: ^5.0.1
-        version: 5.0.1(@ahoo-wang/fetcher-decorator@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher-eventstream@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher-openapi@5.0.0)(@ahoo-wang/fetcher-wow@5.0.1(@ahoo-wang/fetcher-decorator@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher-eventstream@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher@5.0.1)
+        specifier: ^5.1.2
+        version: 5.1.2(@ahoo-wang/fetcher-decorator@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher-eventstream@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher-openapi@5.0.0)(@ahoo-wang/fetcher-wow@5.1.2(@ahoo-wang/fetcher-decorator@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher-eventstream@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher@5.1.2)
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.11.0(supports-color@7.2.0))
@@ -72,16 +72,16 @@ importers:
 
 packages:
 
-  '@ahoo-wang/fetcher-cosec@5.0.1':
-    resolution: {integrity: sha512-1jTh4Ls35213xoXJSO7gewazUCxkIm3PQV7Oa6uPdPldUMyC2cijeVqFgHaht6Kvqv15mJb1k+MX6pKTtILS8A==}
+  '@ahoo-wang/fetcher-cosec@5.1.2':
+    resolution: {integrity: sha512-o+/o22zysLLKPhJmCrfSigXMY6ChsKSwFZTEkG9dlLykTl7Jw0jvsEB19cGcMkSNNxutxLoGu0bQ05DKGxKO6w==}
     engines: {node: '>=18.20.8'}
     peerDependencies:
       '@ahoo-wang/fetcher': ^5.0.0
       '@ahoo-wang/fetcher-eventbus': ^5.0.0
       '@ahoo-wang/fetcher-storage': ^5.0.0
 
-  '@ahoo-wang/fetcher-decorator@5.0.1':
-    resolution: {integrity: sha512-4WvM+k3wzOkDW0joElHVgjWTgz1K64eR03wMbO7kfwXJF+Otfuvzf9nW9YcATGH3kqza1l/ISmcJvTdD7Q98vw==}
+  '@ahoo-wang/fetcher-decorator@5.1.2':
+    resolution: {integrity: sha512-MDRZ+j9mAOjbai4UwXj2vgcEL7tAtQFeB4jY83IXAb0/NxkmDEzbfEtGI586LLr0nM6fxLd7CSfUwh/8RPJQew==}
     engines: {node: '>=18.20.8'}
     peerDependencies:
       '@ahoo-wang/fetcher': ^5.0.0
@@ -92,14 +92,14 @@ packages:
     peerDependencies:
       '@ahoo-wang/fetcher': ^5.0.0
 
-  '@ahoo-wang/fetcher-eventstream@5.0.1':
-    resolution: {integrity: sha512-QwNojgLbGHcJFhwwVjAWOT7tTrbxgfT6KQWUmrj2TGA3vvuo1OisC52orz9EcA6SBHIQUA12/vciq+VlqK1pfA==}
+  '@ahoo-wang/fetcher-eventstream@5.1.2':
+    resolution: {integrity: sha512-B2JkbZQU+UrvaeIq044RgZ+8WXxHVVKN7woJqPqEDbAf8mnvjTuzmrroZj33RAHjEi3k7PVFxkObxAO/ImW6TA==}
     engines: {node: '>=18.20.8'}
     peerDependencies:
       '@ahoo-wang/fetcher': ^5.0.0
 
-  '@ahoo-wang/fetcher-generator@5.0.1':
-    resolution: {integrity: sha512-SghhdpJPelZPyJo/txDkhXwQyJD0YoyvGlCJDYU5T+Q1sE40HyHPOqOikPpu47Hvu2jMv3+KqUmMGA6S86SFOw==}
+  '@ahoo-wang/fetcher-generator@5.1.2':
+    resolution: {integrity: sha512-FCMBNJx7Keq69IqP8Dc1Nt3Y+CyTFNWkqHwy4bAqOg9MwNQAx1IsZPShHu3TphLBP7xQ8P8eDqLG+O6YO8jr2g==}
     engines: {node: '>=18.20.8'}
     hasBin: true
     peerDependencies:
@@ -119,16 +119,16 @@ packages:
     peerDependencies:
       '@ahoo-wang/fetcher-eventbus': ^5.0.0
 
-  '@ahoo-wang/fetcher-wow@5.0.1':
-    resolution: {integrity: sha512-NaLsCSWp4sDrrTIm7uW0NP/Un0Hg7i5sq2Tv0O0QmvalTWFQIzvetpQ1bwUCaf+SQg43c+XzNn0NntQwR4qcdA==}
+  '@ahoo-wang/fetcher-wow@5.1.2':
+    resolution: {integrity: sha512-NZ397gzZdmDdF0N0llBfMddCGVYZpbWLCb7ThpeoTS1PRyYLT9fB/WJzW9IVNpn6WTL4szmT5emHL8JkC+z9fQ==}
     engines: {node: '>=18.20.8'}
     peerDependencies:
       '@ahoo-wang/fetcher': ^5.0.0
       '@ahoo-wang/fetcher-decorator': ^5.0.0
       '@ahoo-wang/fetcher-eventstream': ^5.0.0
 
-  '@ahoo-wang/fetcher@5.0.1':
-    resolution: {integrity: sha512-gJfoabO5UCrYrn5Hfz8o3CLTEFbGWNAOV+Bj4o3J+LfWA+SFwucJvfzdWJfry9ed+7NMtYfERHFYH4y/NXjqrQ==}
+  '@ahoo-wang/fetcher@5.1.2':
+    resolution: {integrity: sha512-s7/+NnZIEjXhABkAw22Y74XjBkEoTbIUdx74vlG5eNGgd5NtDeqoPFG2H8UYVxIOfS8Z11syuoS0eSqBDZj9TA==}
     engines: {node: '>=18.20.8'}
 
   '@babel/helper-string-parser@7.27.1':
@@ -1630,50 +1630,50 @@ packages:
 
 snapshots:
 
-  '@ahoo-wang/fetcher-cosec@5.0.1(@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher-storage@5.0.0(@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.0.1)))(@ahoo-wang/fetcher@5.0.1)':
+  '@ahoo-wang/fetcher-cosec@5.1.2(@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher-storage@5.0.0(@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.1.2)))(@ahoo-wang/fetcher@5.1.2)':
     dependencies:
-      '@ahoo-wang/fetcher': 5.0.1
-      '@ahoo-wang/fetcher-eventbus': 5.0.0(@ahoo-wang/fetcher@5.0.1)
-      '@ahoo-wang/fetcher-storage': 5.0.0(@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.0.1))
+      '@ahoo-wang/fetcher': 5.1.2
+      '@ahoo-wang/fetcher-eventbus': 5.0.0(@ahoo-wang/fetcher@5.1.2)
+      '@ahoo-wang/fetcher-storage': 5.0.0(@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.1.2))
       nanoid: 5.1.16
 
-  '@ahoo-wang/fetcher-decorator@5.0.1(@ahoo-wang/fetcher@5.0.1)':
+  '@ahoo-wang/fetcher-decorator@5.1.2(@ahoo-wang/fetcher@5.1.2)':
     dependencies:
-      '@ahoo-wang/fetcher': 5.0.1
+      '@ahoo-wang/fetcher': 5.1.2
       reflect-metadata: 0.2.2
 
-  '@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.0.1)':
+  '@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.1.2)':
     dependencies:
-      '@ahoo-wang/fetcher': 5.0.1
+      '@ahoo-wang/fetcher': 5.1.2
 
-  '@ahoo-wang/fetcher-eventstream@5.0.1(@ahoo-wang/fetcher@5.0.1)':
+  '@ahoo-wang/fetcher-eventstream@5.1.2(@ahoo-wang/fetcher@5.1.2)':
     dependencies:
-      '@ahoo-wang/fetcher': 5.0.1
+      '@ahoo-wang/fetcher': 5.1.2
 
-  '@ahoo-wang/fetcher-generator@5.0.1(@ahoo-wang/fetcher-decorator@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher-eventstream@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher-openapi@5.0.0)(@ahoo-wang/fetcher-wow@5.0.1(@ahoo-wang/fetcher-decorator@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher-eventstream@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher@5.0.1)':
+  '@ahoo-wang/fetcher-generator@5.1.2(@ahoo-wang/fetcher-decorator@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher-eventstream@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher-openapi@5.0.0)(@ahoo-wang/fetcher-wow@5.1.2(@ahoo-wang/fetcher-decorator@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher-eventstream@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher@5.1.2)':
     dependencies:
-      '@ahoo-wang/fetcher': 5.0.1
-      '@ahoo-wang/fetcher-decorator': 5.0.1(@ahoo-wang/fetcher@5.0.1)
-      '@ahoo-wang/fetcher-eventstream': 5.0.1(@ahoo-wang/fetcher@5.0.1)
+      '@ahoo-wang/fetcher': 5.1.2
+      '@ahoo-wang/fetcher-decorator': 5.1.2(@ahoo-wang/fetcher@5.1.2)
+      '@ahoo-wang/fetcher-eventstream': 5.1.2(@ahoo-wang/fetcher@5.1.2)
       '@ahoo-wang/fetcher-openapi': 5.0.0
-      '@ahoo-wang/fetcher-wow': 5.0.1(@ahoo-wang/fetcher-decorator@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher-eventstream@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher@5.0.1)
+      '@ahoo-wang/fetcher-wow': 5.1.2(@ahoo-wang/fetcher-decorator@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher-eventstream@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher@5.1.2)
       commander: 14.0.3
       ts-morph: 28.0.0
       yaml: 2.9.1
 
   '@ahoo-wang/fetcher-openapi@5.0.0': {}
 
-  '@ahoo-wang/fetcher-storage@5.0.0(@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.0.1))':
+  '@ahoo-wang/fetcher-storage@5.0.0(@ahoo-wang/fetcher-eventbus@5.0.0(@ahoo-wang/fetcher@5.1.2))':
     dependencies:
-      '@ahoo-wang/fetcher-eventbus': 5.0.0(@ahoo-wang/fetcher@5.0.1)
+      '@ahoo-wang/fetcher-eventbus': 5.0.0(@ahoo-wang/fetcher@5.1.2)
 
-  '@ahoo-wang/fetcher-wow@5.0.1(@ahoo-wang/fetcher-decorator@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher-eventstream@5.0.1(@ahoo-wang/fetcher@5.0.1))(@ahoo-wang/fetcher@5.0.1)':
+  '@ahoo-wang/fetcher-wow@5.1.2(@ahoo-wang/fetcher-decorator@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher-eventstream@5.1.2(@ahoo-wang/fetcher@5.1.2))(@ahoo-wang/fetcher@5.1.2)':
     dependencies:
-      '@ahoo-wang/fetcher': 5.0.1
-      '@ahoo-wang/fetcher-decorator': 5.0.1(@ahoo-wang/fetcher@5.0.1)
-      '@ahoo-wang/fetcher-eventstream': 5.0.1(@ahoo-wang/fetcher@5.0.1)
+      '@ahoo-wang/fetcher': 5.1.2
+      '@ahoo-wang/fetcher-decorator': 5.1.2(@ahoo-wang/fetcher@5.1.2)
+      '@ahoo-wang/fetcher-eventstream': 5.1.2(@ahoo-wang/fetcher@5.1.2)
 
-  '@ahoo-wang/fetcher@5.0.1': {}
+  '@ahoo-wang/fetcher@5.1.2': {}
 
   '@babel/helper-string-parser@7.27.1': {}
 
