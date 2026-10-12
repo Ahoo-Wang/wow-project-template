@@ -1,0 +1,17 @@
+{
+  "version": 1,
+  "files": {
+    "demo/boundedContext.ts": "54311728e292bb14bc557996acc89bf3624acd5a4f98d64e320d76fd86b4553d",
+    "demo/demo/commandClient.ts": "f274948474369e8fd4e4f547f280d1f8e32c50a56521f81e5c0ece185565a56b",
+    "demo/demo/index.ts": "bd180919586fd2d243b06ff644f6f51ed8919242c58f155e284a2833be3229c6",
+    "demo/demo/queryClient.ts": "24ecebc5bb0845f2c5197ba3b9d6fc1393e52705f719427890f5d37c8064c4ea",
+    "demo/demo/types.ts": "b3b0f94af118b74d8e2c54e09161f508fa6782f81c2939d78b9cd4541f1d0282",
+    "demo/index.ts": "787969f64c3ff2a6ea6031085c177b278d31a6d23e759b69da6df9e54094c75c",
+    "demo/review/commandClient.ts": "8235958e58a3cafc9f7ce29d7c7e9ace0bdabbaf90a58d136ef25f6cbd0ab29d",
+    "demo/review/index.ts": "bd180919586fd2d243b06ff644f6f51ed8919242c58f155e284a2833be3229c6",
+    "demo/review/queryClient.ts": "7c6a4d7b317da90ddc280658d39f73284a19758894899deae1fd4a611444c60e",
+    "demo/review/types.ts": "f13c2bfd715a10a78114fe733d4f7546d95eb67aef93f53f690e2a7eb9a87167",
+    "demo/types.ts": "80eacec4c0242ddb2c49e03150d50412600f376cabcad5e0a3dd3d711ab216ee",
+    "index.ts": "cd8845af7b73b959e729257d65b2df7eac04fb81e8fb4e9115841afbd8dc2d86"
+  }
+}

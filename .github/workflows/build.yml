@@ -61,14 +61,38 @@ jobs:
         run: |
           ./gradlew server:installDist --stacktrace
           cd server/build/install/server
-          bin/server > smoke.log 2>&1 &
+          nohup bin/server > smoke.log 2>&1 &
           for i in $(seq 1 60); do
             if curl -fs http://localhost:8080/actuator/health | grep -q '"UP"'; then
-              echo "server is healthy"; kill %1; exit 0
+              echo "server is healthy"; exit 0
             fi
             sleep 1
           done
           cat smoke.log; exit 1
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: '24.21.0'
+
+      - name: Client contract drift check
+        # 用当前服务端的 OpenAPI 重新生成 TS client，与提交的生成代码比对，防止前后端契约漂移。
+        working-directory: client
+        run: |
+          corepack enable && corepack prepare pnpm@9 --activate
+          pnpm install --frozen-lockfile
+          pnpm generate
+          pnpm exec eslint src/generated --fix
+          # porcelain 同时覆盖修改与新增（未跟踪）文件
+          if [ -n "$(git status --porcelain -- src/generated)" ]; then
+            git status --porcelain -- src/generated
+            echo "::error::client/src/generated is out of date. Run the server, then 'pnpm generate && pnpm lint' in client/ and commit."
+            exit 1
+          fi
+
+      - name: Stop server
+        if: always()
+        run: pkill -f me.ahoo.wow.template.server.ServerKt || true
 
   client:
     name: Client Build
@@ -101,7 +125,7 @@ jobs:
             ${{ runner.os }}-pnpm-
 
       - name: Install dependencies
-        run: pnpm install --no-frozen-lockfile
+        run: pnpm install --frozen-lockfile
 
       - name: Lint (read-only, no --fix)
         run: pnpm exec eslint .
