@@ -13,11 +13,11 @@ import me.ahoo.wow.api.annotation.Summary
     action = "",
 )
 data class CreateDemo(
-    @get:NotBlank
+    @field:NotBlank
     override val data: String
 ) : IDemoInfo
 
 @Event
 data class DemoCreated(
-    override val data: String
-) : IDemoInfo
+    val data: String
+)

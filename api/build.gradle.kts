@@ -4,14 +4,10 @@ plugins {
 dependencies {
     api(platform(project(":dependencies")))
     ksp(platform(project(":dependencies")))
-    api(libs.swagger.annotations)
+    // 发布语言只依赖注解与契约类型，避免把基础设施传递给消费方。
     api("me.ahoo.wow:wow-api")
-    api("me.ahoo.wow:wow-apiclient")
-    api("com.fasterxml.jackson.core:jackson-annotations")
     api("jakarta.validation:jakarta.validation-api")
-    api("me.ahoo.coapi:coapi-api")
-    api("me.ahoo.wow:wow-cocache")
-    api("io.projectreactor:reactor-core")
-    implementation("org.springframework:spring-web")
+    api("com.fasterxml.jackson.core:jackson-annotations")
+    api(libs.swagger.annotations)
     ksp("me.ahoo.wow:wow-compiler")
 }

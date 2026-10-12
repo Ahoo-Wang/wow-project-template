@@ -46,6 +46,7 @@ dependencies {
     ksp("me.ahoo.wow:wow-compiler")
     implementation("io.netty:netty-all")
     implementation(project(":domain"))
+    implementation("io.github.oshai:kotlin-logging-jvm")
 //    implementation("me.ahoo.wow:wow-kafka")
 //    implementation("me.ahoo.wow:wow-mongo")
 //    implementation("me.ahoo.wow:wow-elasticsearch")
