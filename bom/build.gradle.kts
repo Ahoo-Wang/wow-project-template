@@ -10,13 +10,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-@Suppress("UNCHECKED_CAST")
-val libraryProjects = rootProject.ext.get("libraryProjects") as Iterable<Project>
+
+plugins {
+    id("wow.platform-conventions")
+}
 
 dependencies {
     constraints {
-        libraryProjects.forEach {
-            api(it)
-        }
+        api(project(":api"))
+        api(project(":api-client"))
+        api(project(":domain"))
     }
 }

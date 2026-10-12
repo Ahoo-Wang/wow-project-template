@@ -1,66 +1,11 @@
 /**
- * - key: demo.ApiVersion
+ * - key: demo.JsonNode
  * - schema: 
  * ```json
- * {
- *   "type": "string",
- *   "enum": [
- *     "V2",
- *     "V3"
- *   ]
- * }
+ * {}
  * ```
  */
-export enum ApiVersion {
-    V2 = `V2`,
-    V3 = `V3`
-}
-
-/**
- * - key: demo.Link
- * - schema: 
- * ```json
- * {
- *   "type": "object",
- *   "properties": {
- *     "href": {
- *       "type": "string"
- *     },
- *     "templated": {
- *       "type": "boolean"
- *     }
- *   }
- * }
- * ```
- */
-export interface Link {
-    href: string;
-    templated: boolean;
-}
-
-/**
- * - key: demo.SecurityContext
- * - schema: 
- * ```json
- * {
- *   "type": "object"
- * }
- * ```
- */
-export type SecurityContext = Record<string, any>;
-/**
- * - key: demo.StringLinkMap
- * - schema: 
- * ```json
- * {
- *   "type": "object",
- *   "additionalProperties": {
- *     "$ref": "#/components/schemas/demo.Link"
- *   }
- * }
- * ```
- */
-export type StringLinkMap = Record<string, Link>;
+export type JsonNode = any;
 /**
  * - key: demo.StringObjectMap
  * - schema: 
@@ -70,7 +15,7 @@ export type StringLinkMap = Record<string, Link>;
  * }
  * ```
  */
-export type StringObjectMap = Record<string, any>;
+export type StringObjectMap = globalThis.Record<string, any>;
 /**
  * - key: demo.StringStringListMap
  * - schema: 
@@ -86,22 +31,32 @@ export type StringObjectMap = Record<string, any>;
  * }
  * ```
  */
-export type StringStringListMap = Record<string, string[]>;
+export type StringStringListMap = globalThis.Record<string, string[]>;
 
 /**
- * - key: demo.WebServerNamespace
+ * - key: demo.TimeUnit
  * - schema: 
  * ```json
  * {
- *   "type": "object",
- *   "properties": {
- *     "value": {
- *       "type": "string"
- *     }
- *   }
+ *   "type": "string",
+ *   "enum": [
+ *     "NANOSECONDS",
+ *     "MICROSECONDS",
+ *     "MILLISECONDS",
+ *     "SECONDS",
+ *     "MINUTES",
+ *     "HOURS",
+ *     "DAYS"
+ *   ]
  * }
  * ```
  */
-export interface WebServerNamespace {
-    value: string;
+export enum TimeUnit {
+    NANOSECONDS = 'NANOSECONDS',
+    MICROSECONDS = 'MICROSECONDS',
+    MILLISECONDS = 'MILLISECONDS',
+    SECONDS = 'SECONDS',
+    MINUTES = 'MINUTES',
+    HOURS = 'HOURS',
+    DAYS = 'DAYS'
 }

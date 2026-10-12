@@ -12,15 +12,10 @@
  */
 
 plugins {
-    alias(libs.plugins.ksp)
-    application
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.kotlin.spring)
-    kotlin("kapt")
+    id("wow.application-conventions")
 }
 
 tasks.jar.configure {
-    exclude("application.yaml", "bootstrap.yaml")
     manifest {
         attributes(
             "Implementation-Title" to application.applicationName,
@@ -33,25 +28,20 @@ application {
     applicationDefaultJvmArgs = listOf(
         "-Xlog:gc*:file=logs/$applicationName-gc.log:time,tags:filecount=10,filesize=32M",
         "-XX:+HeapDumpOnOutOfMemoryError",
-        "-XX:HeapDumpPath=data",
-        "-Dcom.sun.management.jmxremote",
-        "-Dcom.sun.management.jmxremote.authenticate=false",
-        "-Dcom.sun.management.jmxremote.ssl=false",
-        "-Dcom.sun.management.jmxremote.port=5555",
-        "-Dspring.cloud.bootstrap.enabled=true",
-        "-Dspring.cloud.bootstrap.location=config/bootstrap.yaml",
-        "-Dspring.config.location=file:./config/",
+        "-XX:HeapDumpPath=logs",
+        // jar 内 application.yaml 为基线配置，发布包 config/ 目录用于环境覆盖。
+        "-Dspring.config.additional-location=optional:file:./config/",
     )
 }
 
+tasks.named<JavaExec>("run") {
+    // 上述 JVM 参数面向发行版目录结构（logs/、config/），本地 `server:run` 不使用。
+    jvmArgs = emptyList()
+}
+
 dependencies {
-    implementation(platform(project(":dependencies")))
-    testImplementation(platform(libs.junit.bom))
-    ksp(platform(project(":dependencies")))
-    kapt(platform(project(":dependencies")))
-    ksp("me.ahoo.wow:wow-compiler")
-    implementation("io.netty:netty-all")
     implementation(project(":domain"))
+    implementation("io.github.oshai:kotlin-logging-jvm")
 //    implementation("me.ahoo.wow:wow-kafka")
 //    implementation("me.ahoo.wow:wow-mongo")
 //    implementation("me.ahoo.wow:wow-elasticsearch")
@@ -61,7 +51,7 @@ dependencies {
     implementation("me.ahoo.wow:wow-spring-boot-starter")
 //    implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
     implementation("me.ahoo.coapi:coapi-spring-boot-starter")
-    api("io.projectreactor.kotlin:reactor-kotlin-extensions")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui")
 //    implementation("me.ahoo.cosid:cosid-mongo")
 //    implementation("me.ahoo.cosid:cosid-spring-redis")
@@ -78,13 +68,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    kapt("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("me.ahoo.wow:wow-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }

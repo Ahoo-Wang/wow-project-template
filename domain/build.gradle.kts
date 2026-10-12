@@ -1,23 +1,20 @@
 plugins {
-    alias(libs.plugins.ksp)
-    alias(libs.plugins.kotlin.spring)
+    id("wow.library-conventions")
+    id("wow.wow-compiler-conventions")
 }
+
 dependencies {
-    api(platform(project(":dependencies")))
-    ksp(platform(project(":dependencies")))
     api(project(":api"))
-    api("me.ahoo.wow:wow-spring")
-    api("io.github.oshai:kotlin-logging-jvm")
-    ksp("me.ahoo.wow:wow-compiler")
+    // 领域层只依赖 Wow 核心模型，不依赖 Spring 宿主；Saga/Projection 由 server 端的 wow-spring 自动注册。
+    api("me.ahoo.wow:wow-core")
     testImplementation("me.ahoo.wow:wow-test")
 }
 
-tasks.jacocoTestCoverageVerification {
-    dependsOn(tasks.test, tasks.jacocoTestReport)
-    violationRules {
-        rule {
-            limit {
-                minimum = 0.8.toBigDecimal()
+kover {
+    reports {
+        verify {
+            rule {
+                minBound(80)
             }
         }
     }

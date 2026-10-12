@@ -11,6 +11,10 @@
  * limitations under the License.
  */
 
+plugins {
+    id("wow.platform-conventions")
+}
+
 dependencies {
     api(platform(libs.spring.boot.dependencies))
     api(platform(libs.cosid.bom))

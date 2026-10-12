@@ -28,51 +28,6 @@ export interface CreateDemo {
 }
 
 /**
- * - key: demo.demo.DemoAggregatedFields
- * - schema: 
- * ```json
- * {
- *   "type": "string",
- *   "enum": [
- *     "",
- *     "aggregateId",
- *     "tenantId",
- *     "ownerId",
- *     "spaceId",
- *     "version",
- *     "eventId",
- *     "firstOperator",
- *     "operator",
- *     "firstEventTime",
- *     "eventTime",
- *     "tags",
- *     "deleted",
- *     "state",
- *     "state.data",
- *     "state.id"
- *   ]
- * }
- * ```
- */
-export enum DemoAggregatedFields {
-    AGGREGATE_ID = `aggregateId`,
-    TENANT_ID = `tenantId`,
-    OWNER_ID = `ownerId`,
-    SPACE_ID = `spaceId`,
-    VERSION = `version`,
-    EVENT_ID = `eventId`,
-    FIRST_OPERATOR = `firstOperator`,
-    OPERATOR = `operator`,
-    FIRST_EVENT_TIME = `firstEventTime`,
-    EVENT_TIME = `eventTime`,
-    TAGS = `tags`,
-    DELETED = `deleted`,
-    STATE = `state`,
-    STATE_DATA = `state.data`,
-    STATE_ID = `state.id`
-}
-
-/**
  * demo_created
  * - key: demo.demo.DemoCreated
  * - schema: 
@@ -81,8 +36,7 @@ export enum DemoAggregatedFields {
  *   "type": "object",
  *   "properties": {
  *     "data": {
- *       "type": "string",
- *       "minLength": 1
+ *       "type": "string"
  *     }
  *   },
  *   "required": [
@@ -93,11 +47,58 @@ export enum DemoAggregatedFields {
  * ```
  */
 export interface DemoCreated {
-    /**
-     * - String Constraints
-     *   - minLength: 1
-     */
     data: string;
+}
+
+/**
+ * demo_published
+ * - key: demo.demo.DemoPublished
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object",
+ *   "properties": {
+ *     "reviewId": {
+ *       "type": "string"
+ *     }
+ *   },
+ *   "required": [
+ *     "reviewId"
+ *   ],
+ *   "title": "demo_published"
+ * }
+ * ```
+ */
+export interface DemoPublished {
+    reviewId: string;
+}
+
+/**
+ * demo_rejected
+ * - key: demo.demo.DemoRejected
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object",
+ *   "properties": {
+ *     "reason": {
+ *       "type": "string"
+ *     },
+ *     "reviewId": {
+ *       "type": "string"
+ *     }
+ *   },
+ *   "required": [
+ *     "reason",
+ *     "reviewId"
+ *   ],
+ *   "title": "demo_rejected"
+ * }
+ * ```
+ */
+export interface DemoRejected {
+    reason: string;
+    reviewId: string;
 }
 
 /**
@@ -113,6 +114,9 @@ export interface DemoCreated {
  *     },
  *     "id": {
  *       "type": "string"
+ *     },
+ *     "status": {
+ *       "$ref": "#/components/schemas/demo.demo.DemoStatus"
  *     }
  *   },
  *   "required": [
@@ -128,6 +132,63 @@ export interface DemoState {
      */
     data: string;
     id: string;
+    status: DemoStatus;
+}
+
+/**
+ * - key: demo.demo.DemoStateCursorPage
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "object",
+ *   "properties": {
+ *     "list": {
+ *       "type": "array",
+ *       "items": {
+ *         "$ref": "#/components/schemas/demo.demo.DemoState"
+ *       }
+ *     },
+ *     "nextCursor": {
+ *       "anyOf": [
+ *         {
+ *           "type": "null"
+ *         },
+ *         {
+ *           "type": "string"
+ *         }
+ *       ]
+ *     }
+ *   },
+ *   "required": [
+ *     "list",
+ *     "nextCursor"
+ *   ]
+ * }
+ * ```
+ */
+export interface DemoStateCursorPage {
+    list: DemoState[];
+    nextCursor: (null | string);
+}
+
+/**
+ * - key: demo.demo.DemoStatus
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "string",
+ *   "enum": [
+ *     "REVIEWING",
+ *     "PUBLISHED",
+ *     "REJECTED"
+ *   ]
+ * }
+ * ```
+ */
+export enum DemoStatus {
+    REVIEWING = 'REVIEWING',
+    PUBLISHED = 'PUBLISHED',
+    REJECTED = 'REJECTED'
 }
 
 /**
@@ -139,8 +200,7 @@ export interface DemoState {
  *   "type": "object",
  *   "properties": {
  *     "data": {
- *       "type": "string",
- *       "minLength": 1
+ *       "type": "string"
  *     }
  *   },
  *   "required": [
@@ -151,10 +211,6 @@ export interface DemoState {
  * ```
  */
 export interface DemoUpdated {
-    /**
-     * - String Constraints
-     *   - minLength: 1
-     */
     data: string;
 }
 
@@ -185,4 +241,56 @@ export interface UpdateDemo {
      *   - minLength: 1
      */
     data: string;
+}
+
+/**
+ * - key: demo.demo.DemoAggregatedFields
+ * - schema: 
+ * ```json
+ * {
+ *   "type": "string",
+ *   "enum": [
+ *     "aggregateId",
+ *     "aggregateName",
+ *     "contextName",
+ *     "deleted",
+ *     "eventId",
+ *     "eventTime",
+ *     "firstEventTime",
+ *     "firstOperator",
+ *     "operator",
+ *     "ownerId",
+ *     "snapshotTime",
+ *     "spaceId",
+ *     "state",
+ *     "state.data",
+ *     "state.id",
+ *     "state.status",
+ *     "tags",
+ *     "tenantId",
+ *     "version"
+ *   ]
+ * }
+ * ```
+ */
+export enum DemoAggregatedFields {
+    AGGREGATE_ID = 'aggregateId',
+    AGGREGATE_NAME = 'aggregateName',
+    CONTEXT_NAME = 'contextName',
+    DELETED = 'deleted',
+    EVENT_ID = 'eventId',
+    EVENT_TIME = 'eventTime',
+    FIRST_EVENT_TIME = 'firstEventTime',
+    FIRST_OPERATOR = 'firstOperator',
+    OPERATOR = 'operator',
+    OWNER_ID = 'ownerId',
+    SNAPSHOT_TIME = 'snapshotTime',
+    SPACE_ID = 'spaceId',
+    STATE = 'state',
+    STATE_DATA = 'state.data',
+    STATE_ID = 'state.id',
+    STATE_STATUS = 'state.status',
+    TAGS = 'tags',
+    TENANT_ID = 'tenantId',
+    VERSION = 'version'
 }

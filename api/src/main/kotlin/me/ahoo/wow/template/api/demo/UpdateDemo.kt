@@ -1,6 +1,8 @@
 package me.ahoo.wow.template.api.demo
 
+import jakarta.validation.constraints.NotBlank
 import me.ahoo.wow.api.annotation.CommandRoute
+import me.ahoo.wow.api.annotation.Event
 import me.ahoo.wow.api.annotation.Summary
 
 @Summary("更新Demo")
@@ -9,7 +11,11 @@ import me.ahoo.wow.api.annotation.Summary
     action = "",
 )
 data class UpdateDemo(
+    @field:NotBlank
     override val data: String
 ) : IDemoInfo
 
-data class DemoUpdated(override val data: String) : IDemoInfo
+@Event
+data class DemoUpdated(
+    val data: String
+)
