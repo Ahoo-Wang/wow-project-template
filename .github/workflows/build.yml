@@ -40,15 +40,22 @@ jobs:
           path: |
             ~/.gradle/caches
             ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', 'build-logic/src/**', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}
           restore-keys: |
             ${{ runner.os }}-gradle-
 
-      - name: Build (compile + test + detekt)
-        run: ./gradlew build --stacktrace
+      - name: Build (compile + test + detekt + coverage verification)
+        run: ./gradlew build :code-coverage-report:koverXmlReport --stacktrace
 
-      - name: Coverage verification (domain ≥ 80%)
-        run: ./gradlew :domain:jacocoTestCoverageVerification --stacktrace
+      - name: Upload coverage to Codecov
+        # fork 的 PR 拿不到 CODECOV_TOKEN，跳过上报而不是让构建失败。
+        if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+        uses: codecov/codecov-action@v7
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          flags: unittests
+          fail_ci_if_error: true
+          files: ./code-coverage-report/build/reports/kover/report.xml
 
       - name: Smoke test (distribution boots and is healthy)
         run: |

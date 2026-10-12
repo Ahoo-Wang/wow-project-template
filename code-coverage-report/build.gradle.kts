@@ -12,29 +12,11 @@
  */
 
 plugins {
-    base
-    id("jacoco-report-aggregation")
-    alias(libs.plugins.kover)
+    id("wow.coverage-report-conventions")
 }
-
-@Suppress("UNCHECKED_CAST")
-val libraryProjects = rootProject.ext.get("libraryProjects") as Iterable<Project>
 
 dependencies {
-    libraryProjects.forEach {
-        jacocoAggregation(it)
-        kover(it)
-    }
-}
-
-reporting {
-    reports {
-        val codeCoverageReport by creating(JacocoCoverageReport::class) {
-            testSuiteName = "test"
-        }
-    }
-}
-
-tasks.check {
-    dependsOn(tasks.named<JacocoReport>("codeCoverageReport"))
+    kover(project(":api"))
+    kover(project(":api-client"))
+    kover(project(":domain"))
 }

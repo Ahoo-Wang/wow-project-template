@@ -22,11 +22,6 @@
       "matchPackageNames": ["/^org\\.jetbrains\\.kotlin/", "/^com\\.google\\.devtools\\.ksp/"]
     },
     {
-      "description": "Pin Kotlin until KSP releases a matching 2.4.0-x version",
-      "matchPackageNames": ["org.jetbrains.kotlin.jvm", "org.jetbrains.kotlin.plugin.spring"],
-      "allowedVersions": "< 2.4.0"
-    },
-    {
       "description": "Pin typescript until typescript-eslint supports TS 7 (typescript-eslint/typescript-eslint#10940)",
       "matchPackageNames": ["typescript"],
       "allowedVersions": "< 7.0.0"

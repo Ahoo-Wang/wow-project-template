@@ -1,5 +1,8 @@
+plugins {
+    id("wow.library-conventions")
+}
+
 dependencies {
-    api(platform(project(":dependencies")))
     api(project(":api"))
     api("me.ahoo.wow:wow-apiclient")
     api("me.ahoo.coapi:coapi-api")

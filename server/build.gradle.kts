@@ -12,11 +12,7 @@
  */
 
 plugins {
-    alias(libs.plugins.ksp)
-    application
-    alias(libs.plugins.kotlin)
-    alias(libs.plugins.kotlin.spring)
-    kotlin("kapt")
+    id("wow.application-conventions")
 }
 
 tasks.jar.configure {
@@ -39,12 +35,6 @@ application {
 }
 
 dependencies {
-    implementation(platform(project(":dependencies")))
-    testImplementation(platform(libs.junit.bom))
-    ksp(platform(project(":dependencies")))
-    kapt(platform(project(":dependencies")))
-    ksp("me.ahoo.wow:wow-compiler")
-    implementation("io.netty:netty-all")
     implementation(project(":domain"))
     implementation("io.github.oshai:kotlin-logging-jvm")
 //    implementation("me.ahoo.wow:wow-kafka")
@@ -56,7 +46,7 @@ dependencies {
     implementation("me.ahoo.wow:wow-spring-boot-starter")
 //    implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
     implementation("me.ahoo.coapi:coapi-spring-boot-starter")
-    api("io.projectreactor.kotlin:reactor-kotlin-extensions")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui")
 //    implementation("me.ahoo.cosid:cosid-mongo")
 //    implementation("me.ahoo.cosid:cosid-spring-redis")
@@ -73,13 +63,6 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-actuator")
     implementation("org.springframework.boot:spring-boot-starter-webflux")
-    kapt("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("me.ahoo.wow:wow-test")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
-    testRuntimeOnly("org.junit.platform:junit-platform-launcher")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine")
-}
-
-tasks.withType<Test> {
-    useJUnitPlatform()
 }
