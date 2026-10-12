@@ -34,6 +34,11 @@ application {
     )
 }
 
+tasks.named<JavaExec>("run") {
+    // 上述 JVM 参数面向发行版目录结构（logs/、config/），本地 `server:run` 不使用。
+    jvmArgs = emptyList()
+}
+
 dependencies {
     implementation(project(":domain"))
     implementation("io.github.oshai:kotlin-logging-jvm")

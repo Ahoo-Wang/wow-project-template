@@ -10,12 +10,14 @@
 | 模块                                              | 说明                                                                                                                                                            |
 |-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | [api](./api)                                    | **API 层**，定义聚合命令（Command）、领域事件（Domain Event）以及查询视图模型（Query View Model）。充当各个模块之间通信的“发布语言”，同时提供详细的 API 文档，助力开发者理解和使用接口。                                         |
+| [api-client](./api-client)                      | **服务间调用客户端（可选）**，基于 [CoApi](https://github.com/Ahoo-Wang/CoApi) 的类型安全查询客户端。与 `api` 分离，避免把 HTTP 客户端基础设施传递给只依赖契约的消费方。 |
 | [domain](./domain)                              | **领域层**，包含聚合根和业务约束的实现。聚合根充当领域模型的入口点，负责协调领域对象的操作，确保业务规则的正确执行。业务约束包括领域对象的验证规则、领域事件的处理等。模块内附有详细的领域模型文档，助力团队深入了解业务逻辑。                                             |
 | [server](./server)                              | **宿主服务**，应用程序的启动点。负责整合其他模块，并提供应用程序的入口。涉及配置依赖项、连接数据库、启动 API 服务等任务。此外，server 模块提供了容器化部署的支持，包括 Docker 构建镜像和 Kubernetes 部署文件，简化了部署过程。                             |
 | [client](./client)                              | **客户端库**，使用 [fetcher-generator](https://github.com/Ahoo-Wang/fetcher) 自动生成的 TypeScript 客户端库，提供类型安全的 API 调用接口，方便前端或其他服务与后端交互。支持自动生成命令客户端和查询客户端，包含完整的类型定义和错误处理。 |
 | [code-coverage-report](./code-coverage-report)  | **测试覆盖率**，用于生成详细的测试覆盖率报告，以及验证覆盖率是否符合要求。帮助开发团队了解项目测试的全面性和质量。                                                                                                   |
 | [dependencies](./dependencies)                  | **依赖项管理**，这个模块负责管理项目的依赖关系，确保各个模块能够正确地引用和使用所需的外部库和工具。                                                                                                          |
 | [bom](./bom)                                    | **项目的 BOM（Bill of Materials）**                                                                                                                                |
+| [build-logic](./build-logic)                    | **构建约定插件**，统一各模块的工具链、编译选项、测试、静态检查、覆盖率与发布配置（`wow.*-conventions`）。 |
 | [libs.versions.toml](gradle/libs.versions.toml) | **依赖版本配置文件**，明确了项目中各个库的版本，方便团队协作和保持版本的一致性。                                                                                                                    |
 | [deploy](./deploy)                              | **Kubernetes 部署文件**，提供了在 Kubernetes 上部署应用程序所需的配置文件，简化了部署过程。                                                                                                   |
 | [Dockerfile](server/Dockerfile)                 | **server Docker 构建镜像**，通过 Dockerfile 文件定义了应用程序的容器化构建步骤，方便部署和扩展。                                                                                               |
@@ -49,6 +51,14 @@ git push -u origin master
 ```
 
 ## 启动服务
+
+默认使用内存基础设施，开箱即用。本地开发建议启用 `dev` profile（调试日志、完整 actuator 端点）：
+
+```shell
+./gradlew server:run --args='--spring.profiles.active=dev'
+```
+
+> 发行版（`server:installDist`）以 jar 内 `application.yaml` 为基线，`config/application.yaml` 用于环境覆盖。
 
 <p align="center" style="text-align:center">
   <img src="./document/assets/run-server.png" alt="启动服务"/>
@@ -95,10 +105,10 @@ git push -u origin master
 ## 验证测试覆盖率
 
 ```shell
-./gradlew domain:jacocoTestCoverageVerification
+./gradlew domain:koverVerify
 ```
 
-> 查看测试覆盖率报告：`domain/build/reports/jacoco/test/html/index.html`
+> 覆盖率门禁（domain ≥ 80%）已接入 `check`，`./gradlew build` 时自动执行。查看报告：`./gradlew domain:koverHtmlReport` 后打开 `domain/build/reports/kover/html/index.html`
 
 <p align="center" style="text-align:center">
   <img src="./document/assets/TestCoverage.png" alt="Wow-CI-Flow"/>
@@ -125,7 +135,7 @@ git push -u origin master
 > 测试覆盖率验证(Check CodeCoverage)
 
 ```shell
-./gradlew domain:jacocoTestCoverageVerification
+./gradlew domain:koverVerify
 ```
 ### 构建阶段
 
@@ -200,8 +210,8 @@ stages:
             step: "JaCoCo"
             with:
               jdkVersion: "17"
-              run: ./gradlew domain:jacocoTestCoverageVerification
-              reportDir: "domain/build/reports/jacoco/test/html"
+              run: ./gradlew domain:koverVerify domain:koverHtmlReport
+              reportDir: "domain/build/reports/kover/html"
   build:
     name: "构建"
     jobs:
