@@ -50,6 +50,19 @@ jobs:
       - name: Coverage verification (domain ≥ 80%)
         run: ./gradlew :domain:jacocoTestCoverageVerification --stacktrace
 
+      - name: Smoke test (distribution boots and is healthy)
+        run: |
+          ./gradlew server:installDist --stacktrace
+          cd server/build/install/server
+          bin/server > smoke.log 2>&1 &
+          for i in $(seq 1 60); do
+            if curl -fs http://localhost:8080/actuator/health | grep -q '"UP"'; then
+              echo "server is healthy"; kill %1; exit 0
+            fi
+            sleep 1
+          done
+          cat smoke.log; exit 1
+
   client:
     name: Client Build
     runs-on: ubuntu-latest

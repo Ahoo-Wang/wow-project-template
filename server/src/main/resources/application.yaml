@@ -1,7 +1,8 @@
+# 基线配置（随 jar 发布）。环境差异通过发布包 config/application.yaml 或环境变量覆盖。
 management:
   endpoint:
     health:
-      show-details: always
+      show-details: when_authorized
       probes:
         enabled: true
   endpoints:
@@ -9,17 +10,10 @@ management:
       exposure:
         include:
           - health
-          - cosid
-          - cosidGenerator
-          - cosidStringGenerator
-          - cocache
-          - cocacheClient
-          - threaddump
-springdoc:
-  show-actuator: true
-
+          - info
 spring:
   application:
+    # 运行时服务名的唯一来源；需与 DemoService.SERVICE_NAME 保持一致（CoApi 服务发现依赖该名称）。
     name: demo-service
   jackson:
     mapper:
@@ -28,9 +22,6 @@ spring:
       datetime:
         write-durations-as-timestamps: true
         write-dates-as-timestamps: true
-logging:
-  level:
-    me.ahoo.wow: debug
 cosid:
   machine:
     enabled: true
@@ -57,3 +48,22 @@ wow:
     state:
       bus:
         type: in_memory
+---
+# 本地开发：--spring.profiles.active=dev
+spring:
+  config:
+    activate:
+      on-profile: dev
+management:
+  endpoint:
+    health:
+      show-details: always
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+springdoc:
+  show-actuator: true
+logging:
+  level:
+    me.ahoo.wow: debug

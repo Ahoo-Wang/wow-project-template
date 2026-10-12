@@ -20,7 +20,6 @@ plugins {
 }
 
 tasks.jar.configure {
-    exclude("application.yaml", "bootstrap.yaml")
     manifest {
         attributes(
             "Implementation-Title" to application.applicationName,
@@ -33,14 +32,9 @@ application {
     applicationDefaultJvmArgs = listOf(
         "-Xlog:gc*:file=logs/$applicationName-gc.log:time,tags:filecount=10,filesize=32M",
         "-XX:+HeapDumpOnOutOfMemoryError",
-        "-XX:HeapDumpPath=data",
-        "-Dcom.sun.management.jmxremote",
-        "-Dcom.sun.management.jmxremote.authenticate=false",
-        "-Dcom.sun.management.jmxremote.ssl=false",
-        "-Dcom.sun.management.jmxremote.port=5555",
-        "-Dspring.cloud.bootstrap.enabled=true",
-        "-Dspring.cloud.bootstrap.location=config/bootstrap.yaml",
-        "-Dspring.config.location=file:./config/",
+        "-XX:HeapDumpPath=logs",
+        // jar 内 application.yaml 为基线配置，发布包 config/ 目录用于环境覆盖。
+        "-Dspring.config.additional-location=optional:file:./config/",
     )
 }
 

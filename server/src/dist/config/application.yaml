@@ -1,0 +1,9 @@
+# 环境覆盖配置：优先级高于 jar 内的基线 application.yaml。
+# 示例：切换到生产存储
+#wow:
+#  command:
+#    bus:
+#      type: kafka
+#  eventsourcing:
+#    store:
+#      storage: mongo
