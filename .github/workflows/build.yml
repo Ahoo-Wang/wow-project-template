@@ -73,7 +73,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v7
         with:
-          node-version: '24.21.0'
+          node-version: '24.22.1'
 
       - name: Client contract drift check
         # 用当前服务端的 OpenAPI 重新生成 TS client，与提交的生成代码比对，防止前后端契约漂移。
@@ -107,7 +107,7 @@ jobs:
       - name: Set up Node
         uses: actions/setup-node@v7
         with:
-          node-version: '24.21.0'
+          node-version: '24.22.1'
 
       - name: Set up pnpm
         run: corepack enable && corepack prepare pnpm@9 --activate
