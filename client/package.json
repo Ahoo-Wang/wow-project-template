@@ -61,7 +61,7 @@
     "@vitest/coverage-v8": "^4.1.12",
     "@vitest/ui": "^4.1.12",
     "eslint": "^10.14.0",
-    "globals": "^17.13.0",
+    "globals": "^17.14.0",
     "prettier": "^3.9.10",
     "rimraf": "^6.1.4",
     "typescript": "^6.0.3",
