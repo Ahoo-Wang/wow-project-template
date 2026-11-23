@@ -45,7 +45,8 @@ data object DeleteArticle
 
 /**
  * 作者恢复已删除的文章：重新预留它的 slug，slug 已被别的文章占用则拒绝。审核中删除（撤稿）的文章不能恢复。
- * 对没有删除的文章，它什么也不改变。
+ * 对没有删除的草稿或已发布文章，它什么也不改变；对审核中的文章总是拒绝（409 `wrong-status`），
+ * 因为领域看不出它是否已被删除。
  */
 @Summary("Restore an article")
 data object RestoreArticle

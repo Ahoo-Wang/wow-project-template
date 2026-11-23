@@ -140,6 +140,12 @@ class ArticleSpec {
     }
 
     @Test
+    fun `restoring an article under review should be refused, deleted or not`() = articleSpec {
+        givenCommands(CreateArticle(TITLE, BODY, SLUG), SubmitArticle)
+        whenCommand(RestoreArticle) { expectRejected(Article.Rejections.WRONG_STATUS) }
+    }
+
+    @Test
     fun `an article withdrawn from review should not be restored`() = articleSpec {
         givenCommands(CreateArticle(TITLE, BODY, SLUG), SubmitArticle, DeleteArticle)
         whenCommand(RestoreArticle) { expectRejected(Article.Rejections.WRONG_STATUS) }

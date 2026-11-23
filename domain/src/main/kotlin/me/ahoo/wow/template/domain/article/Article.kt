@@ -92,7 +92,8 @@ class Article(private val state: ArticleState) {
      * 再以生命周期事件 `AggregateRestored` 恢复。预留随事件一起提交。
      *
      * 审核中删除（撤稿）的文章不能恢复：它的审核可能已经出了结果，而审核 Saga 接受了“文章已删除”的拒绝，
-     * 恢复出来就会永远停在审核中。对没有删除的文章，`AggregateRestored` 不改变任何东西，内核不提交它。
+     * 恢复出来就会永远停在审核中。领域看不出聚合是否已删除，所以对审核中的文章总是拒绝，无论它是否已删除。
+     * 对没有删除的草稿或已发布文章，`AggregateRestored` 不改变任何东西，内核不提交它。
      */
     @Suppress("UnusedParameter") // 命令没有字段：函数处理的是它的类型。
     @OnCommand(onDeleted = true)
