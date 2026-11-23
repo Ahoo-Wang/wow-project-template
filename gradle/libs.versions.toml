@@ -15,11 +15,11 @@ jakarta-validation = "3.1.1"
 jackson = "3.1.8"
 # Wow 生态的其余组件，不在本模板的类路径上：服务采用其中某个组件时以这里的版本为基线
 # （Wow 的 wow-migrate Skill 以这份目录作为生态版本基线）。
+# 不再列 Simba：Wow 10 内置调度（聚合的定时命令 `DecideScope.schedule`、Saga 的 `@OnSchedule` 定时任务）。
 cosid = "5.0.1"
 cocache = "8.2.0"
 coapi = "3.1.0"
 cosky = "8.0.0-beta.10"
-simba = "5.1.0"
 # test
 junit = "6.1.3"
 fluent-assert = "1.3.0"
@@ -43,7 +43,6 @@ cosid-bom = { module = "me.ahoo.cosid:cosid-bom", version.ref = "cosid" }
 cocache-bom = { module = "me.ahoo.cocache:cocache-bom", version.ref = "cocache" }
 coapi-bom = { module = "me.ahoo.coapi:coapi-bom", version.ref = "coapi" }
 cosky-bom = { module = "me.ahoo.cosky:cosky-bom", version.ref = "cosky" }
-simba-bom = { module = "me.ahoo.simba:simba-bom", version.ref = "simba" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 fluent-assert-bom = { module = "me.ahoo.test:fluent-assert-bom", version.ref = "fluent-assert" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
