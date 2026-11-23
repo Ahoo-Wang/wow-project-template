@@ -1,5 +1,5 @@
 /**
- * 可发布的 Kotlin 库：api、api-client、domain。
+ * 可发布的 Kotlin 库：api、domain（经由 wow.api-conventions / wow.domain-conventions）。
  */
 plugins {
     id("wow.kotlin-conventions")
@@ -22,6 +22,14 @@ publishing {
     publications {
         create<MavenPublication>("mavenLibrary") {
             from(components["java"])
+        }
+    }
+}
+
+kover {
+    reports {
+        filters {
+            excludeWowGenerated()
         }
     }
 }

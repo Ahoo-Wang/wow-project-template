@@ -5,3 +5,11 @@ plugins {
     id("wow.base-conventions")
     id("org.jetbrains.kotlinx.kover")
 }
+
+kover {
+    reports {
+        filters {
+            excludeWowGenerated()
+        }
+    }
+}

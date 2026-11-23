@@ -18,7 +18,8 @@ RUN groupadd -r appgroup && useradd -r -g appgroup appuser
 COPY --from=build --chown=appuser:appgroup ${WORK_HOME} ${WORK_HOME}
 
 WORKDIR ${WORK_HOME}
-EXPOSE 8080
+# 8080：公开端口（路由、actuator）；9090：Wow 内部端口（wow.internal.port）。
+EXPOSE 8080 9090
 # 健康检查由编排层负责（见 deploy/deployment.yaml 的 startup/readiness/liveness 探针），
 # 避免依赖基础镜像中不一定存在的 curl。
 

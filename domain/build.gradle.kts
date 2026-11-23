@@ -1,12 +1,18 @@
 plugins {
-    id("wow.library-conventions")
-    id("wow.wow-compiler-conventions")
+    // me.ahoo.wow: KSP with wow-compiler over the aggregates and processors, and wow-kernel. No Spring here.
+    id("wow.domain-conventions")
+}
+
+wow {
+    // The package of the generated `DemoContract` that other services import: set once, kept as aggregates are added.
+    contractPackage = "me.ahoo.wow.template.api"
+    // The service hosting the context; must equal `spring.application.name`.
+    service = "demo-service"
 }
 
 dependencies {
     api(project(":api"))
-    // 领域层只依赖 Wow 核心模型，不依赖 Spring 宿主；Saga/Projection 由 server 端的 wow-spring 自动注册。
-    api("me.ahoo.wow:wow-core")
+    // The functional aggregate and saga test DSL (aggregateSpec, sagaSpec).
     testImplementation("me.ahoo.wow:wow-test")
 }
 

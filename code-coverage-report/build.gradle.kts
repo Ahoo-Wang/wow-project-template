@@ -17,6 +17,5 @@ plugins {
 
 dependencies {
     kover(project(":api"))
-    kover(project(":api-client"))
     kover(project(":domain"))
 }

@@ -12,6 +12,7 @@
  */
 
 plugins {
+    // me.ahoo.wow.service: the service's Manifest and OpenAPI, and `checkWowManifest` against manifest/baseline.json.
     id("wow.application-conventions")
 }
 
@@ -41,33 +42,34 @@ tasks.named<JavaExec>("run") {
 
 dependencies {
     implementation(project(":domain"))
-    implementation("io.github.oshai:kotlin-logging-jvm")
-//    implementation("me.ahoo.wow:wow-kafka")
-//    implementation("me.ahoo.wow:wow-mongo")
-//    implementation("me.ahoo.wow:wow-elasticsearch")
-    implementation("me.ahoo.wow:wow-opentelemetry")
-    implementation("me.ahoo.wow:wow-webflux")
-    implementation("me.ahoo.wow:wow-cosec")
-    implementation("me.ahoo.wow:wow-spring-boot-starter")
-//    implementation("org.springframework.cloud:spring-cloud-starter-loadbalancer")
-    implementation("me.ahoo.coapi:coapi-spring-boot-starter")
-    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
+    // The Wow host: Spring Boot auto-configuration, the public routes (WebFlux) and the internal port.
+    implementation("me.ahoo.wow:wow-spring-boot")
+    // Traces and metrics of the node's seams, through the OpenTelemetry Java agent when one is attached.
+    implementation("me.ahoo.wow:wow-observability")
+    // Swagger UI over the service's routes (/swagger-ui.html): the host merges Wow's document into springdoc's.
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui")
-//    implementation("me.ahoo.cosid:cosid-mongo")
-//    implementation("me.ahoo.cosid:cosid-spring-redis")
-//    implementation("org.springframework.boot:spring-boot-starter-data-redis-reactive")
-    implementation("me.ahoo.cosid:cosid-spring-boot-starter")
-//    implementation("me.ahoo.cosec:cosec-openapi")
-//    implementation("me.ahoo.cosec:cosec-opentelemetry")
-//    implementation("me.ahoo.cosec:cosec-webflux")
-//    implementation("me.ahoo.cosec:cosec-spring-boot-starter")
-//    implementation("me.ahoo.cosky:cosky-spring-cloud-starter-discovery")
-//    implementation("me.ahoo.cosky:cosky-spring-cloud-starter-config")
-//    implementation("org.springframework.boot:spring-boot-starter-data-mongodb-reactive")
-//    implementation("me.ahoo.cocache:cocache-spring-boot-starter")
+    // A Bean Validation provider: the host checks each command's Jakarta constraints at admission.
     implementation("org.springframework.boot:spring-boot-starter-validation")
+    // Actuator: the host gives the node's health to the readiness and liveness groups (deploy/deployment.yaml).
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    implementation("org.springframework.boot:spring-boot-starter-webflux")
-    testImplementation("me.ahoo.wow:wow-test")
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // A backend: without one the node keeps its data in memory (development, or a loopback-only internal port).
+//    implementation("me.ahoo.wow:wow-postgres")
+//    runtimeOnly("com.zaxxer:HikariCP")
+//    implementation("me.ahoo.wow:wow-mongo")
+    // Published streams and commands between contexts.
+//    implementation("me.ahoo.wow:wow-kafka")
+    // Snapshots and their queries on Elasticsearch, as the only store or a search copy.
+//    implementation("me.ahoo.wow:wow-elasticsearch")
+    // CoSec 8 behind the CoSec gateway (`wow.cosec.mode: gateway`).
+//    implementation("me.ahoo.wow:wow-cosec")
+//    implementation("me.ahoo.cosec:cosec-spring-boot")
+//    implementation("me.ahoo.cosec:cosec-webflux")
+    // Aggregate ids from CosId 5 generators (the node's own ids stay UUIDv7).
+//    implementation("me.ahoo.wow:wow-cosid")
+//    implementation("me.ahoo.cosid:cosid-spring-boot-starter")
+    // A shared state cache per aggregate type, read by peers as StateViewCache<V>.
+//    implementation("me.ahoo.wow:wow-cocache")
+//    implementation("me.ahoo.cocache:cocache-spring-boot-starter")
+    // `wowServer<App>()`: the application on random ports with typed command and query clients.
+    testImplementation("me.ahoo.wow:wow-test-spring-boot")
 }

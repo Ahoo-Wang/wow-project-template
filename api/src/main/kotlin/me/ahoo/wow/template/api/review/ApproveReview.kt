@@ -1,19 +1,16 @@
 package me.ahoo.wow.template.api.review
 
-import me.ahoo.wow.api.annotation.CommandRoute
-import me.ahoo.wow.api.annotation.Event
 import me.ahoo.wow.api.annotation.Summary
 
+/**
+ * 审核通过：`POST /demo/review/{id}/approve-review`。
+ */
 @Summary("审核通过")
-@CommandRoute(
-    action = "approve",
-    appendIdPath = CommandRoute.AppendPath.ALWAYS,
-)
 data class ApproveReview(
     val comment: String = ""
 )
 
-@Event
+@Summary("审核已通过")
 data class ReviewApproved(
     val demoId: String,
     val comment: String

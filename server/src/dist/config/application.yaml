@@ -1,9 +1,18 @@
 # 环境覆盖配置：优先级高于 jar 内的基线 application.yaml。
-# 示例：切换到生产存储
+# 示例：切换到 PostgreSQL（server/build.gradle.kts 中启用 wow-postgres 与 HikariCP）
+#spring:
+#  datasource:
+#    url: jdbc:postgresql://localhost:5432/demo
+#    username: postgres
+#    password: postgres
+# 示例：切换到 MongoDB（启用 wow-mongo）
+#spring:
+#  mongodb:
+#    uri: mongodb://localhost:27017/?replicaSet=rs0
 #wow:
-#  command:
-#    bus:
-#      type: kafka
-#  eventsourcing:
-#    store:
-#      storage: mongo
+#  mongo:
+#    database: demo
+# 示例：与其他上下文通过 Kafka 交互（启用 wow-kafka）
+#wow:
+#  kafka:
+#    bootstrap-servers: localhost:9092

@@ -27,3 +27,5 @@ build
 /jte-classes/
 /.kotlin/
 /.idea/
+# Kotlin daemon/session data
+.kotlin/

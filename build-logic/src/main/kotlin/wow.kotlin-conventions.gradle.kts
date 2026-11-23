@@ -11,7 +11,8 @@ plugins {
 }
 
 kotlin {
-    jvmToolchain(17)
+    // Wow 10 needs JDK 21 to build; run it on JDK 25 in production (server/Dockerfile).
+    jvmToolchain(21)
     compilerOptions {
         freeCompilerArgs.add("-Xjsr305=strict")
         // 等价于旧的 -Xjvm-default=all-compatibility
@@ -40,6 +41,18 @@ tasks.withType<Test>().configureEach {
 }
 
 val libs = the<VersionCatalogsExtension>().named("libs")
+
+// One Jackson on every classpath: Spring Boot's, enforced, as Wow's own build does (Wow docs, Operate › Upgrades).
+// swagger-core 3 asks for Jackson 3.2, and Wow 10.0.0-beta.18's codecs fail on it (NoSuchMethodError in StrictReads).
+// Wow bug: https://github.com/Ahoo-Wang/Wow/issues/6657 — drop this once a Wow beta with the fix is pinned.
+// Declared on a configuration of its own that every resolvable classpath extends, so the published POM and module
+// metadata of api/domain carry no enforced platform.
+val jacksonPlatform = configurations.dependencyScope("jacksonPlatform")
+dependencies {
+    jacksonPlatform(enforcedPlatform(libs.findLibrary("jackson-bom").get()))
+}
+configurations.matching { it.isCanBeResolved && !it.isCanBeConsumed && it.name != jacksonPlatform.name }
+    .configureEach { extendsFrom(jacksonPlatform.get()) }
 
 dependencies {
     "implementation"(platform(project(":dependencies")))
