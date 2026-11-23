@@ -63,6 +63,22 @@
       "matchPackageNames": [
         "/^@ahoo-wang\\/fetcher/"
       ]
+    },
+    {
+      "description": "Group Testcontainers modules into a single PR",
+      "groupName": "testcontainers",
+      "matchPackageNames": [
+        "/^org\\.testcontainers/"
+      ]
+    },
+    {
+      "description": "CoSec 8 ships pre-releases alongside Wow 10: follow them as one group",
+      "groupName": "cosec",
+      "matchPackageNames": [
+        "/^me\\.ahoo\\.cosec/"
+      ],
+      "ignoreUnstable": false,
+      "respectLatest": false
     }
   ]
 }

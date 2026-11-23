@@ -2,70 +2,81 @@
   "format" : 1,
   "line" : 0,
   "service" : {
-    "name" : "demo-service"
+    "name" : "blog-service"
   },
   "contexts" : [ {
-    "name" : "demo",
-    "description" : "Demo 及其审核流程",
+    "name" : "blog",
+    "description" : "作者撰写文章，编辑审核后发布",
     "aggregates" : [ {
-      "name" : "demo",
-      "description" : "Demo 聚合根：只负责基于当前状态校验不变量并产生事件，状态变更由 DemoState 通过事件溯源完成。",
+      "name" : "article",
+      "description" : "作者的一篇文章，从草稿到发布",
       "state" : {
-        "schema" : "#/$defs/me.ahoo.wow.template.domain.demo.DemoState",
-        "fingerprint" : "f8d69cf5daad2cde"
+        "schema" : "#/$defs/me.ahoo.wow.template.domain.article.ArticleState",
+        "fingerprint" : "2b971abfb3c19a9b"
       },
       "snapshot" : {
         "enabled" : true
       },
       "commands" : [ {
-        "name" : "CreateDemo",
+        "name" : "CreateArticle",
         "aliases" : [ ],
-        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.CreateDemo",
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.CreateArticle",
         "creation" : "required",
-        "produces" : [ "DemoCreated" ],
+        "produces" : [ "ArticleCreated" ],
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/demo/{id}/create-demo"
+          "path" : "/blog/article/{id}/create-article"
         }, {
           "method" : "POST",
-          "path" : "/demo/demo/create-demo"
+          "path" : "/blog/article/create-article"
         } ],
-        "description" : "创建Demo"
+        "description" : "Create an article"
       }, {
-        "name" : "PublishDemo",
+        "name" : "EditArticle",
         "aliases" : [ ],
-        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.PublishDemo",
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.EditArticle",
         "creation" : "none",
-        "produces" : [ "DemoPublished" ],
+        "produces" : [ "ArticleEdited" ],
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/demo/{id}/publish-demo"
+          "path" : "/blog/article/{id}/edit-article"
+        } ],
+        "description" : "Edit an article"
+      }, {
+        "name" : "PublishArticle",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.PublishArticle",
+        "creation" : "none",
+        "produces" : [ "ArticlePublished" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/{id}/publish-article"
         } ],
         "internal" : true,
-        "description" : "发布Demo"
+        "description" : "Publish an article"
       }, {
-        "name" : "RejectDemo",
+        "name" : "ReturnArticle",
         "aliases" : [ ],
-        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.RejectDemo",
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.ReturnArticle",
         "creation" : "none",
-        "produces" : [ "DemoRejected" ],
+        "produces" : [ "ArticleReturned" ],
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/demo/{id}/reject-demo"
+          "path" : "/blog/article/{id}/return-article"
         } ],
         "internal" : true,
-        "description" : "驳回Demo"
+        "description" : "Return an article to its author"
       }, {
-        "name" : "UpdateDemo",
+        "name" : "SubmitArticle",
         "aliases" : [ ],
-        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.UpdateDemo",
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.SubmitArticle",
         "creation" : "none",
-        "produces" : [ "DemoUpdated" ],
+        "produces" : [ "ArticleSubmitted" ],
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/demo/{id}/update-demo"
+          "path" : "/blog/article/{id}/submit-article"
         } ],
-        "description" : "更新Demo"
+        "description" : "Submit an article for review"
       }, {
         "name" : "wow.lifecycle.DeleteAggregate",
         "aliases" : [ ],
@@ -73,7 +84,7 @@
         "creation" : "none",
         "routes" : [ {
           "method" : "DELETE",
-          "path" : "/demo/demo/{id}"
+          "path" : "/blog/article/{id}"
         } ],
         "system" : true
       }, {
@@ -83,7 +94,7 @@
         "creation" : "none",
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/demo/{id}/wow.lifecycle.restore-aggregate"
+          "path" : "/blog/article/{id}/wow.lifecycle.restore-aggregate"
         } ],
         "system" : true
       }, {
@@ -93,7 +104,7 @@
         "creation" : "none",
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/demo/{id}/wow.lifecycle.transfer-owner"
+          "path" : "/blog/article/{id}/wow.lifecycle.transfer-owner"
         } ],
         "system" : true
       }, {
@@ -103,7 +114,7 @@
         "creation" : "none",
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/demo/{id}/wow.lifecycle.transfer-space"
+          "path" : "/blog/article/{id}/wow.lifecycle.transfer-space"
         } ],
         "system" : true
       }, {
@@ -113,60 +124,66 @@
         "creation" : "none",
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/demo/wow.snapshot.rebuild-snapshot"
+          "path" : "/blog/article/wow.snapshot.rebuild-snapshot"
         } ],
         "system" : true
       } ],
       "events" : [ {
-        "name" : "DemoCreated",
+        "name" : "ArticleCreated",
         "aliases" : [ ],
         "revision" : 1,
-        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.DemoCreated",
-        "description" : "Demo已创建"
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.ArticleCreated",
+        "description" : "An article was created"
       }, {
-        "name" : "DemoPublished",
+        "name" : "ArticleEdited",
         "aliases" : [ ],
         "revision" : 1,
-        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.DemoPublished",
-        "description" : "Demo已发布"
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.ArticleEdited",
+        "description" : "An article's text was edited"
       }, {
-        "name" : "DemoRejected",
+        "name" : "ArticlePublished",
         "aliases" : [ ],
         "revision" : 1,
-        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.DemoRejected",
-        "description" : "Demo已驳回"
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.ArticlePublished",
+        "description" : "An article was published"
       }, {
-        "name" : "DemoUpdated",
+        "name" : "ArticleReturned",
         "aliases" : [ ],
         "revision" : 1,
-        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.DemoUpdated",
-        "description" : "Demo已更新"
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.ArticleReturned",
+        "description" : "An article was returned to its author"
+      }, {
+        "name" : "ArticleSubmitted",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.ArticleSubmitted",
+        "description" : "An article was submitted for review"
       } ],
       "queries" : [ {
         "model" : "snapshot",
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/demo/snapshot/query"
+          "path" : "/blog/article/snapshot/query"
         }, {
           "method" : "GET",
-          "path" : "/demo/demo/snapshot/query"
+          "path" : "/blog/article/snapshot/query"
         } ]
       }, {
         "model" : "events",
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/demo/events/query"
+          "path" : "/blog/article/events/query"
         }, {
           "method" : "GET",
-          "path" : "/demo/demo/events/query"
+          "path" : "/blog/article/events/query"
         } ]
       } ]
     }, {
       "name" : "review",
-      "description" : "审核聚合根：一次审核只能被裁决一次。",
+      "description" : "编辑对一次提交的审核",
       "state" : {
         "schema" : "#/$defs/me.ahoo.wow.template.domain.review.ReviewState",
-        "fingerprint" : "7a9152ff5a8764cb"
+        "fingerprint" : "6c7c641f40f56f9d"
       },
       "snapshot" : {
         "enabled" : true
@@ -179,9 +196,9 @@
         "produces" : [ "ReviewApproved" ],
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/review/{id}/approve-review"
+          "path" : "/blog/review/{id}/approve-review"
         } ],
-        "description" : "审核通过"
+        "description" : "Approve a review"
       }, {
         "name" : "CreateReview",
         "aliases" : [ ],
@@ -190,13 +207,25 @@
         "produces" : [ "ReviewCreated" ],
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/review/{id}/create-review"
+          "path" : "/blog/review/{id}/create-review"
         }, {
           "method" : "POST",
-          "path" : "/demo/review/create-review"
+          "path" : "/blog/review/create-review"
         } ],
         "internal" : true,
-        "description" : "创建审核"
+        "description" : "Open a review"
+      }, {
+        "name" : "ExpireReview",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.ExpireReview",
+        "creation" : "none",
+        "produces" : [ "ReviewExpired" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/review/{id}/expire-review"
+        } ],
+        "internal" : true,
+        "description" : "Expire a review"
       }, {
         "name" : "RejectReview",
         "aliases" : [ ],
@@ -205,9 +234,9 @@
         "produces" : [ "ReviewRejected" ],
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/review/{id}/reject-review"
+          "path" : "/blog/review/{id}/reject-review"
         } ],
-        "description" : "审核驳回"
+        "description" : "Reject a review"
       }, {
         "name" : "wow.lifecycle.DeleteAggregate",
         "aliases" : [ ],
@@ -215,7 +244,7 @@
         "creation" : "none",
         "routes" : [ {
           "method" : "DELETE",
-          "path" : "/demo/review/{id}"
+          "path" : "/blog/review/{id}"
         } ],
         "system" : true
       }, {
@@ -225,17 +254,7 @@
         "creation" : "none",
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/review/{id}/wow.lifecycle.restore-aggregate"
-        } ],
-        "system" : true
-      }, {
-        "name" : "wow.lifecycle.TransferOwner",
-        "aliases" : [ ],
-        "schema" : "#/$defs/wow.lifecycle.TransferOwner",
-        "creation" : "none",
-        "routes" : [ {
-          "method" : "POST",
-          "path" : "/demo/review/{id}/wow.lifecycle.transfer-owner"
+          "path" : "/blog/review/{id}/wow.lifecycle.restore-aggregate"
         } ],
         "system" : true
       }, {
@@ -245,7 +264,7 @@
         "creation" : "none",
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/review/{id}/wow.lifecycle.transfer-space"
+          "path" : "/blog/review/{id}/wow.lifecycle.transfer-space"
         } ],
         "system" : true
       }, {
@@ -255,7 +274,7 @@
         "creation" : "none",
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/review/wow.snapshot.rebuild-snapshot"
+          "path" : "/blog/review/wow.snapshot.rebuild-snapshot"
         } ],
         "system" : true
       } ],
@@ -264,110 +283,164 @@
         "aliases" : [ ],
         "revision" : 1,
         "schema" : "#/$defs/me.ahoo.wow.template.api.review.ReviewApproved",
-        "description" : "审核已通过"
+        "description" : "A review approved its article"
       }, {
         "name" : "ReviewCreated",
         "aliases" : [ ],
         "revision" : 1,
         "schema" : "#/$defs/me.ahoo.wow.template.api.review.ReviewCreated",
-        "description" : "审核已创建"
+        "description" : "A review was opened"
+      }, {
+        "name" : "ReviewExpired",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.ReviewExpired",
+        "description" : "A review expired undecided"
       }, {
         "name" : "ReviewRejected",
         "aliases" : [ ],
         "revision" : 1,
         "schema" : "#/$defs/me.ahoo.wow.template.api.review.ReviewRejected",
-        "description" : "审核已驳回"
+        "description" : "A review rejected its article"
       } ],
       "queries" : [ {
         "model" : "snapshot",
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/review/snapshot/query"
+          "path" : "/blog/review/snapshot/query"
         }, {
           "method" : "GET",
-          "path" : "/demo/review/snapshot/query"
+          "path" : "/blog/review/snapshot/query"
         } ]
       }, {
         "model" : "events",
         "routes" : [ {
           "method" : "POST",
-          "path" : "/demo/review/events/query"
+          "path" : "/blog/review/events/query"
         }, {
           "method" : "GET",
-          "path" : "/demo/review/events/query"
+          "path" : "/blog/review/events/query"
         } ]
-      } ]
+      } ],
+      "schedules" : [ "blog.review.ExpireReview" ],
+      "ownership" : "tenant"
     } ],
     "subscriptions" : [ {
-      "name" : "DemoReviewSaga.onDemoCreated",
+      "name" : "ArticleReviewSaga.onArticleSubmitted",
       "kind" : "saga",
       "source" : {
-        "context" : "demo",
-        "aggregates" : [ "demo" ],
-        "events" : [ "DemoCreated" ]
+        "context" : "blog",
+        "aggregates" : [ "article" ],
+        "events" : [ "ArticleSubmitted" ]
       },
       "function" : {
         "kind" : "saga",
-        "context" : "demo",
-        "processor" : "DemoReviewSaga",
-        "name" : "onDemoCreated"
+        "context" : "blog",
+        "processor" : "ArticleReviewSaga",
+        "name" : "onArticleSubmitted"
       },
-      "derives" : [ "demo.review.CreateReview" ],
+      "derives" : [ "blog.review.CreateReview" ],
       "start" : "end"
     }, {
-      "name" : "DemoReviewSaga.onReviewApproved",
+      "name" : "ArticleReviewSaga.onPublishRejected",
       "kind" : "saga",
       "source" : {
-        "context" : "demo",
+        "aggregates" : [ ],
+        "events" : [ ]
+      },
+      "function" : {
+        "kind" : "saga",
+        "context" : "blog",
+        "processor" : "ArticleReviewSaga",
+        "name" : "onPublishRejected"
+      },
+      "derives" : [ ],
+      "rejected" : [ "blog.article.PublishArticle" ]
+    }, {
+      "name" : "ArticleReviewSaga.onReturnRejected",
+      "kind" : "saga",
+      "source" : {
+        "aggregates" : [ ],
+        "events" : [ ]
+      },
+      "function" : {
+        "kind" : "saga",
+        "context" : "blog",
+        "processor" : "ArticleReviewSaga",
+        "name" : "onReturnRejected"
+      },
+      "derives" : [ ],
+      "rejected" : [ "blog.article.ReturnArticle" ]
+    }, {
+      "name" : "ArticleReviewSaga.onReviewApproved",
+      "kind" : "saga",
+      "source" : {
+        "context" : "blog",
         "aggregates" : [ "review" ],
         "events" : [ "ReviewApproved" ]
       },
       "function" : {
         "kind" : "saga",
-        "context" : "demo",
-        "processor" : "DemoReviewSaga",
+        "context" : "blog",
+        "processor" : "ArticleReviewSaga",
         "name" : "onReviewApproved"
       },
-      "derives" : [ "demo.demo.PublishDemo" ],
+      "derives" : [ "blog.article.PublishArticle" ],
       "start" : "end"
     }, {
-      "name" : "DemoReviewSaga.onReviewRejected",
+      "name" : "ArticleReviewSaga.onReviewExpired",
       "kind" : "saga",
       "source" : {
-        "context" : "demo",
+        "context" : "blog",
+        "aggregates" : [ "review" ],
+        "events" : [ "ReviewExpired" ]
+      },
+      "function" : {
+        "kind" : "saga",
+        "context" : "blog",
+        "processor" : "ArticleReviewSaga",
+        "name" : "onReviewExpired"
+      },
+      "derives" : [ "blog.article.ReturnArticle" ],
+      "start" : "end"
+    }, {
+      "name" : "ArticleReviewSaga.onReviewRejected",
+      "kind" : "saga",
+      "source" : {
+        "context" : "blog",
         "aggregates" : [ "review" ],
         "events" : [ "ReviewRejected" ]
       },
       "function" : {
         "kind" : "saga",
-        "context" : "demo",
-        "processor" : "DemoReviewSaga",
+        "context" : "blog",
+        "processor" : "ArticleReviewSaga",
         "name" : "onReviewRejected"
       },
-      "derives" : [ "demo.demo.RejectDemo" ],
+      "derives" : [ "blog.article.ReturnArticle" ],
       "start" : "end"
     } ],
     "published" : [ {
-      "aggregate" : "demo",
-      "topic" : "wow.demo.demo.state",
+      "aggregate" : "article",
+      "topic" : "wow.blog.article.state",
       "includeState" : true
     }, {
       "aggregate" : "review",
-      "topic" : "wow.demo.review.state",
+      "topic" : "wow.blog.review.state",
       "includeState" : true
     } ],
     "errors" : [ {
-      "code" : "demo.demo.data-unchanged",
-      "status" : 422,
-      "description" : "An update changes the demo's data."
-    }, {
-      "code" : "demo.demo.wrong-status",
+      "code" : "blog.article.slug-taken",
       "status" : 409,
-      "description" : "The demo's status does not allow the command."
+      "description" : "Another article of the tenant is at the slug."
     }, {
-      "code" : "demo.review.already-decided",
+      "code" : "blog.article.wrong-status",
       "status" : 409,
-      "description" : "The review was already approved or rejected."
+      "description" : "The article's status does not allow the command."
+    }, {
+      "code" : "blog.review.already-decided",
+      "status" : 409,
+      "description" : "The review was already approved, rejected or expired."
     } ]
   } ],
   "errors" : [ {
@@ -570,30 +643,38 @@
     "retryAfter" : 1
   } ],
   "$defs" : {
-    "me.ahoo.wow.template.api.demo.CreateDemo" : {
+    "me.ahoo.wow.template.api.article.ArticleCreated" : {
       "type" : "object",
       "properties" : {
-        "data" : {
-          "type" : "string",
-          "minLength" : 1
-        }
-      },
-      "required" : [ "data" ],
-      "description" : "创建Demo",
-      "x-wow-class" : "me.ahoo.wow.template.api.demo.CreateDemo"
-    },
-    "me.ahoo.wow.template.api.demo.DemoCreated" : {
-      "type" : "object",
-      "properties" : {
-        "data" : {
+        "body" : {
+          "type" : "string"
+        },
+        "slug" : {
+          "type" : "string"
+        },
+        "title" : {
           "type" : "string"
         }
       },
-      "required" : [ "data" ],
-      "description" : "Demo已创建",
-      "x-wow-class" : "me.ahoo.wow.template.api.demo.DemoCreated"
+      "required" : [ "body", "slug", "title" ],
+      "description" : "An article was created",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.ArticleCreated"
     },
-    "me.ahoo.wow.template.api.demo.DemoPublished" : {
+    "me.ahoo.wow.template.api.article.ArticleEdited" : {
+      "type" : "object",
+      "properties" : {
+        "body" : {
+          "type" : "string"
+        },
+        "title" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "body", "title" ],
+      "description" : "An article's text was edited",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.ArticleEdited"
+    },
+    "me.ahoo.wow.template.api.article.ArticlePublished" : {
       "type" : "object",
       "properties" : {
         "reviewId" : {
@@ -601,10 +682,10 @@
         }
       },
       "required" : [ "reviewId" ],
-      "description" : "Demo已发布",
-      "x-wow-class" : "me.ahoo.wow.template.api.demo.DemoPublished"
+      "description" : "An article was published",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.ArticlePublished"
     },
-    "me.ahoo.wow.template.api.demo.DemoRejected" : {
+    "me.ahoo.wow.template.api.article.ArticleReturned" : {
       "type" : "object",
       "properties" : {
         "reason" : {
@@ -615,21 +696,53 @@
         }
       },
       "required" : [ "reason", "reviewId" ],
-      "description" : "Demo已驳回",
-      "x-wow-class" : "me.ahoo.wow.template.api.demo.DemoRejected"
+      "description" : "An article was returned to its author",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.ArticleReturned"
     },
-    "me.ahoo.wow.template.api.demo.DemoUpdated" : {
+    "me.ahoo.wow.template.api.article.ArticleSubmitted" : {
+      "type" : "object",
+      "description" : "An article was submitted for review",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.ArticleSubmitted"
+    },
+    "me.ahoo.wow.template.api.article.CreateArticle" : {
       "type" : "object",
       "properties" : {
-        "data" : {
-          "type" : "string"
+        "body" : {
+          "type" : "string",
+          "minLength" : 1
+        },
+        "slug" : {
+          "type" : "string",
+          "pattern" : "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "title" : {
+          "type" : "string",
+          "minLength" : 1,
+          "maxLength" : 200
         }
       },
-      "required" : [ "data" ],
-      "description" : "Demo已更新",
-      "x-wow-class" : "me.ahoo.wow.template.api.demo.DemoUpdated"
+      "required" : [ "body", "slug", "title" ],
+      "description" : "Create an article",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.CreateArticle"
     },
-    "me.ahoo.wow.template.api.demo.PublishDemo" : {
+    "me.ahoo.wow.template.api.article.EditArticle" : {
+      "type" : "object",
+      "properties" : {
+        "body" : {
+          "type" : "string",
+          "minLength" : 1
+        },
+        "title" : {
+          "type" : "string",
+          "minLength" : 1,
+          "maxLength" : 200
+        }
+      },
+      "required" : [ "body", "title" ],
+      "description" : "Edit an article",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.EditArticle"
+    },
+    "me.ahoo.wow.template.api.article.PublishArticle" : {
       "type" : "object",
       "properties" : {
         "reviewId" : {
@@ -637,10 +750,10 @@
         }
       },
       "required" : [ "reviewId" ],
-      "description" : "发布Demo",
-      "x-wow-class" : "me.ahoo.wow.template.api.demo.PublishDemo"
+      "description" : "Publish an article",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.PublishArticle"
     },
-    "me.ahoo.wow.template.api.demo.RejectDemo" : {
+    "me.ahoo.wow.template.api.article.ReturnArticle" : {
       "type" : "object",
       "properties" : {
         "reason" : {
@@ -651,20 +764,13 @@
         }
       },
       "required" : [ "reason", "reviewId" ],
-      "description" : "驳回Demo",
-      "x-wow-class" : "me.ahoo.wow.template.api.demo.RejectDemo"
+      "description" : "Return an article to its author",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.ReturnArticle"
     },
-    "me.ahoo.wow.template.api.demo.UpdateDemo" : {
+    "me.ahoo.wow.template.api.article.SubmitArticle" : {
       "type" : "object",
-      "properties" : {
-        "data" : {
-          "type" : "string",
-          "minLength" : 1
-        }
-      },
-      "required" : [ "data" ],
-      "description" : "更新Demo",
-      "x-wow-class" : "me.ahoo.wow.template.api.demo.UpdateDemo"
+      "description" : "Submit an article for review",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.SubmitArticle"
     },
     "me.ahoo.wow.template.api.review.ApproveReview" : {
       "type" : "object",
@@ -673,19 +779,24 @@
           "type" : "string"
         }
       },
-      "description" : "审核通过",
+      "description" : "Approve a review",
       "x-wow-class" : "me.ahoo.wow.template.api.review.ApproveReview"
     },
     "me.ahoo.wow.template.api.review.CreateReview" : {
       "type" : "object",
       "properties" : {
-        "demoId" : {
+        "articleId" : {
           "type" : "string"
         }
       },
-      "required" : [ "demoId" ],
-      "description" : "创建审核",
+      "required" : [ "articleId" ],
+      "description" : "Open a review",
       "x-wow-class" : "me.ahoo.wow.template.api.review.CreateReview"
+    },
+    "me.ahoo.wow.template.api.review.ExpireReview" : {
+      "type" : "object",
+      "description" : "Expire a review",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.ExpireReview"
     },
     "me.ahoo.wow.template.api.review.RejectReview" : {
       "type" : "object",
@@ -696,76 +807,110 @@
         }
       },
       "required" : [ "reason" ],
-      "description" : "审核驳回",
+      "description" : "Reject a review",
       "x-wow-class" : "me.ahoo.wow.template.api.review.RejectReview"
     },
     "me.ahoo.wow.template.api.review.ReviewApproved" : {
       "type" : "object",
       "properties" : {
-        "comment" : {
+        "articleId" : {
           "type" : "string"
         },
-        "demoId" : {
+        "comment" : {
           "type" : "string"
         }
       },
-      "required" : [ "comment", "demoId" ],
-      "description" : "审核已通过",
+      "required" : [ "articleId", "comment" ],
+      "description" : "A review approved its article",
       "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewApproved"
     },
     "me.ahoo.wow.template.api.review.ReviewCreated" : {
       "type" : "object",
       "properties" : {
-        "demoId" : {
+        "articleId" : {
           "type" : "string"
         }
       },
-      "required" : [ "demoId" ],
-      "description" : "审核已创建",
+      "required" : [ "articleId" ],
+      "description" : "A review was opened",
       "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewCreated"
+    },
+    "me.ahoo.wow.template.api.review.ReviewExpired" : {
+      "type" : "object",
+      "properties" : {
+        "articleId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "articleId" ],
+      "description" : "A review expired undecided",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewExpired"
     },
     "me.ahoo.wow.template.api.review.ReviewRejected" : {
       "type" : "object",
       "properties" : {
-        "demoId" : {
+        "articleId" : {
           "type" : "string"
         },
         "reason" : {
           "type" : "string"
         }
       },
-      "required" : [ "demoId", "reason" ],
-      "description" : "审核已驳回",
+      "required" : [ "articleId", "reason" ],
+      "description" : "A review rejected its article",
       "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewRejected"
     },
-    "me.ahoo.wow.template.domain.demo.DemoState" : {
+    "me.ahoo.wow.template.domain.article.ArticleState" : {
       "type" : "object",
       "properties" : {
-        "data" : {
+        "body" : {
+          "type" : "string"
+        },
+        "publishedAt" : {
+          "type" : [ "integer", "null" ],
+          "format" : "int64"
+        },
+        "reviewId" : {
+          "type" : [ "string", "null" ]
+        },
+        "slug" : {
           "type" : "string"
         },
         "status" : {
           "type" : "string",
-          "enum" : [ "REVIEWING", "PUBLISHED", "REJECTED" ],
-          "x-wow-class" : "me.ahoo.wow.template.api.demo.DemoStatus"
+          "enum" : [ "DRAFT", "IN_REVIEW", "PUBLISHED" ],
+          "x-wow-class" : "me.ahoo.wow.template.api.article.ArticleStatus"
+        },
+        "title" : {
+          "type" : "string"
         }
       },
-      "required" : [ "data", "status" ],
-      "x-wow-class" : "me.ahoo.wow.template.domain.demo.DemoState"
+      "required" : [ "body", "slug", "status", "title" ],
+      "x-wow-class" : "me.ahoo.wow.template.domain.article.ArticleState",
+      "x-wow-index" : [ {
+        "name" : "ix_article_state_slug",
+        "keys" : [ "state.slug" ]
+      }, {
+        "name" : "ix_article_state_status_state_published_at",
+        "keys" : [ "state.status", "state.publishedAt" ]
+      } ]
     },
     "me.ahoo.wow.template.domain.review.ReviewState" : {
       "type" : "object",
       "properties" : {
-        "demoId" : {
+        "articleId" : {
+          "type" : "string"
+        },
+        "remark" : {
           "type" : "string"
         },
         "status" : {
           "type" : "string",
-          "enum" : [ "PENDING", "APPROVED", "REJECTED" ],
+          "enum" : [ "PENDING", "APPROVED", "REJECTED", "EXPIRED" ],
           "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewStatus"
         }
       },
-      "required" : [ "demoId", "status" ],
+      "required" : [ "articleId", "remark", "status" ],
       "x-wow-class" : "me.ahoo.wow.template.domain.review.ReviewState"
     },
     "wow.lifecycle.DeleteAggregate" : {

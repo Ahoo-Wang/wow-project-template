@@ -1,281 +1,183 @@
-# 基于 Wow 框架的 DDD 项目模版
+# Wow 服务模板
 
 [![codecov](https://codecov.io/gh/Ahoo-Wang/wow-project-template/graph/badge.svg?token=lvvGMBqmMh)](https://codecov.io/gh/Ahoo-Wang/wow-project-template)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/Ahoo-Wang/wow-project-template)
 
-用于快速构建基于 [Wow 框架](https://github.com/Ahoo-Wang/Wow) 的 DDD 项目模板。
+一个按 [Wow](https://github.com/Ahoo-Wang/Wow) 10 最佳实践组织的 DDD + 事件溯源 + CQRS 服务模板：拿到即可运行、测试、部署，
+再把示例领域换成你自己的。
 
 > [!WARNING]
 > 本模板基于 **Wow 10.0.0-beta.18**（预发布版）：API、配置、存储与线上格式在 10.0.0 GA 前仍可能变化，不承诺兼容，不建议用于生产。
-> 9.x 稳定版模板见 Git 历史中 Wow 9.9.0 的版本；从 9.x 迁移请参考 Wow 文档《Migrating from 9.x》与 `wow-migrate` Skill。
 
-## 模块介绍
+## 设计原则
 
-| 模块                                              | 说明                                                                                                                                                            |
-|-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [api](./api)                                    | **API 层**（`me.ahoo.wow.api` 插件），定义聚合命令（Command）与领域事件（Domain Event），充当上下文的“发布语言”。插件从 domain 装配契约并生成 `DemoContract`（聚合类型、错误码、等待跳点、查询字段）与状态视图 `DemoStateView`；其他服务只依赖本模块即可调用本服务（Wow 的 `CommandClient` / `QueryApi`），无需手写客户端。 |
-| [domain](./domain)                              | **领域层**（`me.ahoo.wow` 插件，KSP），包含聚合根、状态、错误码与 Saga。编译器在构建期生成模型工厂、处理器绑定与 Manifest 片段，运行时不做反射扫描。 |
-| [server](./server)                              | **宿主服务**（`me.ahoo.wow.service` 插件），Spring Boot WebFlux 应用的启动点。路由由 Manifest 派生，无需控制器；构建合并服务的 Manifest、生成 OpenAPI，并以提交的 `manifest/baseline.json` 校验契约兼容性。提供 Docker 镜像与 Kubernetes 部署文件。 |
-| [client](./client)                              | **客户端库**，由 [wow-generator](https://github.com/Ahoo-Wang/Wow) 根据服务的 Manifest 基线生成的 TypeScript 客户端（基于 `@ahoo-wang/wow-client`），每个聚合一套命令、快照查询、事件查询与状态客户端，含错误码与等待计划类型。 |
-| [code-coverage-report](./code-coverage-report)  | **测试覆盖率**，用于生成详细的测试覆盖率报告，以及验证覆盖率是否符合要求。帮助开发团队了解项目测试的全面性和质量。                                                                                                   |
-| [dependencies](./dependencies)                  | **依赖项管理**，这个模块负责管理项目的依赖关系，确保各个模块能够正确地引用和使用所需的外部库和工具。                                                                                                          |
-| [bom](./bom)                                    | **项目的 BOM（Bill of Materials）**                                                                                                                                |
-| [build-logic](./build-logic)                    | **构建约定插件**，统一各模块的工具链、编译选项、测试、静态检查、覆盖率与发布配置（`wow.*-conventions`）。 |
-| [libs.versions.toml](gradle/libs.versions.toml) | **依赖版本配置文件**，明确了项目中各个库的版本，方便团队协作和保持版本的一致性。                                                                                                                    |
-| [deploy](./deploy)                              | **Kubernetes 部署文件**，提供了在 Kubernetes 上部署应用程序所需的配置文件，简化了部署过程。                                                                                                   |
-| [Dockerfile](server/Dockerfile)                 | **server Docker 构建镜像**，通过 Dockerfile 文件定义了应用程序的容器化构建步骤，方便部署和扩展。                                                                                               |
-| [document](document)                            | **项目文档**，包括 UML 图和上下文映射图，为团队成员提供了对整个项目结构和业务逻辑的清晰理解。                                                                                                           |
+1. **模板是起点。** 每个文件要么是你保留的基础设施，要么是要替换的示例。示例里每种实践只出现一次，并且都有测试。
+2. **照 Wow 的约定。** 模块角色、Gradle 插件、命名、测试 DSL、部署方式都与 Wow 文档一致，偏离之处写明理由。
+3. **构建最小化。** 版本只在 [`gradle/libs.versions.toml`](gradle/libs.versions.toml) 声明一次，构建逻辑只在 [`build-logic`](build-logic) 中；只发布别的服务需要的 `blog-api`。
+4. **正确性有门禁。** 编译与 KSP、领域与服务测试、detekt、覆盖率、Manifest 兼容性、真实存储上的集成测试、TS 客户端漂移、发行版冒烟、Helm values 校验，全部在 CI 中执行。
+5. **生产路径显式。** 存储（MongoDB）、调用方认证（CoSec 网关）、部署（Wow 的 Helm chart）、可观测性（OpenTelemetry）都有默认答案；本地开发不依赖任何外部服务。
 
-## 创建项目
+## 示例领域：博客
+
+作者撰写文章、提交审核；编辑批准或驳回；审核 Saga 协调两个聚合；审核超时未裁决则自动退回作者。
+
+```mermaid
+flowchart LR
+    A[作者] -- CreateArticle / EditArticle / SubmitArticle --> ART[(Article)]
+    ART -- ArticleSubmitted --> SAGA{{ArticleReviewSaga}}
+    SAGA -- CreateReview --> REV[(Review)]
+    E[编辑] -- ApproveReview / RejectReview --> REV
+    REV -- 到期: ExpireReview --> REV
+    REV -- ReviewApproved --> SAGA
+    REV -- ReviewRejected / ReviewExpired --> SAGA
+    SAGA -- PublishArticle / ReturnArticle --> ART
+```
+
+| Wow 实践 | 示例中的位置 |
+|---|---|
+| 命令形状用 Jakarta 约束，在准入时校验（400 `wow.command.invalid`） | [`ArticleCommands.kt`](api/src/main/kotlin/me/ahoo/wow/template/api/article/ArticleCommands.kt) |
+| 业务规则用 `reject` + `@ErrorCode`，状态冲突用 409 | [`Article.kt`](domain/src/main/kotlin/me/ahoo/wow/template/domain/article/Article.kt) `Rejections` |
+| 唯一键：`DecideScope.reserve`，租户内唯一 | `Article` 创建时预留 slug |
+| 什么也不改变时返回 `null`（no-op） | `EditArticle`、`ExpireReview` |
+| 所有权：文章属于作者（默认 `Ownership.OWNER`），审核属于租户（`Ownership.TENANT`） | [`Review.kt`](domain/src/main/kotlin/me/ahoo/wow/template/domain/review/Review.kt) |
+| 内部命令 `@InternalCommand`：公开端口没有路由 | `CreateReview`、`PublishArticle`、`ReturnArticle`、`ExpireReview` |
+| 领域服务注入命令函数 | [`ReviewPolicy`](domain/src/main/kotlin/me/ahoo/wow/template/domain/review/ReviewPolicy.kt)，由 `blog.review.timeout` 配置 |
+| 持久化的定时命令：`schedule` / `cancelSchedule` | `Review` 开启时安排过期，裁决时取消 |
+| Saga：类型化处理函数、确定性派生、`@OnRejected` | [`ArticleReviewSaga.kt`](domain/src/main/kotlin/me/ahoo/wow/template/domain/review/ArticleReviewSaga.kt) |
+| 溯源函数读取提交的时间，而不是系统时钟 | [`ArticleState`](domain/src/main/kotlin/me/ahoo/wow/template/domain/article/ArticleState.kt) 的 `publishedAt` |
+| 快照查询索引 `@QueryIndex` | `ArticleState` 的 `slug`、`status` + `publishedAt` |
+| 命令授权 `CommandAuthorizer` | [`BlogAuthorization.kt`](server/src/main/kotlin/me/ahoo/wow/template/server/BlogAuthorization.kt)：只有编辑能裁决审核、发送运维命令 |
+| 生命周期命令（删除、恢复、转移） | 内置，无需代码 |
+
+## 模块
+
+```text
+api/      (blog-api)     me.ahoo.wow.api      命令、事件、值类型；生成 BlogContract 与状态视图。唯一发布的制品
+domain/   (blog-domain)  me.ahoo.wow          聚合、状态、错误码、Saga；KSP 生成模型。不依赖 Spring 与存储
+server/   (blog-server)  me.ahoo.wow.service  Spring Boot 宿主、授权、配置；Manifest 基线、Helm values、集成测试、Dockerfile
+client/                                       由 Manifest 基线生成的 TypeScript 客户端
+deploy/                                       wow-service Helm chart 的应用侧 values
+build-logic/                                  约定插件：wow.kotlin / wow.api / wow.domain / wow.server / wow.coverage
+```
+
+括号里是 Gradle 项目名（见 [`settings.gradle.kts`](settings.gradle.kts)）。Manifest 片段、绑定索引和发布的制品都以项目名命名，带上服务前缀，就不会与同一类路径上其他服务的模块冲突。
+
+其他服务只依赖 `blog-api`，用 Wow 的 `CommandClient` / `QueryApi` 调用本服务（在 `wow.peers` 中登记），不需要手写客户端。
+
+## 快速开始
+
+需要 JDK 21。集成测试另需 Docker，客户端需要 Node.js 24 与 pnpm。
+
+```bash
+./gradlew :blog-server:run
+```
+
+本机运行时，没有配置存储就以内存运行，并自动启用 `dev` profile：调用方由开发身份请求头声明，`Wow-User` 是 subject，`Wow-Owner` 是 owner，`Wow-Roles` 是角色。
+
+```bash
+# 作者 alice 创建并提交文章；等待计划跟着审核 Saga，一直等到审核写入快照，回答中的 ref 就是这次审核
+curl -X POST localhost:8080/blog/article/hello-wow/create-article -H 'Content-Type: application/json' \
+  -H 'Wow-User: alice' -H 'Wow-Owner: alice' \
+  -d '{"title":"Hello, Wow","body":"Event sourcing, step by step.","slug":"hello-wow"}'
+curl -X POST localhost:8080/blog/article/hello-wow/submit-article -H 'Content-Type: application/json' \
+  -H 'Wow-User: alice' -H 'Wow-Owner: alice' -H 'Wow-Wait: handled(ArticleReviewSaga.onArticleSubmitted)>snapshot' -d '{}'
+
+# 编辑 erin 批准审核（把 <review-id> 换成上一步回答中的 ref.id）
+curl -X POST localhost:8080/blog/review/<review-id>/approve-review -H 'Content-Type: application/json' \
+  -H 'Wow-User: erin' -H 'Wow-Roles: editor' -H 'Wow-Wait: handled(ArticleReviewSaga.onReviewApproved)>snapshot' \
+  -d '{"comment":"LGTM"}'
+
+# 读取文章状态；按状态列出文章（走 @QueryIndex）
+curl localhost:8080/blog/article/hello-wow/state -H 'Wow-User: alice' -H 'Wow-Owner: alice'
+curl -X POST localhost:8080/blog/article/snapshot/query -H 'Content-Type: application/json' -H 'Wow-User: erin' -H 'Wow-Roles: editor' \
+  -d '{"kind":"list","filter":{"op":"eq","field":"state.status","value":"PUBLISHED"},"limit":20}'
+```
+
+路由文档见 [http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)，Manifest 见 `GET /wow/manifest`。
+
+### 运行方式
+
+| profile | 存储 | 调用方 | 用途 |
+|---|---|---|---|
+| （本机默认）+ `dev` | 内存 | 开发身份请求头 | 本地开发：`./gradlew :blog-server:run` |
+| `mongo` | MongoDB 副本集（`spring.mongodb.uri`） | — | 真实存储，可与 `dev` 或 `cosec` 组合 |
+| `cosec` | — | CoSec 网关转发的 `CoSec-Identity` | 生产：服务在 CoSec 网关之后，编辑是租户级调用方 |
+
+在云平台（Kubernetes）上，节点必须有存储和调用方认证，否则拒绝启动，不会意外以内存或匿名方式运行。
+
+## 开发流程
+
+1. **先写测试。** 领域规则用 `aggregateSpec` / `sagaSpec` 在内存中测试（[`domain/src/test`](domain/src/test)），不需要 Spring 与存储。
+2. **再写模型。** 命令、事件写在 `api`，聚合、状态、Saga 写在 `domain`。新聚合只需 `@AggregateRoot`，无需登记。
+3. **契约变化。** 服务模块的 `check` 会比对 Manifest 与 [`server/manifest/baseline.json`](server/manifest/baseline.json)：
+   - 有意的变更，执行 `./gradlew :blog-server:updateWowManifestBaseline` 记录基线，并在评审时审阅它的 diff。
+   - 破坏兼容的变更会被拒绝记录：保持契约（`@Revision` + `@Upgrade`、`retiredEvents`），或者提升服务的主版本。
+4. **重新生成客户端。** 在 `client/` 执行 `pnpm generate`，提交 `src/generated`。
+
+```bash
+./gradlew build                                   # 编译、KSP、测试、detekt、覆盖率门禁、Manifest 兼容性
+./gradlew :blog-domain:test --tests "*ArticleSpec" # 只跑一个领域 spec
+./gradlew integrationTest                         # 在容器中的 MongoDB 副本集上运行服务（需要 Docker）
+./gradlew koverHtmlReport                         # 覆盖率报告：build/reports/kover/html/index.html
+```
+
+### 测试分层
+
+| 层 | 位置 | 运行在 | 验证 |
+|---|---|---|---|
+| 领域 | `domain/src/test` | 内存中的内核（`aggregateSpec`、`sagaSpec`） | 规则、拒绝码、预留、定时、Saga 的确定性与补偿 |
+| 服务 | `server/src/test` | `wowServer<BlogServer>("dev")`，随机端口，内存存储 | 准入约束、路由、所有权、授权、等待计划、超时 |
+| CoSec | `server/src/test/.../BlogCoSecTest.kt` | `cosec` profile | 网关转发的身份、无身份 401 |
+| 集成 | `server/src/integrationTest` | Testcontainers MongoDB 副本集 | 真实存储上的日志、快照、预留与索引 |
+| 客户端 | `client/src/generated.test.ts` | vitest | 生成的客户端与 Manifest 基线逐字节一致 |
+
+## 部署
+
+镜像在 JDK 25 上运行（[`server/Dockerfile`](server/Dockerfile)），用 Wow 官方的 `wow-service` Helm chart 部署。chart 的版本就是 Wow 的版本。
+
+```bash
+./gradlew :blog-server:installDist :blog-server:generateWowHelmValues
+docker build -t registry.example.com/blog-server:0.0.1 server
+helm upgrade --install blog oci://ghcr.io/ahoo-wang/wow-service --version 10.0.0-beta.18 \
+  -f server/build/wow/helm/values.yaml -f deploy/values.yaml --wait
+```
+
+- `server/build/wow/helm/values.yaml` 由构建生成：服务名、对等服务、Manifest 路由。
+- [`deploy/values.yaml`](deploy/values.yaml) 是应用自己的部分：镜像、端口、`mongo,cosec` profile、OpenTelemetry、资源配额。
+- MongoDB 连接来自一个 Secret，示例见 [`deploy/secret.example.yaml`](deploy/secret.example.yaml)。
+- chart 负责探针、滚动发布、PDB、非 root 运行、优雅停机，以及只放行网关的 NetworkPolicy。内部端口只在平台网络内可达。
+
+## CI
+
+[`.github/workflows/build.yml`](.github/workflows/build.yml) 有三个作业：
+
+- **Gradle Build**：
+  - 执行 `build`（包含覆盖率门禁与 Manifest 兼容性），上报 Codecov。
+  - 冒烟测试：启动发行版，用 curl 创建并提交文章，校验状态、内部路由 404 与授权 403。
+  - 用 chart 渲染 Helm values（chart 自带 schema 校验）。
+- **Integration Tests**：`./gradlew integrationTest`，在容器中的 MongoDB 上运行。
+- **Client Build**：lint、客户端漂移测试、构建。
+
+Renovate 把 Wow 的预发布版（Gradle 与 npm）作为一组一起升级；Jackson 固定为 Spring Boot 管理的版本，见 [Ahoo-Wang/Wow#6657](https://github.com/Ahoo-Wang/Wow/issues/6657)。
+
+## 基于模板创建项目
 
 [![Use this template](https://img.shields.io/badge/Use%20this%20template-2ea44f?style=for-the-badge&logo=github)](https://github.com/new?template_name=wow-project-template&template_owner=Ahoo-Wang)
 
-点击上方按钮，基于 [Wow 项目模板](https://github.com/Ahoo-Wang/wow-project-template) 创建新仓库，然后克隆到本地即可开始编写领域模型。
+改名清单：
 
-- 修改 `settings.gradle.kts` 文件，将 `rootProject.name` 修改为项目名称
-- 修改 `domain/{package}/DemoBoundedContext` 的上下文名（路由、事件名、主题与表名都以它为前缀，确定后不宜再改）
-- 修改 `domain/build.gradle.kts` 的 `wow { contractPackage; service }` 与 `server` 的 `spring.application.name`（二者必须一致）
-- 契约变化后执行 `./gradlew server:updateWowManifestBaseline` 记录基线，再在 `client/` 执行 `pnpm generate`
+1. **服务短名**：
+   - [`settings.gradle.kts`](settings.gradle.kts) 的 `service`。
+   - 各构建脚本里的 `project(":blog-…")`。
+   - `rootProject.name`。
+2. **上下文名**（`@BoundedContext(name = "blog")`）：所有命令、事件、路由、主题与表名都以它为前缀，确定后不宜再改。
+3. **服务名**：
+   - `domain/build.gradle.kts` 的 `wow { service }` 与 `server` 的 `spring.application.name`，两者必须一致。
+   - `wow { contractPackage }`。
+4. **包名** `me.ahoo.wow.template`：`gradle.properties` 的 `group`，以及 `server/build.gradle.kts` 的 `mainClass`。
+5. **示例领域**：删掉 `api`、`domain`、`server` 中的示例代码和测试，换成你的模型。之后执行 `./gradlew :blog-server:updateWowManifestBaseline -Pwow.manifest.allowBreaking=true` 记录新的基线，再在 `client/` 执行 `pnpm generate`。
 
-## Git
+## 参考
 
-```shell
-git init
-git remote add origin <your-repo-url>
-# 如果远端仓库有内容，需要先拉取
-git pull origin master
-# gradlew 脚本被注释，需要重新从模板项目中Copy过来
-chmod +x gradlew
-# 清理构建目录
-gradle clean
-git add .
-git commit -m "Initial commit"
-# 推送到远端仓库
-git push -u origin master
-```
-
-## 启动服务
-
-需要 JDK 21（生产运行建议 JDK 25）。未配置后端时，本机运行以内存保存数据、内部端口只绑定回环地址并以匿名调用方提供服务，开箱即用。本地开发建议启用 `dev` profile（调试日志、完整 actuator 端点，调用方由 `Wow-User` 等开发身份请求头声明）：
-
-```shell
-./gradlew server:run --args='--spring.profiles.active=dev'
-```
-
-```shell
-curl -X POST http://localhost:8080/demo/demo/create-demo -H 'Content-Type: application/json' -d '{"data":"hello"}'
-```
-
-> 发行版（`server:installDist`）以 jar 内 `application.yaml` 为基线，`config/application.yaml` 用于环境覆盖。
-> 部署到 Kubernetes 时节点需要后端（`wow-postgres` / `wow-mongo`）与认证调用方的 `CallerResolver`（如 `wow-cosec`），否则拒绝启动。
-
-<p align="center" style="text-align:center">
-  <img src="./document/assets/run-server.png" alt="启动服务"/>
-</p>
-
-> 访问：[http://localhost:8080/swagger-ui.html](http://localhost:8080/swagger-ui.html)
-
-<p align="center" style="text-align:center">
-  <img src="./document/assets/swagger-ui.png" alt="Swagger-UI"/>
-</p>
-
-## 使用客户端
-
-客户端库提供类型安全的 API 调用接口，支持命令和查询操作。
-
-1. **生成客户端代码**（读取提交的 `server/manifest/baseline.json`，无需启动服务端）：
-
-   ```shell
-   cd client
-   pnpm install
-   pnpm generate
-   ```
-
-2. **构建客户端库**：
-
-   ```shell
-   pnpm build
-   ```
-
-3. **在项目中使用**：
-
-   ```typescript
-   import { Fetcher } from '@ahoo-wang/fetcher';
-   import { DemoClient } from '@ahoo-wang/wow-template-client';
-
-   const demo = new DemoClient({ fetcher: new Fetcher({ baseURL: 'http://localhost:8080' }) });
-   // 发送命令（默认等待到快照写入）
-   const result = await demo.demo.commands.createDemo({ data: 'hello' });
-   // 读取状态
-   const snapshot = await demo.demo.state.get(result.ref.id);
-   ```
-
-   详细使用说明请参考 [client/README.md](./client/README.md)。
-
-## 验证测试覆盖率
-
-```shell
-./gradlew domain:koverVerify
-```
-
-> 覆盖率门禁（domain ≥ 80%）已接入 `check`，`./gradlew build` 时自动执行。查看报告：`./gradlew domain:koverHtmlReport` 后打开 `domain/build/reports/kover/html/index.html`
-
-<p align="center" style="text-align:center">
-  <img src="./document/assets/TestCoverage.png" alt="Wow-CI-Flow"/>
-</p>
-
-## CI/CD 流水线
-
-<p align="center" style="text-align:center">
-  <img src="./document/assets/CI-Flow.png" alt="Wow-CI-Flow"/>
-</p>
-
-### 测试阶段
-
-> 代码风格检查(Check CodeStyle)
-
-```shell
-./gradlew detekt
-```
-> 领域模型单元测试 (Check Domain)
-
-```shell
-./gradlew domain:check
-```
-> 测试覆盖率验证(Check CodeCoverage)
-
-```shell
-./gradlew domain:koverVerify
-```
-### 构建阶段
-
-> 生成部署包 (Build Server)
-
-```shell
-./gradlew server:installDist
-```
-
-> 发布 Docker 镜像 (Push Image)
-
-[Dockerfile](server/Dockerfile)
-
-```shell
-docker login --username=<username> --password=<******> <registry>
-docker build -t <registry>/<image>:<tag> server
-docker push <registry>/<image>:<tag>
-```
-
-### 部署阶段
-
-> 部署到 Kubernetes (Deploy Kubernetes)
-
-[deploy](./deploy)
-
-```shell [部署到 Kubernetes (Deploy Kubernetes)]
-kubectl apply -f deploy
-```
-
-### 流水线配置（阿里云效）
-
-```yaml
-sources:
-  repo:
-    type: codeup
-    name: Wow 项目模板代码源
-    endpoint: <your-project-repo>
-    branch: main
-    certificate:
-      type: serviceConnection
-      serviceConnection: <your-service-connection-id>
-stages:
-  test:
-    name: "测试"
-    jobs:
-      code_style:
-        name: "Check CodeStyle"
-        runsOn: public/cn-hongkong
-        steps:
-          code_style:
-            name: "代码风格检查"
-            step: "JavaBuild"
-            runsOn: public/
-            with:
-              jdkVersion: "17"
-              run: ./gradlew detekt
-
-      test:
-        name: "Check Domain"
-        runsOn: public/cn-hongkong
-        steps:
-          test:
-            name: "Check Domain"
-            step: "GradleUnitTest"
-            with:
-              jdkVersion: "17"
-              run: ./gradlew domain:check
-              reportDir: "domain/build/reports/tests/test"
-              reportIndex: "index.html"
-          coverage:
-            name: "Check CodeCoverage"
-            step: "JaCoCo"
-            with:
-              jdkVersion: "17"
-              run: ./gradlew domain:koverVerify domain:koverHtmlReport
-              reportDir: "domain/build/reports/kover/html"
-  build:
-    name: "构建"
-    jobs:
-      build:
-        name: "Build Server And Push Image"
-        runsOn: public/cn-hongkong
-        steps:
-          build:
-            name: "Build Server"
-            step: "JavaBuild"
-            with:
-              jdkVersion: "17"
-              run: ./gradlew server:installDist
-          publish_image:
-            name: "Push Image"
-            step: "ACRDockerBuild"
-            with:
-              artifact: "image"
-              dockerfilePath: "server/Dockerfile"
-              dockerRegistry: "<your-docker-registry—url>"
-              dockerTag: ${DATETIME}
-              region: "cn-hangzhou"
-              serviceConnection: "<your-service-connection-id>"
-  deploy:
-    name: "部署"
-    jobs:
-      deploy:
-        name: "Deploy"
-        runsOn: public/cn-hongkong
-        steps:
-          deploy:
-            name: "Deploy"
-            step: "KubectlApply"
-            with:
-              skipTlsVerify: false
-              kubernetesCluster: "<your-kubernetes-id>"
-              useReplace: false
-              namespace: "dev"
-              kubectlVersion: "1.22.9"
-              yamlPath: "deploy"
-              skipVariableVerify: false
-              variables:
-                - key: IMAGE
-                  value: $[stages.build.build.publish_image.artifacts.image]
-                - key: REPLICAS
-                  value: 2
-                - key: SERVICE_NAME
-                  value: "<service-name>"
-```
-
-## 设计文档
-
-### 用例图
-
-<p align="center" style="text-align:center">
-  <img src="./document/assets/UseCase.svg" alt="Wow-UseCase"/>
-</p>
+- Wow 文档：[wow.ahoo.me](https://wow.ahoo.me/)，最佳实践与评审清单见 Wow 仓库 `skills/wow-develop`。
+- 完整示例：Wow 仓库的 [`examples/eshop`](https://github.com/Ahoo-Wang/Wow/tree/main/examples/eshop)，五个服务、跨上下文 Saga、端到端测试。

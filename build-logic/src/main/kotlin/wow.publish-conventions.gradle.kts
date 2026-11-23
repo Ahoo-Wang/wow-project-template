@@ -1,5 +1,5 @@
 /**
- * 可发布制品共享的 POM 与签名配置。发布物（publication）由 library/platform 约定各自创建。
+ * 可发布制品的 POM 与签名配置。发布物（publication）由 wow.api 约定创建。
  */
 plugins {
     `maven-publish`

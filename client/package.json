@@ -1,7 +1,7 @@
 {
   "name": "@ahoo-wang/wow-template-client",
   "version": "0.0.1",
-  "description": "Typed TypeScript clients of the demo service, generated from its Wow Manifest",
+  "description": "Typed TypeScript clients of the blog service, generated from its Wow Manifest",
   "keywords": [
     "wow",
     "client",
@@ -34,13 +34,13 @@
   ],
   "scripts": {
     "build": "vite build",
-    "test": "vitest run --coverage",
+    "test": "vitest run",
     "lint": "eslint . --fix",
     "format": "prettier --write .",
     "clean": "pnpm clean:dist && pnpm clean:generated",
     "clean:dist": "rimraf dist",
-    "clean:generated": "rimraf src/generated src/.wow-generator.json",
-    "generate": "wow-generator generate --input ../server/manifest/baseline.json --output src/generated --strict",
+    "clean:generated": "rimraf src/generated",
+    "generate": "node scripts/generate.mjs",
     "prepublishOnly": "pnpm clean:dist && pnpm generate && pnpm lint && pnpm build",
     "release": "pnpm publish --access public --no-git-checks",
     "release:patch": "pnpm version patch && pnpm publish --access public --no-git-checks",

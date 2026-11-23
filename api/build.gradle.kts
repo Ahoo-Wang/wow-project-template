@@ -1,14 +1,14 @@
 plugins {
-    // me.ahoo.wow.api: brings wow-api, assembles the contract of the domain module declared below and compiles
-    // `DemoContract` and the `<State>View`s from it.
+    // me.ahoo.wow.api：引入 wow-api，并把下面声明的 domain 模块的契约编译为 `BlogContract`
+    // 与状态视图（`ArticleStateView`、`ReviewStateView`）。
     id("wow.api-conventions")
 }
 
 dependencies {
-    // The domain module whose contract this module carries.
-    wowContract(project(":domain"))
-    // The commands' Jakarta constraints, which the host checks at admission (`wow.command.invalid`, 400).
-    api("jakarta.validation:jakarta.validation-api")
-    // The query fields of the generated contract code (`DemoContract.Demo.STATE__*`).
+    // 本模块承载其契约的 domain 模块。
+    wowContract(project(":blog-domain"))
+    // 命令的 Jakarta 约束，在准入时校验（`wow.command.invalid`，400）。
+    api(libs.jakarta.validation.api)
+    // 生成的契约代码中的查询字段（`BlogContract.Article.STATE__*`）。
     api("me.ahoo.wow:wow-query-api")
 }
