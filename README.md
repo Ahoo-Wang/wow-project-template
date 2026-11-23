@@ -7,7 +7,7 @@
 再把示例领域换成你自己的。
 
 > [!WARNING]
-> 本模板基于 **Wow 10.0.0-beta.18**（预发布版）：API、配置、存储与线上格式在 10.0.0 GA 前仍可能变化，不承诺兼容，不建议用于生产。
+> 本模板基于 **Wow 10.0.0-beta.19**（预发布版）：API、配置、存储与线上格式在 10.0.0 GA 前仍可能变化，不承诺兼容，不建议用于生产。
 
 ## 设计原则
 
@@ -37,7 +37,7 @@ flowchart LR
 |---|---|
 | 命令形状用 Jakarta 约束，在准入时校验（400 `wow.command.invalid`） | [`ArticleCommands.kt`](api/src/main/kotlin/me/ahoo/wow/template/api/article/ArticleCommands.kt) |
 | 业务规则用 `reject` + `@ErrorCode`，状态冲突用 409 | [`Article.kt`](domain/src/main/kotlin/me/ahoo/wow/template/domain/article/Article.kt) `Rejections` |
-| 唯一键：`DecideScope.reserve` / `release`，租户内唯一 | `Article` 创建时预留 slug，删除时释放 |
+| 唯一键：`DecideScope.reserve` / `release`，租户内唯一 | `Article` 创建时预留 slug，删除时释放，恢复时重新预留（被占用则拒绝恢复） |
 | 什么也不改变时返回 `null`（no-op） | `EditArticle`、`ExpireReview` |
 | 所有权：文章属于作者（默认 `Ownership.OWNER`），审核属于租户（`Ownership.TENANT`） | [`Review.kt`](domain/src/main/kotlin/me/ahoo/wow/template/domain/review/Review.kt) |
 | 内部命令 `@InternalCommand`：公开端口没有路由 | `CreateReview`、`PublishArticle`、`ReturnArticle`、`ExpireReview` |
@@ -47,7 +47,7 @@ flowchart LR
 | 溯源函数读取提交的时间，而不是系统时钟 | [`ArticleState`](domain/src/main/kotlin/me/ahoo/wow/template/domain/article/ArticleState.kt) 的 `publishedAt` |
 | 快照查询索引 `@QueryIndex` | `ArticleState` 的 `slug`、`status` + `publishedAt` |
 | 命令授权 `CommandAuthorizer` | [`BlogAuthorization.kt`](server/src/main/kotlin/me/ahoo/wow/template/server/BlogAuthorization.kt)：只有编辑能裁决审核、发送运维命令 |
-| 收窄生命周期命令 `@AggregateRoot(lifecycle = [...])`，领域命令产出 `AggregateDeleted` | 文章用 `DeleteArticle` 删除并释放 slug，删除不可恢复；审核不开放任何生命周期命令，没人能删掉它而让文章卡在审核中 |
+| 收窄生命周期命令 `@AggregateRoot(lifecycle = [...])`，领域命令产出 `AggregateDeleted` / `AggregateRestored` | 文章用 `DeleteArticle` 删除并释放 slug，用 `RestoreArticle`（`@OnCommand(onDeleted = true)`）恢复并重新预留 slug，审核中删除的文章不能恢复；审核不开放任何生命周期命令，没人能删掉它而让文章卡在审核中 |
 
 ## 模块
 
@@ -72,7 +72,7 @@ build-logic/                                  约定插件：wow.kotlin / wow.ap
 ./gradlew :blog-server:run
 ```
 
-本机运行时，没有配置存储就以内存运行，并自动启用 `dev` profile：调用方由开发身份请求头声明，`Wow-User` 是 subject，`Wow-Owner` 是 owner，`Wow-Roles` 是角色。
+`./gradlew :blog-server:run` 会自动启用 `dev` profile：内部端口只绑定 `127.0.0.1`，没有配置存储就以内存运行，调用方由开发身份请求头声明，`Wow-User` 是 subject，`Wow-Owner` 是 owner，`Wow-Roles` 是角色。运行发行版时用 `bin/blog-server --spring.profiles.active=dev`。
 
 ```bash
 # 作者 alice 创建并提交文章；等待计划跟着审核 Saga，一直等到审核写入快照，回答中的 ref 就是这次审核
@@ -99,11 +99,11 @@ curl -X POST localhost:8080/blog/article/snapshot/query -H 'Content-Type: applic
 
 | profile | 存储 | 调用方 | 用途 |
 |---|---|---|---|
-| （本机默认）+ `dev` | 内存 | 开发身份请求头 | 本地开发：`./gradlew :blog-server:run` |
+| `dev` | 内存（没有配置存储时） | 开发身份请求头 | 本地开发：`./gradlew :blog-server:run` 自动启用 |
 | `mongo` | MongoDB 副本集（`spring.mongodb.uri`） | — | 真实存储，可与 `dev` 或 `cosec` 组合 |
 | `cosec` | — | CoSec 网关转发的 `CoSec-Identity` | 生产：服务在 CoSec 网关之后，编辑是租户级调用方 |
 
-在云平台（Kubernetes）上，节点必须有存储和调用方认证，否则拒绝启动，不会意外以内存或匿名方式运行。
+不启用 `dev` profile 时（包括 Kubernetes 与任何虚拟机），节点必须有存储和调用方认证，否则拒绝启动，不会意外以内存或匿名方式运行。
 
 ## 开发流程
 
@@ -136,9 +136,9 @@ curl -X POST localhost:8080/blog/article/snapshot/query -H 'Content-Type: applic
 镜像在 JDK 25 上运行（[`server/Dockerfile`](server/Dockerfile)），用 Wow 官方的 `wow-service` Helm chart 部署。chart 的版本就是 Wow 的版本。
 
 ```bash
-./gradlew :blog-server:installDist :blog-server:generateWowHelmValues
+./gradlew :blog-server:installDist :blog-server:generateWowHelmValues   # values 也由 assemble 生成
 docker build -t registry.example.com/blog-server:0.0.1 server
-helm upgrade --install blog oci://ghcr.io/ahoo-wang/wow-service --version 10.0.0-beta.18 \
+helm upgrade --install blog oci://ghcr.io/ahoo-wang/wow-service --version 10.0.0-beta.19 \
   -f server/build/wow/helm/values.yaml -f deploy/values.yaml --wait
 ```
 
@@ -158,7 +158,7 @@ helm upgrade --install blog oci://ghcr.io/ahoo-wang/wow-service --version 10.0.0
 - **Integration Tests**：`./gradlew integrationTest`，在容器中的 MongoDB 上运行。
 - **Client Build**：lint、客户端漂移测试、构建。
 
-Renovate 把 Wow 的预发布版（Gradle 与 npm）作为一组一起升级；Jackson 固定为 Spring Boot 管理的版本，见 [Ahoo-Wang/Wow#6657](https://github.com/Ahoo-Wang/Wow/issues/6657)。
+Renovate 把 Wow 的预发布版（Gradle 与 npm）作为一组一起升级。Jackson 不再固定：Wow 支持 3.1 与 3.2，`check` 中的 `checkWowJackson` 与宿主启动时的检查会拒绝未验证的版本或混用的模块版本。
 
 ## 基于模板创建项目
 

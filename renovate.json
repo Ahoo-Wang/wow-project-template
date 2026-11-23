@@ -29,13 +29,6 @@
       "respectLatest": false
     },
     {
-      "description": "Jackson 3 is pinned to the version Spring Boot's BOM manages (gradle/libs.versions.toml `jackson`) until Ahoo-Wang/Wow#6657 ships in a Wow beta: move it by hand with spring-boot",
-      "matchPackageNames": [
-        "/^tools\\.jackson/"
-      ],
-      "enabled": false
-    },
-    {
       "description": "Group Spring ecosystem updates into a single PR",
       "groupName": "spring",
       "matchPackageNames": [

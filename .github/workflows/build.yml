@@ -57,7 +57,8 @@ jobs:
         run: |
           ./gradlew :blog-server:installDist --stacktrace
           cd server/build/install/blog-server
-          nohup bin/blog-server > smoke.log 2>&1 &
+          # 只有显式启用开发 profile 才以内存运行、服务开发身份；不带 profile 的节点会因没有后端与调用方认证而拒绝启动。
+          nohup bin/blog-server --spring.profiles.active=dev > smoke.log 2>&1 &
           for i in $(seq 1 60); do
             if curl -fs http://localhost:8080/actuator/health | grep -q '"UP"'; then echo "healthy after ${i}s"; break; fi
             if [ "$i" = 60 ]; then cat smoke.log; exit 1; fi
@@ -83,8 +84,8 @@ jobs:
 
       - name: Helm values check (the wow-service chart renders with the build's and the deployment's values)
         # chart 自带 values.schema.json：拼错的键、错误的类型都会让渲染失败。chart 版本即 Wow 版本。
+        # server/build/wow/helm/values.yaml 由 `assemble`（`build` 的一部分）生成。
         run: |
-          ./gradlew :blog-server:generateWowHelmValues --stacktrace
           wow=$(sed -n 's/^wow = "\(.*\)"/\1/p' gradle/libs.versions.toml)
           helm template blog oci://ghcr.io/ahoo-wang/wow-service --version "$wow" \
             -f server/build/wow/helm/values.yaml -f deploy/values.yaml > /dev/null

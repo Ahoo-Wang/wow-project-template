@@ -43,17 +43,6 @@ configure<DetektExtension> {
     autoCorrect = !isInCI
 }
 
-// 每条类路径上只有一个 Jackson：强制使用 Spring Boot 管理的版本，与 Wow 自己的构建一致（Wow 文档 Operate › Upgrades）。
-// swagger-core 3（springdoc 引入）要求 Jackson 3.2，而 Wow 10.0.0-beta.18 的编解码在 3.2 上会失败（StrictReads 中的
-// NoSuchMethodError）。Wow 缺陷：https://github.com/Ahoo-Wang/Wow/issues/6657，升级到带修复的 Wow 后删除这段。
-// 声明在一个独立的配置上、由每条可解析的类路径继承，因此发布的 POM 与 module metadata 不含 enforced platform。
-val jacksonPlatform = configurations.dependencyScope("jacksonPlatform")
-dependencies {
-    jacksonPlatform(enforcedPlatform(libs.findLibrary("jackson-bom").get()))
-}
-configurations.matching { it.isCanBeResolved && !it.isCanBeConsumed && it.name != jacksonPlatform.name }
-    .configureEach { extendsFrom(jacksonPlatform.get()) }
-
 dependencies {
     "detektPlugins"(libs.findLibrary("detekt-formatting").get())
     // 由 Spring Boot 的 BOM 统一管理各模块测试运行时的版本（JUnit launcher、Logback）。

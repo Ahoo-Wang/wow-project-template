@@ -25,19 +25,10 @@ wow:
   cosec:
     mode: disabled
 ---
-# 本机运行（Spring Boot 未检测到云平台）：内部端口只绑定回环地址。
-# 没有配置后端时，节点因此以内存保存数据；没有 CallerResolver 时，以匿名调用方提供服务。
-# 在 Kubernetes 上本文档不生效：Helm chart 把内部端口绑到 Pod 地址，节点必须有后端（mongo）与调用方认证（cosec）。
-spring:
-  config:
-    activate:
-      on-cloud-platform: none
-wow:
-  internal:
-    host: 127.0.0.1
----
-# 本地开发：`./gradlew :blog-server:run` 自动启用。
+# 本地开发：`./gradlew :blog-server:run` 自动启用；运行发行版时用 `bin/blog-server --spring.profiles.active=dev`。
+# 只有显式启用开发 profile 才进入开发模式：内部端口默认只绑定 127.0.0.1，没有配置后端时以内存保存数据，
 # 调用方由开发身份请求头声明：Wow-User（subject）、Wow-Owner（作者以自己为 owner）、Wow-Roles（如 editor）。
+# 不启用开发 profile 时，节点必须有后端（mongo）与调用方认证（cosec），否则拒绝启动，不会意外以内存或匿名方式运行。
 spring:
   config:
     activate:

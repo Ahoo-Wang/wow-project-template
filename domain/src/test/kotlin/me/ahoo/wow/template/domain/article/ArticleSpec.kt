@@ -2,6 +2,7 @@ package me.ahoo.wow.template.domain.article
 
 import me.ahoo.test.asserts.assert
 import me.ahoo.wow.api.caller.Caller
+import me.ahoo.wow.api.lifecycle.AggregateRestored
 import me.ahoo.wow.api.result.FrameworkCodes
 import me.ahoo.wow.template.api.article.ArticleCreated
 import me.ahoo.wow.template.api.article.ArticleEdited
@@ -13,6 +14,7 @@ import me.ahoo.wow.template.api.article.CreateArticle
 import me.ahoo.wow.template.api.article.DeleteArticle
 import me.ahoo.wow.template.api.article.EditArticle
 import me.ahoo.wow.template.api.article.PublishArticle
+import me.ahoo.wow.template.api.article.RestoreArticle
 import me.ahoo.wow.template.api.article.ReturnArticle
 import me.ahoo.wow.template.api.article.SubmitArticle
 import me.ahoo.wow.test.AggregateSpec
@@ -112,6 +114,41 @@ class ArticleSpec {
     fun `an article under review should be deleted, as its author withdraws it`() = articleSpec {
         givenCommands(CreateArticle(TITLE, BODY, SLUG), SubmitArticle)
         whenCommand(DeleteArticle) { expectDeleted() }
+    }
+
+    @Test
+    fun `a deleted article should be restored, its slug reserved again`() = articleSpec {
+        givenCommands(CreateArticle(TITLE, BODY, SLUG), DeleteArticle)
+        whenCommand(RestoreArticle) { expectEvents(AggregateRestored()) }
+        holds(Article.SLUGS, SLUG).assert().isTrue()
+        whenCommand(EditArticle("After", BODY)) { expectEventTypes(ArticleEdited::class) }
+    }
+
+    @Test
+    fun `a deleted article should stay deleted while another article holds its slug`() = articleSpec {
+        givenCommands(CreateArticle(TITLE, BODY, SLUG), DeleteArticle)
+        givenReservation(Article.SLUGS, SLUG, ArticleModel.TYPE.ref(Caller.DEFAULT_TENANT, "another-article"))
+        whenCommand(RestoreArticle) { expectRejected(Article.Rejections.SLUG_TAKEN) }
+        whenCommand(EditArticle("After", BODY)) { expectRejected(FrameworkCodes.AGGREGATE_DELETED) }
+    }
+
+    @Test
+    fun `restoring an article that is not deleted should change nothing, and keep its slug`() = articleSpec {
+        givenCommands(CreateArticle(TITLE, BODY, SLUG))
+        whenCommand(RestoreArticle) { expectUnchanged() }
+        holds(Article.SLUGS, SLUG).assert().isTrue()
+    }
+
+    @Test
+    fun `restoring an article under review should be refused, deleted or not`() = articleSpec {
+        givenCommands(CreateArticle(TITLE, BODY, SLUG), SubmitArticle)
+        whenCommand(RestoreArticle) { expectRejected(Article.Rejections.WRONG_STATUS) }
+    }
+
+    @Test
+    fun `an article withdrawn from review should not be restored`() = articleSpec {
+        givenCommands(CreateArticle(TITLE, BODY, SLUG), SubmitArticle, DeleteArticle)
+        whenCommand(RestoreArticle) { expectRejected(Article.Rejections.WRONG_STATUS) }
     }
 
     private companion object {

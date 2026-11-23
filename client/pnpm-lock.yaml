@@ -15,15 +15,15 @@ importers:
         specifier: ^6.1.1
         version: 6.1.1(@ahoo-wang/fetcher@6.1.1)
       '@ahoo-wang/wow-client':
-        specifier: ~10.0.0-beta.18
-        version: 10.0.0-beta.18(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)
+        specifier: ~10.0.0-beta.19
+        version: 10.0.0-beta.19(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)
     devDependencies:
       '@ahoo-wang/fetcher-decorator':
         specifier: ^6.1.1
         version: 6.1.1(@ahoo-wang/fetcher@6.1.1)
       '@ahoo-wang/wow-generator':
-        specifier: 10.0.0-beta.18
-        version: 10.0.0-beta.18(@ahoo-wang/fetcher-decorator@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)(@ahoo-wang/wow-client@10.0.0-beta.18(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1))
+        specifier: 10.0.0-beta.19
+        version: 10.0.0-beta.19(@ahoo-wang/fetcher-decorator@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)(@ahoo-wang/wow-client@10.0.0-beta.19(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1))
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.15.0)
@@ -85,22 +85,22 @@ packages:
     resolution: {integrity: sha512-VTFHST0vi2iZo+Tg5ILXNCZNUg8CqdMFLHvwKNT4ha7Zzdi2RQUnfTGMZv4L7ME6S9qKb0DgM12un7epOu8Low==}
     engines: {node: '>=18.20.8'}
 
-  '@ahoo-wang/wow-client@10.0.0-beta.18':
-    resolution: {integrity: sha512-RbgauyjTVFjN87HzDFfxPCRXHoTbAeMOVHwUKlYlW5EvAeA7lWQ2lamxtFmeDN1NSR7X7OJR6S87s188C5T38A==}
+  '@ahoo-wang/wow-client@10.0.0-beta.19':
+    resolution: {integrity: sha512-Y1tUSshdlQW+wPKB4TwqTSpYFzjVksVlzl+FneVqrwOOBUcvAirXFIwvSGmCVE6b2oSZnLvuDQR4OfrC9q4WCA==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
       '@ahoo-wang/fetcher': ^5.1.5 || ^6.0.0
       '@ahoo-wang/fetcher-eventstream': ^5.1.5 || ^6.0.0
 
-  '@ahoo-wang/wow-generator@10.0.0-beta.18':
-    resolution: {integrity: sha512-3xxAbYNTHxEf9OBwGyDNZ7VCQ4Z85V3NNwtx+xxF06GDWaZktMRYDLW+7E9tVFYq2TQ8/dbwu2z9hXCD2s2pIg==}
+  '@ahoo-wang/wow-generator@10.0.0-beta.19':
+    resolution: {integrity: sha512-PntxS4fAlThwyoQ77+vefIeIvA7XN0mbbMySUoT/8DHAgt2KPC6K/qrRqF3k9e4pCMr5p+0hYYEgxRiM4yCfQA==}
     engines: {node: '>=22.12.0'}
     hasBin: true
     peerDependencies:
       '@ahoo-wang/fetcher': ^5.1.5 || ^6.0.0
       '@ahoo-wang/fetcher-decorator': ^5.1.5 || ^6.0.0
       '@ahoo-wang/fetcher-eventstream': ^5.1.5 || ^6.0.0
-      '@ahoo-wang/wow-client': ~10.0.0-beta.18
+      '@ahoo-wang/wow-client': ~10.0.0-beta.19
     peerDependenciesMeta:
       '@ahoo-wang/fetcher-decorator':
         optional: true
@@ -1493,15 +1493,15 @@ snapshots:
 
   '@ahoo-wang/fetcher@6.1.1': {}
 
-  '@ahoo-wang/wow-client@10.0.0-beta.18(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)':
+  '@ahoo-wang/wow-client@10.0.0-beta.19(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)':
     dependencies:
       '@ahoo-wang/fetcher': 6.1.1
       '@ahoo-wang/fetcher-eventstream': 6.1.1(@ahoo-wang/fetcher@6.1.1)
 
-  '@ahoo-wang/wow-generator@10.0.0-beta.18(@ahoo-wang/fetcher-decorator@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)(@ahoo-wang/wow-client@10.0.0-beta.18(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1))':
+  '@ahoo-wang/wow-generator@10.0.0-beta.19(@ahoo-wang/fetcher-decorator@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)(@ahoo-wang/wow-client@10.0.0-beta.19(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1))':
     dependencies:
       '@ahoo-wang/fetcher': 6.1.1
-      '@ahoo-wang/wow-client': 10.0.0-beta.18(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)
+      '@ahoo-wang/wow-client': 10.0.0-beta.19(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)
       commander: 14.0.3
       ts-morph: 28.0.0
       yaml: 2.9.1

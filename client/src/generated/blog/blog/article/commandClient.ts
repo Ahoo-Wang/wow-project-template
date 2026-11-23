@@ -2,7 +2,7 @@
 
 import { CommandClient, type CommandOptions, type CommandResult, type CommandResultStream, type CreateCommandOptions, LifecycleCommands, type WowClientOptions } from '@ahoo-wang/wow-client';
 import { BlogManifest } from '../manifest.js';
-import type { CreateArticle, DeleteArticle, EditArticle, SubmitArticle, TransferOwner, TransferSpace } from '../types.js';
+import type { CreateArticle, DeleteArticle, EditArticle, RestoreArticle, SubmitArticle, TransferOwner, TransferSpace } from '../types.js';
 
 /** Sends the commands of `blog.article` by its service's routes (`BlogManifest`). Each method answers the result its wait plan ends with, as `CommandClient.wait` does: the server's default plan unless the options give one, `{ wait: WaitPlan.ACCEPTED }` to answer once it is accepted. A rejected command rejects with a `CommandRejectedError`; anything else that did not succeed with a `WowProblemError`. */
 export class ArticleCommandClient {
@@ -54,6 +54,20 @@ export class ArticleCommandClient {
   /** `EditArticle`, answered as one result per hop of its wait (`text/event-stream`). */
   editArticleStream(id: string, body: EditArticle, options?: CommandOptions): Promise<CommandResultStream> {
     return this.client.stream({ ...options, command: 'blog.article.EditArticle', body, id });
+  }
+
+  /**
+   * Restore an article
+   * `RestoreArticle`: `POST /blog/article/{id}/restore-article`.
+   * Produces `wow.lifecycle.AggregateRestored`.
+   */
+  restoreArticle(id: string, body: RestoreArticle = {}, options?: CommandOptions): Promise<CommandResult> {
+    return this.client.wait({ ...options, command: 'blog.article.RestoreArticle', body, id });
+  }
+
+  /** `RestoreArticle`, answered as one result per hop of its wait (`text/event-stream`). */
+  restoreArticleStream(id: string, body: RestoreArticle = {}, options?: CommandOptions): Promise<CommandResultStream> {
+    return this.client.stream({ ...options, command: 'blog.article.RestoreArticle', body, id });
   }
 
   /**

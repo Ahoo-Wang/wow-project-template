@@ -3,9 +3,11 @@ package me.ahoo.wow.template.domain.article
 import me.ahoo.wow.api.annotation.AggregateRoot
 import me.ahoo.wow.api.annotation.Description
 import me.ahoo.wow.api.annotation.ErrorCode
+import me.ahoo.wow.api.annotation.OnCommand
 import me.ahoo.wow.api.decide.DecideScope
 import me.ahoo.wow.api.decide.reject
 import me.ahoo.wow.api.lifecycle.AggregateDeleted
+import me.ahoo.wow.api.lifecycle.AggregateRestored
 import me.ahoo.wow.api.lifecycle.TransferOwner
 import me.ahoo.wow.api.lifecycle.TransferSpace
 import me.ahoo.wow.template.api.article.ArticleCreated
@@ -18,6 +20,7 @@ import me.ahoo.wow.template.api.article.CreateArticle
 import me.ahoo.wow.template.api.article.DeleteArticle
 import me.ahoo.wow.template.api.article.EditArticle
 import me.ahoo.wow.template.api.article.PublishArticle
+import me.ahoo.wow.template.api.article.RestoreArticle
 import me.ahoo.wow.template.api.article.ReturnArticle
 import me.ahoo.wow.template.api.article.SubmitArticle
 
@@ -33,8 +36,9 @@ import me.ahoo.wow.template.api.article.SubmitArticle
  * 聚合只做决策：基于命令与当前状态校验规则，返回事件；状态只由 [ArticleState] 的溯源函数修改。
  * 文章属于创建它的作者（默认的 `Ownership.OWNER`）：其他作者既读不到，也改不了（404）。
  *
- * 生命周期：删除要释放 slug，内置的 `DeleteAggregate` 不经过领域代码，所以 `lifecycle` 去掉了它，改由 [DeleteArticle]
- * 删除；也去掉了 `RestoreAggregate`：slug 一旦释放可能被别人占用，删除不可恢复。转移 owner 与空间仍是内置命令。
+ * 生命周期：内置的 `DeleteAggregate` 与 `RestoreAggregate` 都不经过领域代码，前者不会释放 slug，后者不会重新预留，
+ * 恢复出的文章可能与别人的文章同 slug。所以 `lifecycle` 去掉了这两个，改由领域命令 [DeleteArticle] 与 [RestoreArticle]
+ * 删除和恢复；转移 owner 与空间仍是内置命令。
  */
 @AggregateRoot(lifecycle = [TransferOwner::class, TransferSpace::class])
 @Description("作者的一篇文章，从草稿到发布")
@@ -81,6 +85,26 @@ class Article(private val state: ArticleState) {
     fun onCommand(command: DeleteArticle, scope: DecideScope): AggregateDeleted {
         scope.release(SLUGS, state.slug)
         return AggregateDeleted()
+    }
+
+    /**
+     * 恢复已删除的文章（`onDeleted = true`：已删除的聚合只接受内置恢复与这样标注的命令）：重新预留 slug，
+     * 再以生命周期事件 `AggregateRestored` 恢复。预留随事件一起提交。
+     *
+     * 审核中删除（撤稿）的文章不能恢复：它的审核可能已经出了结果，而审核 Saga 接受了“文章已删除”的拒绝，
+     * 恢复出来就会永远停在审核中。领域看不出聚合是否已删除，所以对审核中的文章总是拒绝，无论它是否已删除。
+     * 对没有删除的草稿或已发布文章，`AggregateRestored` 不改变任何东西，内核不提交它。
+     */
+    @Suppress("UnusedParameter") // 命令没有字段：函数处理的是它的类型。
+    @OnCommand(onDeleted = true)
+    suspend fun onCommand(command: RestoreArticle, scope: DecideScope): AggregateRestored {
+        if (state.status == ArticleStatus.IN_REVIEW) {
+            reject(Rejections.WRONG_STATUS, "An article withdrawn from review cannot be restored.")
+        }
+        if (!scope.reserve(SLUGS, state.slug)) {
+            reject(Rejections.SLUG_TAKEN, "Another article is at the slug \"${state.slug}\".")
+        }
+        return AggregateRestored()
     }
 
     private fun requireStatus(required: ArticleStatus, action: String) {

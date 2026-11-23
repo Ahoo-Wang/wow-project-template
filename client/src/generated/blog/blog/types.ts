@@ -104,6 +104,12 @@ export interface RejectReview {
 
 
 /**
+ * Restore an article
+ * - key: `me.ahoo.wow.template.api.article.RestoreArticle`
+ */
+export type RestoreArticle = Record<string, unknown>;
+
+/**
  * A review approved its article
  * - key: `me.ahoo.wow.template.api.review.ReviewApproved`
  */
