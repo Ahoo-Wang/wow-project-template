@@ -10,7 +10,7 @@ cosec = "8.0.0-beta.7"
 springdoc = "3.2.1"
 # Spring Boot 4.2.0's Jackson 3, which Wow's codecs are compiled and tested on. swagger-core 3, which springdoc 3.2.1
 # brings to the server, asks for Jackson 3.2; a Gradle `platform(...)` would let it win, so every classpath enforces this
-# one (wow.kotlin-conventions). Move it with spring-boot.
+# one (wow.kotlin-conventions) until Ahoo-Wang/Wow#6657 is fixed. Move it with spring-boot.
 jackson = "3.1.8"
 # Optional ecosystem BOMs, not on the default class path.
 coapi = "3.1.0"

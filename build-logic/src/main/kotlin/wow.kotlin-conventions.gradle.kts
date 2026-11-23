@@ -44,6 +44,7 @@ val libs = the<VersionCatalogsExtension>().named("libs")
 
 // One Jackson on every classpath: Spring Boot's, enforced, as Wow's own build does (Wow docs, Operate › Upgrades).
 // swagger-core 3 asks for Jackson 3.2, and Wow 10.0.0-beta.18's codecs fail on it (NoSuchMethodError in StrictReads).
+// Wow bug: https://github.com/Ahoo-Wang/Wow/issues/6657 — drop this once a Wow beta with the fix is pinned.
 // Declared on a configuration of its own that every resolvable classpath extends, so the published POM and module
 // metadata of api/domain carry no enforced platform.
 val jacksonPlatform = configurations.dependencyScope("jacksonPlatform")
