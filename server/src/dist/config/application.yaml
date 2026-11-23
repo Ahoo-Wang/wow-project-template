@@ -1,18 +1,7 @@
-# 环境覆盖配置：优先级高于 jar 内的基线 application.yaml。
-# 示例：切换到 PostgreSQL（server/build.gradle.kts 中启用 wow-postgres 与 HikariCP）
-#spring:
-#  datasource:
-#    url: jdbc:postgresql://localhost:5432/demo
-#    username: postgres
-#    password: postgres
-# 示例：切换到 MongoDB（启用 wow-mongo）
+# 发行版的环境覆盖配置：优先级高于 jar 内的基线 application.yaml（见 server/build.gradle.kts）。
+# 在 Kubernetes 上改用 Helm values（deploy/values.yaml）设置环境变量，不需要这个文件。
+#
+# 示例：连接 MongoDB（以 --spring.profiles.active=mongo 启动）
 #spring:
 #  mongodb:
-#    uri: mongodb://localhost:27017/?replicaSet=rs0
-#wow:
-#  mongo:
-#    database: demo
-# 示例：与其他上下文通过 Kafka 交互（启用 wow-kafka）
-#wow:
-#  kafka:
-#    bootstrap-servers: localhost:9092
+#    uri: mongodb://mongo-1,mongo-2,mongo-3/?replicaSet=rs0

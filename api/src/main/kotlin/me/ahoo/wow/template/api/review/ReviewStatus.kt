@@ -4,4 +4,5 @@ enum class ReviewStatus {
     PENDING,
     APPROVED,
     REJECTED,
+    EXPIRED,
 }

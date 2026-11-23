@@ -11,11 +11,18 @@
  * limitations under the License.
  */
 
+// 模块的构建逻辑都在 build-logic 的约定插件里；根项目只聚合覆盖率并负责发布到 Maven Central。
 plugins {
+    id("wow.coverage-conventions")
     alias(libs.plugins.publish)
 }
 
-// 模块构建逻辑统一在 build-logic 的约定插件中（wow.*-conventions），根项目只负责发布到 Maven Central。
+dependencies {
+    kover(project(":blog-api"))
+    kover(project(":blog-domain"))
+    kover(project(":blog-server"))
+}
+
 nexusPublishing {
     repositories {
         sonatype {

@@ -18,7 +18,7 @@
    pnpm install
    ```
 
-3. **生成 API 客户端代码**（读取提交的 Manifest 基线，无需启动服务端；服务端契约变化后先执行 `./gradlew server:updateWowManifestBaseline`）：
+3. **生成 API 客户端代码**（读取提交的 Manifest 基线，无需启动服务端；服务端契约变化后先执行 `./gradlew :blog-server:updateWowManifestBaseline`）：
 
    ```bash
    pnpm generate
@@ -51,9 +51,9 @@
 
 ### 常用脚本
 
-- `pnpm generate` - 从服务端的 Manifest 基线生成客户端代码（提交 `src/generated` 与其中的 `.wow-generator.json`）
+- `pnpm generate` - 从服务端的 Manifest 基线生成客户端代码（提交 `src/generated/<上下文>/` 及其中的 `.wow-generator.json`）
 - `pnpm build` - 编译 TypeScript 并构建库文件
-- `pnpm test` - 执行单元测试并生成覆盖率报告
+- `pnpm test` - 校验生成的客户端与 Manifest 基线逐字节一致（`src/generated.test.ts`）
 - `pnpm lint` - 使用 ESLint 检查代码并自动修复问题
 - `pnpm format` - 使用 Prettier 格式化代码
 - `pnpm clean` - 清理构建产物和生成的客户端代码

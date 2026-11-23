@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "files": {
+    "blog/article/aggregate.ts": "9e51d7480789bdfa3f290f5a37b0a4226b5becde23d7f8806959df1385b727a2",
+    "blog/article/commandClient.ts": "90be2f13459e6580f8e41ecfbede981a4592c47a921cfb5712c2aba621757f2f",
+    "blog/article/index.ts": "93009e30d8920000d82a5628a33424d1dd4c38c65d6a354bdad8e4e8634633b7",
+    "blog/article/queryClient.ts": "472a1578ba46f72b7b6b4ec6f8a46d9744507a94925ab52c155e04edcffe4a00",
+    "blog/client.ts": "92bf228a6aa609be5dd924621e8588957fe1e0658ca5d8700f576488c98f7aba",
+    "blog/contract.ts": "0f1a1129367fe9169b034aa1343869fc295d595ecdc5eb623c396e095adffe19",
+    "blog/index.ts": "5ba1a6618428a691599881c567c3f3c56f2b8cb437f5beed6dcbfba3cfe0b76c",
+    "blog/manifest.ts": "06dcc544653ca7b7e1a39a396731c75df638e61aee230bb6a435d3d112a1abfd",
+    "blog/review/aggregate.ts": "1ae5e4a374b99666a019262488f0da0d5f7d8c14c850059972e5bccb3ba4923b",
+    "blog/review/commandClient.ts": "872550aa221ccc680d686a15d23bfe475627e5c964fca53c8a655cb36de38235",
+    "blog/review/index.ts": "93009e30d8920000d82a5628a33424d1dd4c38c65d6a354bdad8e4e8634633b7",
+    "blog/review/queryClient.ts": "7fed5cbc74cf2e38eb8557099699c98d9baaecc459da0c354fb22b2ae9baaf3c",
+    "blog/types.ts": "058c0640d1227826bcd62ca314f13c7398c7c004e37ec060ac22c56654a7725f",
+    "index.ts": "549fe1399882bcd39da0feec27531b00978bcf05511c497177b3ccfee6e3e81e"
+  }
+}

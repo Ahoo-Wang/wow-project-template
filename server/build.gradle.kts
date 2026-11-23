@@ -12,64 +12,43 @@
  */
 
 plugins {
-    // me.ahoo.wow.service: the service's Manifest and OpenAPI, and `checkWowManifest` against manifest/baseline.json.
-    id("wow.application-conventions")
+    // me.ahoo.wow.service：服务的 Manifest、OpenAPI 与 Helm values，`check` 中对 manifest/baseline.json 的兼容性校验，
+    // 以及 integrationTest 测试套件。
+    id("wow.server-conventions")
 }
 
-tasks.jar.configure {
-    manifest {
-        attributes(
-            "Implementation-Title" to application.applicationName,
-            "Implementation-Version" to archiveVersion,
-        )
-    }
-}
 application {
-    mainClass.set("me.ahoo.wow.template.server.ServerKt")
+    mainClass.set("me.ahoo.wow.template.server.BlogServerKt")
     applicationDefaultJvmArgs = listOf(
-        "-Xlog:gc*:file=logs/$applicationName-gc.log:time,tags:filecount=10,filesize=32M",
-        "-XX:+HeapDumpOnOutOfMemoryError",
-        "-XX:HeapDumpPath=logs",
-        // jar 内 application.yaml 为基线配置，发布包 config/ 目录用于环境覆盖。
+        // 发行版目录下的 config/application.yaml 覆盖 jar 内的基线配置。
         "-Dspring.config.additional-location=optional:file:./config/",
     )
 }
 
-tasks.named<JavaExec>("run") {
-    // 上述 JVM 参数面向发行版目录结构（logs/、config/），本地 `server:run` 不使用。
-    jvmArgs = emptyList()
-}
-
 dependencies {
-    implementation(project(":domain"))
-    // The Wow host: Spring Boot auto-configuration, the public routes (WebFlux) and the internal port.
+    implementation(project(":blog-domain"))
+    // Wow 宿主：Spring Boot 自动配置、公开端口的路由（WebFlux）与内部端口。
     implementation("me.ahoo.wow:wow-spring-boot")
-    // Traces and metrics of the node's seams, through the OpenTelemetry Java agent when one is attached.
+    // `mongo` profile：MongoDB 副本集上的日志、快照、预留与定时（Wow 推荐的默认存储）。
+    // 不启用该 profile 时，本机运行以内存保存数据。
+    implementation("me.ahoo.wow:wow-mongo")
+    // `cosec` profile：在 CoSec 网关之后，读取网关验证并转发的 CoSec-Identity 作为调用方。
+    implementation("me.ahoo.wow:wow-cosec")
+    implementation(platform(libs.cosec.bom))
+    implementation("me.ahoo.cosec:cosec-spring-boot")
+    implementation("me.ahoo.cosec:cosec-webflux")
+    // 节点各环节的指标与链路，由部署时挂载的 OpenTelemetry Java agent 导出；未挂载时为空操作。
     implementation("me.ahoo.wow:wow-observability")
-    // Swagger UI over the service's routes (/swagger-ui.html): the host merges Wow's document into springdoc's.
+    // Swagger UI（/swagger-ui.html）：宿主把 Wow 由 Manifest 生成的文档并入 springdoc 的文档。
+    implementation(platform(libs.springdoc.bom))
     implementation("org.springdoc:springdoc-openapi-starter-webflux-ui")
-    // A Bean Validation provider: the host checks each command's Jakarta constraints at admission.
+    // Bean Validation 实现：宿主在准入时用它校验命令的 Jakarta 约束。
     implementation("org.springframework.boot:spring-boot-starter-validation")
-    // Actuator: the host gives the node's health to the readiness and liveness groups (deploy/deployment.yaml).
+    // Actuator：宿主把节点的健康状态接入 readiness 与 liveness 探针组。
     implementation("org.springframework.boot:spring-boot-starter-actuator")
-    // A backend: without one the node keeps its data in memory (development, or a loopback-only internal port).
-//    implementation("me.ahoo.wow:wow-postgres")
-//    runtimeOnly("com.zaxxer:HikariCP")
-//    implementation("me.ahoo.wow:wow-mongo")
-    // Published streams and commands between contexts.
-//    implementation("me.ahoo.wow:wow-kafka")
-    // Snapshots and their queries on Elasticsearch, as the only store or a search copy.
-//    implementation("me.ahoo.wow:wow-elasticsearch")
-    // CoSec 8 behind the CoSec gateway (`wow.cosec.mode: gateway`).
-//    implementation("me.ahoo.wow:wow-cosec")
-//    implementation("me.ahoo.cosec:cosec-spring-boot")
-//    implementation("me.ahoo.cosec:cosec-webflux")
-    // Aggregate ids from CosId 5 generators (the node's own ids stay UUIDv7).
-//    implementation("me.ahoo.wow:wow-cosid")
-//    implementation("me.ahoo.cosid:cosid-spring-boot-starter")
-    // A shared state cache per aggregate type, read by peers as StateViewCache<V>.
-//    implementation("me.ahoo.wow:wow-cocache")
-//    implementation("me.ahoo.cocache:cocache-spring-boot-starter")
-    // `wowServer<App>()`: the application on random ports with typed command and query clients.
-    testImplementation("me.ahoo.wow:wow-test-spring-boot")
+    // CoSec 网关模式的测试：以网关转发的身份（CoSecIdentity）调用服务。
+    testImplementation(platform(libs.cosec.bom))
+    testImplementation("me.ahoo.cosec:cosec-testkit")
+    // integrationTest：在容器中的 MongoDB 副本集上运行服务。
+    integrationTestImplementation("org.testcontainers:testcontainers-mongodb")
 }
