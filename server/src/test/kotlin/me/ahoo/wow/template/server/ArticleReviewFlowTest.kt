@@ -14,6 +14,7 @@ import me.ahoo.wow.template.api.article.ArticleStatus
 import me.ahoo.wow.template.api.article.CreateArticle
 import me.ahoo.wow.template.api.article.DeleteArticle
 import me.ahoo.wow.template.api.article.EditArticle
+import me.ahoo.wow.template.api.article.RestoreArticle
 import me.ahoo.wow.template.api.article.SubmitArticle
 import me.ahoo.wow.template.api.review.ApproveReview
 import me.ahoo.wow.template.api.review.RejectReview
@@ -99,16 +100,39 @@ class ArticleReviewFlowTest {
     }
 
     @Test
-    fun `a deleted article should free its slug for good`() {
+    fun `a deleted article should free its slug, and be restored once the slug is free again`() {
         val slug = slug()
         val lena = author("lena")
+        val mike = author("mike")
         val article = create(lena, slug)
         runBlocking { server.commands(lena).wait(DeleteArticle, article) }
 
-        create(author("mike"), slug)
-        // 删除不可恢复：文章没有恢复命令，它的 slug 可能已被别人占用。
+        // 删除释放了 slug：别人可以用它，此时恢复被拒绝。
+        val taken = create(mike, slug)
+        assertRejected { server.commands(lena).wait(RestoreArticle, article) }
+            .code.assert().isEqualTo(BlogContract.Article.Errors.SLUG_TAKEN)
+
+        // 对方删除后 slug 再次空出，恢复成功并重新预留 slug。
+        runBlocking { server.commands(mike).wait(DeleteArticle, taken) }
+        runBlocking { server.commands(lena).wait(RestoreArticle, article) }
+        read(article, lena)!!.deleted.assert().isFalse()
+        assertRejected { server.commands(author("nora")).wait(CreateArticle("Mine", "Body.", slug)) }
+            .code.assert().isEqualTo(BlogContract.Article.Errors.SLUG_TAKEN)
+
+        // 内置的恢复不重新预留 slug，所以文章不开放它。
         server.http.post("/blog/article/$article/wow.lifecycle.restore-aggregate", "{}", caller = lena)
             .status.assert().isEqualTo(NOT_FOUND)
+    }
+
+    @Test
+    fun `restoring an article that is not deleted should change nothing, and keep its slug`() {
+        val slug = slug()
+        val olga = author("olga")
+        val article = create(olga, slug)
+        val result = runBlocking { server.commands(olga).wait(RestoreArticle, article) }
+        result.version.assert().isEqualTo(1)
+        assertRejected { server.commands(author("paul")).wait(CreateArticle("Mine", "Body.", slug)) }
+            .code.assert().isEqualTo(BlogContract.Article.Errors.SLUG_TAKEN)
     }
 
     /** 审核不开放生命周期命令：谁删了审核，文章就会一直停在审核中。 */

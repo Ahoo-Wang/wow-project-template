@@ -37,11 +37,18 @@ data class EditArticle(
 )
 
 /**
- * 作者删除文章：释放它的 slug，删除不可恢复。审核中的文章也可以删除，相当于撤稿；审核结果随后到达时，
- * 审核 Saga 接受“文章已删除”的拒绝。
+ * 作者删除文章：释放它的 slug。草稿或已发布的文章删除后可以用 [RestoreArticle] 恢复。
+ * 审核中的文章也可以删除，相当于撤稿，撤稿不可恢复；审核结果随后到达时，审核 Saga 接受“文章已删除”的拒绝。
  */
 @Summary("Delete an article")
 data object DeleteArticle
+
+/**
+ * 作者恢复已删除的文章：重新预留它的 slug，slug 已被别的文章占用则拒绝。审核中删除（撤稿）的文章不能恢复。
+ * 对没有删除的文章，它什么也不改变。
+ */
+@Summary("Restore an article")
+data object RestoreArticle
 
 /** 作者提交草稿以供审核。 */
 @Summary("Submit an article for review")

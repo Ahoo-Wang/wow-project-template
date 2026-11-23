@@ -66,6 +66,17 @@
         "internal" : true,
         "description" : "Publish an article"
       }, {
+        "name" : "RestoreArticle",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.RestoreArticle",
+        "creation" : "none",
+        "produces" : [ "wow.lifecycle.AggregateRestored" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/{id}/restore-article"
+        } ],
+        "description" : "Restore an article"
+      }, {
         "name" : "ReturnArticle",
         "aliases" : [ ],
         "schema" : "#/$defs/me.ahoo.wow.template.api.article.ReturnArticle",
@@ -718,6 +729,11 @@
       "required" : [ "reviewId" ],
       "description" : "Publish an article",
       "x-wow-class" : "me.ahoo.wow.template.api.article.PublishArticle"
+    },
+    "me.ahoo.wow.template.api.article.RestoreArticle" : {
+      "type" : "object",
+      "description" : "Restore an article",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.RestoreArticle"
     },
     "me.ahoo.wow.template.api.article.ReturnArticle" : {
       "type" : "object",

@@ -50,11 +50,11 @@
   "peerDependencies": {
     "@ahoo-wang/fetcher": "^6.1.1",
     "@ahoo-wang/fetcher-eventstream": "^6.1.1",
-    "@ahoo-wang/wow-client": "~10.0.0-beta.18"
+    "@ahoo-wang/wow-client": "~10.0.0-beta.19"
   },
   "devDependencies": {
     "@ahoo-wang/fetcher-decorator": "^6.1.1",
-    "@ahoo-wang/wow-generator": "10.0.0-beta.18",
+    "@ahoo-wang/wow-generator": "10.0.0-beta.19",
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.19.2",
     "@vitest/coverage-v8": "^4.1.12",

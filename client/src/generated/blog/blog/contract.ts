@@ -18,7 +18,7 @@ export const BlogContract = {
 export type BlogErrorCode = 'blog.article.slug-taken' | 'blog.article.wrong-status' | 'blog.review.already-decided';
 
 /** The subscriptions of `blog` a `handled` hop names. */
-export type BlogSubscription = 'ArticleReviewSaga.onArticleSubmitted' | 'ArticleReviewSaga.onPublishRejected' | 'ArticleReviewSaga.onReturnRejected' | 'ArticleReviewSaga.onReviewApproved' | 'ArticleReviewSaga.onReviewExpired' | 'ArticleReviewSaga.onReviewRejected';
+export type BlogSubscription = 'ArticleReviewSaga.onArticleSubmitted' | 'ArticleReviewSaga.onReviewApproved' | 'ArticleReviewSaga.onReviewExpired' | 'ArticleReviewSaga.onReviewRejected';
 
 /** The hops of a wait chain (`Wow-Wait`) in `blog`. */
 export const blogWait = {

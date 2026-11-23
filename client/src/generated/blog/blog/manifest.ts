@@ -15,6 +15,7 @@ export const BlogManifest: RoutingManifest = {
             { name: 'CreateArticle', routes: [{ method: 'POST', path: '/blog/article/{id}/create-article' }, { method: 'POST', path: '/blog/article/create-article' }] },
             { name: 'DeleteArticle', routes: [{ method: 'POST', path: '/blog/article/{id}/delete-article' }] },
             { name: 'EditArticle', routes: [{ method: 'POST', path: '/blog/article/{id}/edit-article' }] },
+            { name: 'RestoreArticle', routes: [{ method: 'POST', path: '/blog/article/{id}/restore-article' }] },
             { name: 'SubmitArticle', routes: [{ method: 'POST', path: '/blog/article/{id}/submit-article' }] },
             { name: 'wow.lifecycle.TransferOwner', routes: [{ method: 'POST', path: '/blog/article/{id}/wow.lifecycle.transfer-owner' }] },
             { name: 'wow.lifecycle.TransferSpace', routes: [{ method: 'POST', path: '/blog/article/{id}/wow.lifecycle.transfer-space' }] },
