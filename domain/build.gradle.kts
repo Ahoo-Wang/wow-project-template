@@ -18,13 +18,6 @@ dependencies {
 
 kover {
     reports {
-        filters {
-            excludes {
-                // KSP output: the generated models, handlers and the binding index are the compiler's, not ours.
-                annotatedBy("javax.annotation.processing.Generated", "me.ahoo.wow.api.annotation.Generated")
-                classes("*ModelProvider*", "*Model", "*ModelKt", "*Subscriptions*", "*Properties")
-            }
-        }
         verify {
             rule {
                 minBound(80)

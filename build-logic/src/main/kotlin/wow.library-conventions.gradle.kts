@@ -25,3 +25,11 @@ publishing {
         }
     }
 }
+
+kover {
+    reports {
+        filters {
+            excludeWowGenerated()
+        }
+    }
+}
