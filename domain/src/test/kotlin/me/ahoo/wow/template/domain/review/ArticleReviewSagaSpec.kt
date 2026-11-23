@@ -15,6 +15,7 @@ import me.ahoo.wow.template.api.review.ReviewApproved
 import me.ahoo.wow.template.api.review.ReviewCreated
 import me.ahoo.wow.template.api.review.ReviewExpired
 import me.ahoo.wow.template.api.review.ReviewRejected
+import me.ahoo.wow.template.domain.article.Article
 import me.ahoo.wow.template.domain.article.ArticleModel
 import me.ahoo.wow.template.domain.article.articleModel
 import me.ahoo.wow.test.sagaSpec
@@ -93,6 +94,17 @@ class ArticleReviewSagaSpec {
             whenRejected(commands.single(), FrameworkCodes.AGGREGATE_DELETED) {
                 expectHandledBy("onReturnRejected")
                 expectNoCommand()
+            }
+        }
+    }
+
+    /** 预期之外的拒绝不被吞掉：处理失败，订阅随后重试并最终停放，交给运维排查。 */
+    @Test
+    fun `an unexpected rejection should fail the handling, not be accepted`() = sagaSpec(handlers) {
+        givenAggregate(reviews, REVIEW, ReviewCreated(ARTICLE))
+        whenEvent(ReviewApproved(ARTICLE, "LGTM"), by = ApproveReview::class) {
+            whenRejected(commands.single(), Article.Rejections.WRONG_STATUS) {
+                expectError<IllegalStateException> { message.assert().contains("rejected unexpectedly") }
             }
         }
     }

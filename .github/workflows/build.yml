@@ -84,6 +84,7 @@ jobs:
       - name: Helm values check (the wow-service chart renders with the build's and the deployment's values)
         # chart 自带 values.schema.json：拼错的键、错误的类型都会让渲染失败。chart 版本即 Wow 版本。
         run: |
+          ./gradlew :blog-server:generateWowHelmValues --stacktrace
           wow=$(sed -n 's/^wow = "\(.*\)"/\1/p' gradle/libs.versions.toml)
           helm template blog oci://ghcr.io/ahoo-wang/wow-service --version "$wow" \
             -f server/build/wow/helm/values.yaml -f deploy/values.yaml > /dev/null

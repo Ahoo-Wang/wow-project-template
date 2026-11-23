@@ -5,6 +5,7 @@ import me.ahoo.wow.api.annotation.OnRejected
 import me.ahoo.wow.api.annotation.Saga
 import me.ahoo.wow.api.client.CommandRequest
 import me.ahoo.wow.api.client.toCommandRequest
+import me.ahoo.wow.api.result.FrameworkCodes
 import me.ahoo.wow.api.subscribe.CommandReceipt
 import me.ahoo.wow.api.subscribe.StateTypedEvent
 import me.ahoo.wow.template.api.article.ArticleSubmitted
@@ -51,18 +52,26 @@ class ArticleReviewSaga {
 
     /**
      * 审核期间作者删除了文章，发布被拒绝（`wow.aggregate.deleted`）：无需补偿，接受即可。
-     * 没有这个处理函数，派生命令被拒绝会停放（park）审核聚合，等待人工处理。
+     * 没有 `@OnRejected` 处理函数，派生命令被拒绝会停放（park）审核聚合，等待人工处理。
      */
-    @Suppress("UnusedParameter")
     @OnRejected
-    fun onPublishRejected(rejected: CommandReceipt.Rejected<PublishArticle>) = Unit
+    fun onPublishRejected(rejected: CommandReceipt.Rejected<PublishArticle>) = acceptArticleDeleted(rejected)
 
     /** 同上：文章已删除，无需退回。 */
-    @Suppress("UnusedParameter")
     @OnRejected
-    fun onReturnRejected(rejected: CommandReceipt.Rejected<ReturnArticle>) = Unit
+    fun onReturnRejected(rejected: CommandReceipt.Rejected<ReturnArticle>) = acceptArticleDeleted(rejected)
 
     companion object {
         const val EXPIRED_REASON = "The review expired before an editor decided it."
+
+        /**
+         * 只接受预期内的拒绝：文章已被删除。其他拒绝不该发生（文章只会被本 Saga 移出审核，重复投递由确定性 ID 去重），
+         * 一旦发生就让处理失败：订阅按规则重试，最终停放审核聚合，交给运维排查（`/wow/ops/parked`），而不是被悄悄吞掉。
+         */
+        private fun acceptArticleDeleted(rejected: CommandReceipt.Rejected<*>) {
+            check(rejected.error.code == FrameworkCodes.AGGREGATE_DELETED) {
+                "${rejected.commandType} to ${rejected.ref} was rejected unexpectedly: ${rejected.error.code}."
+            }
+        }
     }
 }
