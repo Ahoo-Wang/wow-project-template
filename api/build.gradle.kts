@@ -1,12 +1,14 @@
 plugins {
-    id("wow.library-conventions")
-    id("wow.wow-compiler-conventions")
+    // me.ahoo.wow.api: brings wow-api, assembles the contract of the domain module declared below and compiles
+    // `DemoContract` and the `<State>View`s from it.
+    id("wow.api-conventions")
 }
 
 dependencies {
-    // 发布语言只依赖注解与契约类型，避免把基础设施传递给消费方。
-    api("me.ahoo.wow:wow-api")
+    // The domain module whose contract this module carries.
+    wowContract(project(":domain"))
+    // The commands' Jakarta constraints, which the host checks at admission (`wow.command.invalid`, 400).
     api("jakarta.validation:jakarta.validation-api")
-    api("com.fasterxml.jackson.core:jackson-annotations")
-    api(libs.swagger.annotations)
+    // The query fields of the generated contract code (`DemoContract.Demo.STATE__*`).
+    api("me.ahoo.wow:wow-query-api")
 }

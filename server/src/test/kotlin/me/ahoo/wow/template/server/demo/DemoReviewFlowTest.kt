@@ -1,108 +1,102 @@
 package me.ahoo.wow.template.server.demo
 
+import kotlinx.coroutines.runBlocking
 import me.ahoo.test.asserts.assert
+import me.ahoo.wow.api.caller.Caller
+import me.ahoo.wow.api.client.CommandClient
+import me.ahoo.wow.api.client.wait
+import me.ahoo.wow.api.read.snapshots
+import me.ahoo.wow.api.result.FrameworkCodes
+import me.ahoo.wow.api.result.WaitPlan
+import me.ahoo.wow.template.api.DemoContract
+import me.ahoo.wow.template.api.demo.CreateDemo
+import me.ahoo.wow.template.api.demo.DemoStateView
 import me.ahoo.wow.template.api.demo.DemoStatus
-import me.ahoo.wow.template.api.demo.DemoView
-import org.junit.jupiter.api.BeforeEach
+import me.ahoo.wow.template.api.demo.UpdateDemo
+import me.ahoo.wow.template.api.review.ApproveReview
+import me.ahoo.wow.template.api.review.RejectReview
+import me.ahoo.wow.template.server.Server
+import me.ahoo.wow.test.server.assertRejected
+import me.ahoo.wow.test.server.wowServer
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.Test
-import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.boot.test.web.server.LocalServerPort
-import org.springframework.http.MediaType
-import org.springframework.test.web.reactive.server.WebTestClient
-import org.springframework.test.web.reactive.server.expectBody
-import java.time.Duration
+import org.junit.jupiter.api.TestInstance
+import java.util.UUID
 
 /**
- * 端到端验证 HTTP 命令 → 聚合 → Saga → 跨聚合命令 的完整链路（内存基础设施）。
+ * 端到端验证 命令 → 聚合 → Saga → 跨聚合命令 的完整链路（内存后端）：应用以随机端口启动，
+ * 通过类型化客户端发送命令，等待计划（`Wow-Wait`）沿 Saga 派生的命令一直等到目标聚合的快照。
  */
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class DemoReviewFlowTest {
-    companion object {
-        private const val TENANT_ID = "test"
-        private const val WAIT_STAGE = "Command-Wait-Stage"
-        private val AWAIT_TIMEOUT: Duration = Duration.ofSeconds(5)
-    }
+    private val server = wowServer<Server>("dev")
 
-    @LocalServerPort
-    private var port: Int = 0
-
-    private lateinit var client: WebTestClient
-
-    @BeforeEach
-    fun setup() {
-        client = WebTestClient.bindToServer().baseUrl("http://localhost:$port").build()
+    @AfterAll
+    fun close() {
+        server.close()
     }
 
     @Test
-    fun `approved review publishes demo`() {
+    fun `an approved review should publish its demo`() {
         val demoId = createDemo("hello")
-        awaitDemoStatus(demoId, DemoStatus.REVIEWING)
+        demo(demoId).status.assert().isEqualTo(DemoStatus.REVIEWING)
 
-        sendCommand("/tenant/$TENANT_ID/review/$demoId/approve", """{"comment":"LGTM"}""")
-            .expectStatus().isOk
+        runBlocking { commands().wait(ApproveReview(comment = "LGTM"), demoId) { wait(TO_PUBLISHED) } }
+        demo(demoId).status.assert().isEqualTo(DemoStatus.PUBLISHED)
 
-        awaitDemoStatus(demoId, DemoStatus.PUBLISHED)
-        sendCommand("/tenant/$TENANT_ID/demo/$demoId", """{"data":"changed"}""")
-            .expectStatus().isBadRequest
+        assertRejected { commands().wait(UpdateDemo(data = "changed"), demoId) }
+            .code.assert().isEqualTo(DemoContract.Demo.Errors.WRONG_STATUS)
     }
 
     @Test
-    fun `rejected review rejects demo`() {
+    fun `a rejected review should reject its demo`() {
         val demoId = createDemo("hello")
-        awaitDemoStatus(demoId, DemoStatus.REVIEWING)
 
-        sendCommand("/tenant/$TENANT_ID/review/$demoId/reject", """{"reason":"invalid"}""")
-            .expectStatus().isOk
-
-        awaitDemoStatus(demoId, DemoStatus.REJECTED)
+        runBlocking { commands().wait(RejectReview(reason = "invalid"), demoId) { wait(TO_REJECTED) } }
+        demo(demoId).status.assert().isEqualTo(DemoStatus.REJECTED)
     }
 
     @Test
-    fun `blank data is rejected by validation`() {
-        client.post().uri("/tenant/$TENANT_ID/demo")
-            .contentType(MediaType.APPLICATION_JSON)
-            .bodyValue("""{"data":""}""")
-            .exchange()
-            .expectStatus().isBadRequest
+    fun `blank data should be invalid before the demo decides`() {
+        val invalid = server.http.post("/demo/demo/create-demo", """{"data":""}""").problem!!
+        invalid.code.assert().isEqualTo(FrameworkCodes.COMMAND_INVALID)
+        invalid.violations.single().path.assert().isEqualTo("data")
     }
 
+    @Test
+    fun `an internal command should have no public route`() {
+        val demoId = createDemo("hello")
+        server.http.post("/demo/demo/$demoId/publish-demo", """{"reviewId":"$demoId"}""")
+            .status.assert().isEqualTo(NOT_FOUND)
+    }
+
+    /** 创建 Demo，并等待审核 Saga 为它创建审核；返回 Demo（也是审核）的 ID。 */
     private fun createDemo(data: String): String {
-        val result = client.post().uri("/tenant/$TENANT_ID/demo")
-            .contentType(MediaType.APPLICATION_JSON)
-            .header(WAIT_STAGE, "PROCESSED")
-            .bodyValue("""{"data":"$data"}""")
-            .exchange()
-            .expectStatus().isOk
-            .expectBody<Map<String, Any>>()
-            .returnResult()
-            .responseBody!!
-        return result["aggregateId"] as String
+        val demoId = "demo-" + UUID.randomUUID()
+        runBlocking { commands().wait(CreateDemo(data = data), demoId) { wait(TO_REVIEW) } }
+        return demoId
     }
 
-    private fun sendCommand(uri: String, body: String): WebTestClient.ResponseSpec {
-        return client.put().uri(uri)
-            .contentType(MediaType.APPLICATION_JSON)
-            .header(WAIT_STAGE, "PROCESSED")
-            .bodyValue(body)
-            .exchange()
-    }
+    private fun commands(caller: Caller = Caller.ANONYMOUS): CommandClient = server.commands(caller)
 
-    /**
-     * Saga 驱动的后续命令是异步的，轮询聚合状态直到达到期望值。
-     */
-    private fun awaitDemoStatus(demoId: String, expected: DemoStatus) {
-        val deadline = System.nanoTime() + AWAIT_TIMEOUT.toNanos()
-        var actual: DemoStatus?
-        do {
-            actual = client.get().uri("/tenant/$TENANT_ID/demo/$demoId/state")
-                .exchange()
-                .returnResult(DemoView::class.java)
-                .responseBody
-                .blockFirst()
-                ?.status
-            if (actual == expected) return
-            Thread.sleep(50)
-        } while (System.nanoTime() < deadline)
-        actual.assert().isEqualTo(expected)
+    private fun demo(id: String): DemoStateView =
+        runBlocking { server.queries(Caller.ANONYMOUS).snapshots<DemoStateView>().state(id) }!!.state
+
+    private companion object {
+        const val NOT_FOUND = 404
+
+        /** 创建 Demo 后，等到审核 Saga 派生的 `CreateReview` 写入快照。 */
+        val TO_REVIEW: WaitPlan = WaitPlan.of(
+            DemoContract.Wait.DEMO_REVIEW_SAGA__ON_DEMO_CREATED,
+            DemoContract.Wait.SNAPSHOT,
+        )
+        val TO_PUBLISHED: WaitPlan = WaitPlan.of(
+            DemoContract.Wait.DEMO_REVIEW_SAGA__ON_REVIEW_APPROVED,
+            DemoContract.Wait.SNAPSHOT,
+        )
+        val TO_REJECTED: WaitPlan = WaitPlan.of(
+            DemoContract.Wait.DEMO_REVIEW_SAGA__ON_REVIEW_REJECTED,
+            DemoContract.Wait.SNAPSHOT,
+        )
     }
 }

@@ -1,21 +1,18 @@
 package me.ahoo.wow.template.api.review
 
 import jakarta.validation.constraints.NotBlank
-import me.ahoo.wow.api.annotation.CommandRoute
-import me.ahoo.wow.api.annotation.Event
 import me.ahoo.wow.api.annotation.Summary
 
+/**
+ * 审核驳回：`POST /demo/review/{id}/reject-review`。
+ */
 @Summary("审核驳回")
-@CommandRoute(
-    action = "reject",
-    appendIdPath = CommandRoute.AppendPath.ALWAYS,
-)
 data class RejectReview(
     @field:NotBlank
     val reason: String
 )
 
-@Event
+@Summary("审核已驳回")
 data class ReviewRejected(
     val demoId: String,
     val reason: String

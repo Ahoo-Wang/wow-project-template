@@ -8,46 +8,43 @@ import me.ahoo.wow.template.api.review.ReviewApproved
 import me.ahoo.wow.template.api.review.ReviewCreated
 import me.ahoo.wow.template.api.review.ReviewRejected
 import me.ahoo.wow.template.api.review.ReviewStatus
-import me.ahoo.wow.test.AggregateSpec
+import me.ahoo.wow.test.aggregateSpec
+import org.junit.jupiter.api.Test
 
-class ReviewSpec : AggregateSpec<Review, ReviewState>({
-    on {
-        val create = CreateReview(demoId = "demoId")
-        whenCommand(create) {
-            expectNoError()
-            expectEventType(ReviewCreated::class)
+class ReviewSpec {
+    private val model = reviewModel()
+
+    @Test
+    fun `creating a review should be pending`() = aggregateSpec(model, id = DEMO) {
+        whenCommand(CreateReview(demoId = DEMO)) {
+            expectEvents(ReviewCreated(demoId = DEMO))
             expectState {
-                demoId.assert().isEqualTo(create.demoId)
+                demoId.assert().isEqualTo(DEMO)
                 status.assert().isEqualTo(ReviewStatus.PENDING)
-            }
-            fork("approve") {
-                whenCommand(ApproveReview(comment = "LGTM")) {
-                    expectNoError()
-                    expectEventType(ReviewApproved::class)
-                    expectEventBody<ReviewApproved> {
-                        demoId.assert().isEqualTo(create.demoId)
-                    }
-                    expectState {
-                        status.assert().isEqualTo(ReviewStatus.APPROVED)
-                    }
-                    fork("reject after approved") {
-                        whenCommand(RejectReview(reason = "reason")) {
-                            expectError<IllegalStateException> {
-                                message.assert().contains("already APPROVED")
-                            }
-                        }
-                    }
-                }
-            }
-            fork("reject") {
-                whenCommand(RejectReview(reason = "reason")) {
-                    expectNoError()
-                    expectEventType(ReviewRejected::class)
-                    expectState {
-                        status.assert().isEqualTo(ReviewStatus.REJECTED)
-                    }
-                }
             }
         }
     }
-})
+
+    @Test
+    fun `a review should be decided once`() = aggregateSpec(model, id = DEMO) {
+        given(ReviewCreated(demoId = DEMO))
+        fork("approve") {
+            whenCommand(ApproveReview(comment = "LGTM")) {
+                expectEvents(ReviewApproved(demoId = DEMO, comment = "LGTM"))
+                expectState { status.assert().isEqualTo(ReviewStatus.APPROVED) }
+            }
+            whenCommand(RejectReview(reason = "reason")) { expectRejected(Review.Rejections.ALREADY_DECIDED) }
+        }
+        fork("reject") {
+            whenCommand(RejectReview(reason = "reason")) {
+                expectEvents(ReviewRejected(demoId = DEMO, reason = "reason"))
+                expectState { status.assert().isEqualTo(ReviewStatus.REJECTED) }
+            }
+            whenCommand(ApproveReview()) { expectRejected(Review.Rejections.ALREADY_DECIDED) }
+        }
+    }
+
+    private companion object {
+        const val DEMO = "demo-1"
+    }
+}

@@ -1,0 +1,817 @@
+{
+  "format" : 1,
+  "line" : 0,
+  "service" : {
+    "name" : "demo-service"
+  },
+  "contexts" : [ {
+    "name" : "demo",
+    "description" : "Demo 及其审核流程",
+    "aggregates" : [ {
+      "name" : "demo",
+      "description" : "Demo 聚合根：只负责基于当前状态校验不变量并产生事件，状态变更由 DemoState 通过事件溯源完成。",
+      "state" : {
+        "schema" : "#/$defs/me.ahoo.wow.template.domain.demo.DemoState",
+        "fingerprint" : "f8d69cf5daad2cde"
+      },
+      "snapshot" : {
+        "enabled" : true
+      },
+      "commands" : [ {
+        "name" : "CreateDemo",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.CreateDemo",
+        "creation" : "required",
+        "produces" : [ "DemoCreated" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/demo/{id}/create-demo"
+        }, {
+          "method" : "POST",
+          "path" : "/demo/demo/create-demo"
+        } ],
+        "description" : "创建Demo"
+      }, {
+        "name" : "PublishDemo",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.PublishDemo",
+        "creation" : "none",
+        "produces" : [ "DemoPublished" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/demo/{id}/publish-demo"
+        } ],
+        "internal" : true,
+        "description" : "发布Demo"
+      }, {
+        "name" : "RejectDemo",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.RejectDemo",
+        "creation" : "none",
+        "produces" : [ "DemoRejected" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/demo/{id}/reject-demo"
+        } ],
+        "internal" : true,
+        "description" : "驳回Demo"
+      }, {
+        "name" : "UpdateDemo",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.UpdateDemo",
+        "creation" : "none",
+        "produces" : [ "DemoUpdated" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/demo/{id}/update-demo"
+        } ],
+        "description" : "更新Demo"
+      }, {
+        "name" : "wow.lifecycle.DeleteAggregate",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.lifecycle.DeleteAggregate",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "DELETE",
+          "path" : "/demo/demo/{id}"
+        } ],
+        "system" : true
+      }, {
+        "name" : "wow.lifecycle.RestoreAggregate",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.lifecycle.RestoreAggregate",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/demo/{id}/wow.lifecycle.restore-aggregate"
+        } ],
+        "system" : true
+      }, {
+        "name" : "wow.lifecycle.TransferOwner",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.lifecycle.TransferOwner",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/demo/{id}/wow.lifecycle.transfer-owner"
+        } ],
+        "system" : true
+      }, {
+        "name" : "wow.lifecycle.TransferSpace",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.lifecycle.TransferSpace",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/demo/{id}/wow.lifecycle.transfer-space"
+        } ],
+        "system" : true
+      }, {
+        "name" : "wow.snapshot.RebuildSnapshot",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.snapshot.RebuildSnapshot",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/demo/wow.snapshot.rebuild-snapshot"
+        } ],
+        "system" : true
+      } ],
+      "events" : [ {
+        "name" : "DemoCreated",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.DemoCreated",
+        "description" : "Demo已创建"
+      }, {
+        "name" : "DemoPublished",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.DemoPublished",
+        "description" : "Demo已发布"
+      }, {
+        "name" : "DemoRejected",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.DemoRejected",
+        "description" : "Demo已驳回"
+      }, {
+        "name" : "DemoUpdated",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.demo.DemoUpdated",
+        "description" : "Demo已更新"
+      } ],
+      "queries" : [ {
+        "model" : "snapshot",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/demo/snapshot/query"
+        }, {
+          "method" : "GET",
+          "path" : "/demo/demo/snapshot/query"
+        } ]
+      }, {
+        "model" : "events",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/demo/events/query"
+        }, {
+          "method" : "GET",
+          "path" : "/demo/demo/events/query"
+        } ]
+      } ]
+    }, {
+      "name" : "review",
+      "description" : "审核聚合根：一次审核只能被裁决一次。",
+      "state" : {
+        "schema" : "#/$defs/me.ahoo.wow.template.domain.review.ReviewState",
+        "fingerprint" : "7a9152ff5a8764cb"
+      },
+      "snapshot" : {
+        "enabled" : true
+      },
+      "commands" : [ {
+        "name" : "ApproveReview",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.ApproveReview",
+        "creation" : "none",
+        "produces" : [ "ReviewApproved" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/review/{id}/approve-review"
+        } ],
+        "description" : "审核通过"
+      }, {
+        "name" : "CreateReview",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.CreateReview",
+        "creation" : "required",
+        "produces" : [ "ReviewCreated" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/review/{id}/create-review"
+        }, {
+          "method" : "POST",
+          "path" : "/demo/review/create-review"
+        } ],
+        "internal" : true,
+        "description" : "创建审核"
+      }, {
+        "name" : "RejectReview",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.RejectReview",
+        "creation" : "none",
+        "produces" : [ "ReviewRejected" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/review/{id}/reject-review"
+        } ],
+        "description" : "审核驳回"
+      }, {
+        "name" : "wow.lifecycle.DeleteAggregate",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.lifecycle.DeleteAggregate",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "DELETE",
+          "path" : "/demo/review/{id}"
+        } ],
+        "system" : true
+      }, {
+        "name" : "wow.lifecycle.RestoreAggregate",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.lifecycle.RestoreAggregate",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/review/{id}/wow.lifecycle.restore-aggregate"
+        } ],
+        "system" : true
+      }, {
+        "name" : "wow.lifecycle.TransferOwner",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.lifecycle.TransferOwner",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/review/{id}/wow.lifecycle.transfer-owner"
+        } ],
+        "system" : true
+      }, {
+        "name" : "wow.lifecycle.TransferSpace",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.lifecycle.TransferSpace",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/review/{id}/wow.lifecycle.transfer-space"
+        } ],
+        "system" : true
+      }, {
+        "name" : "wow.snapshot.RebuildSnapshot",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.snapshot.RebuildSnapshot",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/review/wow.snapshot.rebuild-snapshot"
+        } ],
+        "system" : true
+      } ],
+      "events" : [ {
+        "name" : "ReviewApproved",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.ReviewApproved",
+        "description" : "审核已通过"
+      }, {
+        "name" : "ReviewCreated",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.ReviewCreated",
+        "description" : "审核已创建"
+      }, {
+        "name" : "ReviewRejected",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.ReviewRejected",
+        "description" : "审核已驳回"
+      } ],
+      "queries" : [ {
+        "model" : "snapshot",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/review/snapshot/query"
+        }, {
+          "method" : "GET",
+          "path" : "/demo/review/snapshot/query"
+        } ]
+      }, {
+        "model" : "events",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/demo/review/events/query"
+        }, {
+          "method" : "GET",
+          "path" : "/demo/review/events/query"
+        } ]
+      } ]
+    } ],
+    "subscriptions" : [ {
+      "name" : "DemoReviewSaga.onDemoCreated",
+      "kind" : "saga",
+      "source" : {
+        "context" : "demo",
+        "aggregates" : [ "demo" ],
+        "events" : [ "DemoCreated" ]
+      },
+      "function" : {
+        "kind" : "saga",
+        "context" : "demo",
+        "processor" : "DemoReviewSaga",
+        "name" : "onDemoCreated"
+      },
+      "derives" : [ "demo.review.CreateReview" ],
+      "start" : "end"
+    }, {
+      "name" : "DemoReviewSaga.onReviewApproved",
+      "kind" : "saga",
+      "source" : {
+        "context" : "demo",
+        "aggregates" : [ "review" ],
+        "events" : [ "ReviewApproved" ]
+      },
+      "function" : {
+        "kind" : "saga",
+        "context" : "demo",
+        "processor" : "DemoReviewSaga",
+        "name" : "onReviewApproved"
+      },
+      "derives" : [ "demo.demo.PublishDemo" ],
+      "start" : "end"
+    }, {
+      "name" : "DemoReviewSaga.onReviewRejected",
+      "kind" : "saga",
+      "source" : {
+        "context" : "demo",
+        "aggregates" : [ "review" ],
+        "events" : [ "ReviewRejected" ]
+      },
+      "function" : {
+        "kind" : "saga",
+        "context" : "demo",
+        "processor" : "DemoReviewSaga",
+        "name" : "onReviewRejected"
+      },
+      "derives" : [ "demo.demo.RejectDemo" ],
+      "start" : "end"
+    } ],
+    "published" : [ {
+      "aggregate" : "demo",
+      "topic" : "wow.demo.demo.state",
+      "includeState" : true
+    }, {
+      "aggregate" : "review",
+      "topic" : "wow.demo.review.state",
+      "includeState" : true
+    } ],
+    "errors" : [ {
+      "code" : "demo.demo.data-unchanged",
+      "status" : 422,
+      "description" : "An update changes the demo's data."
+    }, {
+      "code" : "demo.demo.wrong-status",
+      "status" : 409,
+      "description" : "The demo's status does not allow the command."
+    }, {
+      "code" : "demo.review.already-decided",
+      "status" : 409,
+      "description" : "The review was already approved or rejected."
+    } ]
+  } ],
+  "errors" : [ {
+    "code" : "wow.auth.unauthenticated",
+    "status" : 401,
+    "description" : "The request carries no valid credentials."
+  }, {
+    "code" : "wow.auth.forbidden",
+    "status" : 403,
+    "description" : "The caller may not do what the request asks: send this command, call this route, or act or read across scopes."
+  }, {
+    "code" : "wow.auth.unavailable",
+    "status" : 503,
+    "description" : "CoSec could not decide whether the request may proceed; nothing was done, so it may be sent again. Only CoSec's refusals carry it, when wow.cosec.problems is wow: their headers are CoSec's, which sets no Retry-After on a 503, so the wait here is the catalog's default for a client, not a header.",
+    "retry" : "new-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.aggregate.forbidden",
+    "status" : 403,
+    "description" : "The caller may read the aggregate but may not change it, or the command would create one outside the caller's reach."
+  }, {
+    "code" : "wow.request.malformed",
+    "status" : 400,
+    "description" : "A request header or parameter does not parse, or names what Wow does not take."
+  }, {
+    "code" : "wow.request.invalid",
+    "status" : 400,
+    "description" : "A request to the application's own route failed validation; the problem lists the violations."
+  }, {
+    "code" : "wow.request.rate-limited",
+    "status" : 429,
+    "description" : "CoSec refused the request for a rate limit it spent; nothing was done, so it may be sent again after the Retry-After CoSec sets. Written for CoSec's refusals when wow.cosec.problems is wow.",
+    "retry" : "new-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.command.malformed",
+    "status" : 400,
+    "description" : "The command body cannot be read as the command type."
+  }, {
+    "code" : "wow.command.invalid",
+    "status" : 400,
+    "description" : "The command failed validation; the problem lists the violations."
+  }, {
+    "code" : "wow.wait.invalid",
+    "status" : 400,
+    "description" : "The wait is not a chain the runtime can follow; the command was not run."
+  }, {
+    "code" : "wow.command.unhandled",
+    "status" : 400,
+    "description" : "The aggregate does not handle this command."
+  }, {
+    "code" : "wow.aggregate.not-found",
+    "status" : 404,
+    "description" : "The aggregate does not exist, or is outside the caller's reach."
+  }, {
+    "code" : "wow.aggregate.exists",
+    "status" : 409,
+    "description" : "The aggregate already exists."
+  }, {
+    "code" : "wow.aggregate.version-mismatch",
+    "status" : 409,
+    "description" : "The aggregate is not at the expected version (412 when the request carried If-Match)."
+  }, {
+    "code" : "wow.command.request-id-reused",
+    "status" : 409,
+    "description" : "The request id was used by another command."
+  }, {
+    "code" : "wow.command.contended",
+    "status" : 409,
+    "description" : "Concurrent writers kept winning the version; retrying with the same request id is safe.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.aggregate.deleted",
+    "status" : 410,
+    "description" : "The aggregate is deleted; only RestoreAggregate applies."
+  }, {
+    "code" : "wow.command.busy",
+    "status" : 429,
+    "description" : "The command was not taken: its aggregate has too many commands waiting, or the node too many in flight; retry later.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.command.unknown",
+    "status" : 503,
+    "description" : "Whether the command committed is unknown; retrying with the same request id is safe.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.command.failed",
+    "status" : 500,
+    "description" : "The command's handling failed with an unexpected error; it committed nothing, and a retry fails alike."
+  }, {
+    "code" : "wow.command.refused",
+    "status" : 409,
+    "description" : "The aggregate's current state refuses the command (a check of its decide function); the message says why."
+  }, {
+    "code" : "wow.command.undeclared-event",
+    "status" : 500,
+    "description" : "The command's handling produced an event its decide function or after hooks do not declare, a rejection's events held to the same declaration: a bug in the model, which the message names; it committed nothing."
+  }, {
+    "code" : "wow.node.closing",
+    "status" : 503,
+    "description" : "The node is shutting down; retry on another node.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.node.standby",
+    "status" : 503,
+    "description" : "The node is on standby until the cut-over: it serves reads only.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.storage.unavailable",
+    "status" : 503,
+    "description" : "A store could not be reached or did not answer in time; retry later, a command with the same request id.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.schedule.not-due",
+    "status" : 503,
+    "description" : "A scheduled command arrived too long before its due time on this node's clock; it is sent again later.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.schedule.job-invalid",
+    "status" : 400,
+    "description" : "The job command does not fit its job or instance: an unknown job, another scope, or an instance not enabled."
+  }, {
+    "code" : "wow.ledger.stale",
+    "status" : 409,
+    "description" : "The action names a parking the entry no longer is: the aggregate was resolved and parked again since; read the entry again before acting on it."
+  }, {
+    "code" : "wow.subscription.parked",
+    "status" : 500,
+    "description" : "A subscription on the wait chain parked the aggregate; the wait cannot be reached until the aggregate is retried."
+  }, {
+    "code" : "wow.wait.timeout",
+    "status" : 504,
+    "description" : "The wait ran out of time; the command may have committed. The problem carries the last stage reached.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.route.malformed",
+    "status" : 400,
+    "description" : "A service route's parameter or body cannot be read as its type; the violation names the parameter."
+  }, {
+    "code" : "wow.query.malformed",
+    "status" : 400,
+    "description" : "The query body cannot be read as a query."
+  }, {
+    "code" : "wow.query.invalid",
+    "status" : 400,
+    "description" : "The query failed admission; the problem lists the violations, each with its code (unknown-field, ...)."
+  }, {
+    "code" : "wow.query.failed",
+    "status" : 500,
+    "description" : "The query backend failed to run the query."
+  }, {
+    "code" : "wow.query.not-found",
+    "status" : 404,
+    "description" : "A single query matched no record: a query result, not a statement that an aggregate does not exist."
+  }, {
+    "code" : "wow.query.dataset-not-found",
+    "status" : 404,
+    "description" : "No dataset of that name is served to the caller."
+  }, {
+    "code" : "wow.query.too-many-groups",
+    "status" : 400,
+    "description" : "An aggregation that names no sort has more groups than its limit; add a sort for a top-N, or raise limit."
+  }, {
+    "code" : "wow.query.timeout",
+    "status" : 504,
+    "description" : "The query ran longer than its budget allows; narrow it rather than run it again."
+  }, {
+    "code" : "wow.query.min-version-not-reached",
+    "status" : 409,
+    "description" : "The state read asked for a version the aggregate has not reached within the wait; the problem carries its current version: retry later.",
+    "retry" : "new-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.query.busy",
+    "status" : 429,
+    "description" : "The query was not run: its store has as many queries running as it allows; retry later.",
+    "retry" : "new-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.query.dataset-unavailable",
+    "status" : 409,
+    "description" : "The dataset is served but cannot be queried now, for the reason the problem names (it needs revision)."
+  }, {
+    "code" : "wow.call.command-forbidden",
+    "status" : 403,
+    "description" : "The calling service may not call this command: its wow.callers.<service>.commands do not list it."
+  }, {
+    "code" : "wow.peer.unavailable",
+    "status" : 503,
+    "description" : "A client reached no node of the peer, or lost the connection before a query's answer; nothing was changed, so the request may be sent again.",
+    "retry" : "new-request",
+    "retryAfter" : 1
+  } ],
+  "$defs" : {
+    "me.ahoo.wow.template.api.demo.CreateDemo" : {
+      "type" : "object",
+      "properties" : {
+        "data" : {
+          "type" : "string",
+          "minLength" : 1
+        }
+      },
+      "required" : [ "data" ],
+      "description" : "创建Demo",
+      "x-wow-class" : "me.ahoo.wow.template.api.demo.CreateDemo"
+    },
+    "me.ahoo.wow.template.api.demo.DemoCreated" : {
+      "type" : "object",
+      "properties" : {
+        "data" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "data" ],
+      "description" : "Demo已创建",
+      "x-wow-class" : "me.ahoo.wow.template.api.demo.DemoCreated"
+    },
+    "me.ahoo.wow.template.api.demo.DemoPublished" : {
+      "type" : "object",
+      "properties" : {
+        "reviewId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "reviewId" ],
+      "description" : "Demo已发布",
+      "x-wow-class" : "me.ahoo.wow.template.api.demo.DemoPublished"
+    },
+    "me.ahoo.wow.template.api.demo.DemoRejected" : {
+      "type" : "object",
+      "properties" : {
+        "reason" : {
+          "type" : "string"
+        },
+        "reviewId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "reason", "reviewId" ],
+      "description" : "Demo已驳回",
+      "x-wow-class" : "me.ahoo.wow.template.api.demo.DemoRejected"
+    },
+    "me.ahoo.wow.template.api.demo.DemoUpdated" : {
+      "type" : "object",
+      "properties" : {
+        "data" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "data" ],
+      "description" : "Demo已更新",
+      "x-wow-class" : "me.ahoo.wow.template.api.demo.DemoUpdated"
+    },
+    "me.ahoo.wow.template.api.demo.PublishDemo" : {
+      "type" : "object",
+      "properties" : {
+        "reviewId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "reviewId" ],
+      "description" : "发布Demo",
+      "x-wow-class" : "me.ahoo.wow.template.api.demo.PublishDemo"
+    },
+    "me.ahoo.wow.template.api.demo.RejectDemo" : {
+      "type" : "object",
+      "properties" : {
+        "reason" : {
+          "type" : "string"
+        },
+        "reviewId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "reason", "reviewId" ],
+      "description" : "驳回Demo",
+      "x-wow-class" : "me.ahoo.wow.template.api.demo.RejectDemo"
+    },
+    "me.ahoo.wow.template.api.demo.UpdateDemo" : {
+      "type" : "object",
+      "properties" : {
+        "data" : {
+          "type" : "string",
+          "minLength" : 1
+        }
+      },
+      "required" : [ "data" ],
+      "description" : "更新Demo",
+      "x-wow-class" : "me.ahoo.wow.template.api.demo.UpdateDemo"
+    },
+    "me.ahoo.wow.template.api.review.ApproveReview" : {
+      "type" : "object",
+      "properties" : {
+        "comment" : {
+          "type" : "string"
+        }
+      },
+      "description" : "审核通过",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.ApproveReview"
+    },
+    "me.ahoo.wow.template.api.review.CreateReview" : {
+      "type" : "object",
+      "properties" : {
+        "demoId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "demoId" ],
+      "description" : "创建审核",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.CreateReview"
+    },
+    "me.ahoo.wow.template.api.review.RejectReview" : {
+      "type" : "object",
+      "properties" : {
+        "reason" : {
+          "type" : "string",
+          "minLength" : 1
+        }
+      },
+      "required" : [ "reason" ],
+      "description" : "审核驳回",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.RejectReview"
+    },
+    "me.ahoo.wow.template.api.review.ReviewApproved" : {
+      "type" : "object",
+      "properties" : {
+        "comment" : {
+          "type" : "string"
+        },
+        "demoId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "comment", "demoId" ],
+      "description" : "审核已通过",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewApproved"
+    },
+    "me.ahoo.wow.template.api.review.ReviewCreated" : {
+      "type" : "object",
+      "properties" : {
+        "demoId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "demoId" ],
+      "description" : "审核已创建",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewCreated"
+    },
+    "me.ahoo.wow.template.api.review.ReviewRejected" : {
+      "type" : "object",
+      "properties" : {
+        "demoId" : {
+          "type" : "string"
+        },
+        "reason" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "demoId", "reason" ],
+      "description" : "审核已驳回",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewRejected"
+    },
+    "me.ahoo.wow.template.domain.demo.DemoState" : {
+      "type" : "object",
+      "properties" : {
+        "data" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string",
+          "enum" : [ "REVIEWING", "PUBLISHED", "REJECTED" ],
+          "x-wow-class" : "me.ahoo.wow.template.api.demo.DemoStatus"
+        }
+      },
+      "required" : [ "data", "status" ],
+      "x-wow-class" : "me.ahoo.wow.template.domain.demo.DemoState"
+    },
+    "me.ahoo.wow.template.domain.review.ReviewState" : {
+      "type" : "object",
+      "properties" : {
+        "demoId" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string",
+          "enum" : [ "PENDING", "APPROVED", "REJECTED" ],
+          "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewStatus"
+        }
+      },
+      "required" : [ "demoId", "status" ],
+      "x-wow-class" : "me.ahoo.wow.template.domain.review.ReviewState"
+    },
+    "wow.lifecycle.DeleteAggregate" : {
+      "type" : "object",
+      "description" : "Marks the aggregate deleted; its events stay in the log.",
+      "x-wow-class" : "me.ahoo.wow.api.lifecycle.DeleteAggregate"
+    },
+    "wow.lifecycle.RestoreAggregate" : {
+      "type" : "object",
+      "description" : "Takes back the deletion of a deleted aggregate.",
+      "x-wow-class" : "me.ahoo.wow.api.lifecycle.RestoreAggregate"
+    },
+    "wow.lifecycle.TransferOwner" : {
+      "type" : "object",
+      "properties" : {
+        "ownerId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "ownerId" ],
+      "description" : "Gives the aggregate to the owner ownerId.",
+      "x-wow-class" : "me.ahoo.wow.api.lifecycle.TransferOwner"
+    },
+    "wow.lifecycle.TransferSpace" : {
+      "type" : "object",
+      "properties" : {
+        "spaceId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "spaceId" ],
+      "description" : "Moves the aggregate to the space spaceId.",
+      "x-wow-class" : "me.ahoo.wow.api.lifecycle.TransferSpace"
+    },
+    "wow.snapshot.RebuildSnapshot" : {
+      "type" : "object",
+      "properties" : {
+        "ids" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      },
+      "required" : [ "ids" ],
+      "x-wow-class" : "me.ahoo.wow.spi.snapshot.RebuildSnapshot"
+    }
+  }
+}

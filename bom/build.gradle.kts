@@ -18,7 +18,6 @@ plugins {
 dependencies {
     constraints {
         api(project(":api"))
-        api(project(":api-client"))
         api(project(":domain"))
     }
 }

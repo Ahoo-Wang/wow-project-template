@@ -1,4 +1,5 @@
 # 基线配置（随 jar 发布）。环境差异通过发布包 config/application.yaml 或环境变量覆盖。
+# Wow 在启动时校验每个 wow.* 键：未知键（包括 9.x 的旧键）会使启动失败。
 management:
   endpoint:
     health:
@@ -13,43 +14,23 @@ management:
           - info
 spring:
   application:
-    # 运行时服务名的唯一来源；需与 DemoService.SERVICE_NAME 保持一致（CoApi 服务发现依赖该名称）。
+    # 服务名：需与 domain 模块 `wow { service = "demo-service" }` 一致，否则启动失败。
     name: demo-service
-  jackson:
-    mapper:
-      accept-case-insensitive-enums: true
-    datatype:
-      datetime:
-        write-durations-as-timestamps: true
-        write-dates-as-timestamps: true
-cosid:
-  machine:
-    enabled: true
-    distributor:
-      type: manual
-      manual:
-        machine-id: 1
-  generator:
-    enabled: true
-wow:
-  kafka:
-    enabled: false
-  command:
-    bus:
-      type: in_memory
-  event:
-    bus:
-      type: in_memory
-  eventsourcing:
-    store:
-      storage: in_memory
-    snapshot:
-      storage: in_memory
-    state:
-      bus:
-        type: in_memory
+# 后端由类路径与 Bean 决定（wow.backend: auto）：有 DataSource 用 PostgreSQL，有 MongoClient 用 MongoDB。
+# 两者皆无时，节点只在开发 profile 或内部端口仅绑定回环地址时以内存运行（见下一文档），生产环境不会意外落到内存。
 ---
-# 本地开发：--spring.profiles.active=dev
+# 本机运行（Spring Boot 未检测到云平台）：内部端口只绑定回环地址，节点以内存后端运行，并以匿名调用方提供服务。
+# 在 Kubernetes 上本文档不生效：节点需要一个后端，以及认证调用方的 CallerResolver（如 wow-cosec）。
+spring:
+  config:
+    activate:
+      on-cloud-platform: none
+wow:
+  internal:
+    host: 127.0.0.1
+---
+# 本地开发：--spring.profiles.active=dev（`./gradlew server:run` 默认启用）
+# 开发 profile 下调用方由开发身份请求头（Wow-User 等）声明。
 spring:
   config:
     activate:

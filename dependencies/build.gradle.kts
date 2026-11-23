@@ -29,7 +29,6 @@ dependencies {
     constraints {
         api(libs.guava)
         api(libs.kotlin.logging)
-        api(libs.swagger.annotations)
         api(libs.mockk)
         api(libs.detekt.formatting)
     }

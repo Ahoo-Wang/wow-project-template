@@ -38,10 +38,22 @@ spec:
               value: Asia/Shanghai
             - name: JAVA_OPTS
               value: -Duser.language=zh -Xms1792M -Xmx1792M -XX:MaxMetaspaceSize=256M -XX:MaxDirectMemorySize=512M -Xss1m -server -XX:+UseZGC
+            # Wow 的内部端口（集群通道、等待信号、服务间调用）只绑定 Pod 的私有地址，并对外通告该地址。
+            # 节点还需要一个后端（wow-postgres / wow-mongo）与认证调用方的 CallerResolver（如 wow-cosec），否则拒绝启动。
+            # 完整部署可直接使用 Wow 的 Helm chart：oci://ghcr.io/ahoo-wang/wow-service。
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name: WOW_INTERNAL_HOST
+              value: $(POD_IP)
           ports:
             - name: http
               protocol: TCP
               containerPort: 8080
+            - name: internal
+              protocol: TCP
+              containerPort: 9090
           startupProbe:
             failureThreshold: 15
             httpGet:

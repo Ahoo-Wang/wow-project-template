@@ -5,15 +5,18 @@
 
 用于快速构建基于 [Wow 框架](https://github.com/Ahoo-Wang/Wow) 的 DDD 项目模板。
 
+> [!WARNING]
+> 本模板基于 **Wow 10.0.0-beta.18**（预发布版）：API、配置、存储与线上格式在 10.0.0 GA 前仍可能变化，不承诺兼容，不建议用于生产。
+> 9.x 稳定版模板见 Git 历史中 Wow 9.9.0 的版本；从 9.x 迁移请参考 Wow 文档《Migrating from 9.x》与 `wow-migrate` Skill。
+
 ## 模块介绍
 
 | 模块                                              | 说明                                                                                                                                                            |
 |-------------------------------------------------|---------------------------------------------------------------------------------------------------------------------------------------------------------------|
-| [api](./api)                                    | **API 层**，定义聚合命令（Command）、领域事件（Domain Event）以及查询视图模型（Query View Model）。充当各个模块之间通信的“发布语言”，同时提供详细的 API 文档，助力开发者理解和使用接口。                                         |
-| [api-client](./api-client)                      | **服务间调用客户端（可选）**，基于 [CoApi](https://github.com/Ahoo-Wang/CoApi) 的类型安全查询客户端。与 `api` 分离，避免把 HTTP 客户端基础设施传递给只依赖契约的消费方。 |
-| [domain](./domain)                              | **领域层**，包含聚合根和业务约束的实现。聚合根充当领域模型的入口点，负责协调领域对象的操作，确保业务规则的正确执行。业务约束包括领域对象的验证规则、领域事件的处理等。模块内附有详细的领域模型文档，助力团队深入了解业务逻辑。                                             |
-| [server](./server)                              | **宿主服务**，应用程序的启动点。负责整合其他模块，并提供应用程序的入口。涉及配置依赖项、连接数据库、启动 API 服务等任务。此外，server 模块提供了容器化部署的支持，包括 Docker 构建镜像和 Kubernetes 部署文件，简化了部署过程。                             |
-| [client](./client)                              | **客户端库**，使用 [fetcher-generator](https://github.com/Ahoo-Wang/fetcher) 自动生成的 TypeScript 客户端库，提供类型安全的 API 调用接口，方便前端或其他服务与后端交互。支持自动生成命令客户端和查询客户端，包含完整的类型定义和错误处理。 |
+| [api](./api)                                    | **API 层**（`me.ahoo.wow.api` 插件），定义聚合命令（Command）与领域事件（Domain Event），充当上下文的“发布语言”。插件从 domain 装配契约并生成 `DemoContract`（聚合类型、错误码、等待跳点、查询字段）与状态视图 `DemoStateView`；其他服务只依赖本模块即可调用本服务（Wow 的 `CommandClient` / `QueryApi`），无需手写客户端。 |
+| [domain](./domain)                              | **领域层**（`me.ahoo.wow` 插件，KSP），包含聚合根、状态、错误码与 Saga。编译器在构建期生成模型工厂、处理器绑定与 Manifest 片段，运行时不做反射扫描。 |
+| [server](./server)                              | **宿主服务**（`me.ahoo.wow.service` 插件），Spring Boot WebFlux 应用的启动点。路由由 Manifest 派生，无需控制器；构建合并服务的 Manifest、生成 OpenAPI，并以提交的 `manifest/baseline.json` 校验契约兼容性。提供 Docker 镜像与 Kubernetes 部署文件。 |
+| [client](./client)                              | **客户端库**，由 [wow-generator](https://github.com/Ahoo-Wang/Wow) 根据服务的 Manifest 基线生成的 TypeScript 客户端（基于 `@ahoo-wang/wow-client`），每个聚合一套命令、快照查询、事件查询与状态客户端，含错误码与等待计划类型。 |
 | [code-coverage-report](./code-coverage-report)  | **测试覆盖率**，用于生成详细的测试覆盖率报告，以及验证覆盖率是否符合要求。帮助开发团队了解项目测试的全面性和质量。                                                                                                   |
 | [dependencies](./dependencies)                  | **依赖项管理**，这个模块负责管理项目的依赖关系，确保各个模块能够正确地引用和使用所需的外部库和工具。                                                                                                          |
 | [bom](./bom)                                    | **项目的 BOM（Bill of Materials）**                                                                                                                                |
@@ -30,8 +33,9 @@
 点击上方按钮，基于 [Wow 项目模板](https://github.com/Ahoo-Wang/wow-project-template) 创建新仓库，然后克隆到本地即可开始编写领域模型。
 
 - 修改 `settings.gradle.kts` 文件，将 `rootProject.name` 修改为项目名称
-- 修改 `api/{package}/DemoService`
-- 修改 `domain/{package}/DemoBoundedContext`
+- 修改 `domain/{package}/DemoBoundedContext` 的上下文名（路由、事件名、主题与表名都以它为前缀，确定后不宜再改）
+- 修改 `domain/build.gradle.kts` 的 `wow { contractPackage; service }` 与 `server` 的 `spring.application.name`（二者必须一致）
+- 契约变化后执行 `./gradlew server:updateWowManifestBaseline` 记录基线，再在 `client/` 执行 `pnpm generate`
 
 ## Git
 
@@ -52,13 +56,18 @@ git push -u origin master
 
 ## 启动服务
 
-默认使用内存基础设施，开箱即用。本地开发建议启用 `dev` profile（调试日志、完整 actuator 端点）：
+需要 JDK 21（生产运行建议 JDK 25）。未配置后端时，本机运行以内存保存数据、内部端口只绑定回环地址并以匿名调用方提供服务，开箱即用。本地开发建议启用 `dev` profile（调试日志、完整 actuator 端点，调用方由 `Wow-User` 等开发身份请求头声明）：
 
 ```shell
 ./gradlew server:run --args='--spring.profiles.active=dev'
 ```
 
+```shell
+curl -X POST http://localhost:8080/demo/demo/create-demo -H 'Content-Type: application/json' -d '{"data":"hello"}'
+```
+
 > 发行版（`server:installDist`）以 jar 内 `application.yaml` 为基线，`config/application.yaml` 用于环境覆盖。
+> 部署到 Kubernetes 时节点需要后端（`wow-postgres` / `wow-mongo`）与认证调用方的 `CallerResolver`（如 `wow-cosec`），否则拒绝启动。
 
 <p align="center" style="text-align:center">
   <img src="./document/assets/run-server.png" alt="启动服务"/>
@@ -74,7 +83,7 @@ git push -u origin master
 
 客户端库提供类型安全的 API 调用接口，支持命令和查询操作。
 
-1. **生成客户端代码**：
+1. **生成客户端代码**（读取提交的 `server/manifest/baseline.json`，无需启动服务端）：
 
    ```shell
    cd client
@@ -91,13 +100,14 @@ git push -u origin master
 3. **在项目中使用**：
 
    ```typescript
-   import { DemoCommandClient, demoQueryClientFactory } from '@ahoo-wang/wow-client';
-   const demoCommandClient = new DemoCommandClient()
-   // 发送命令
-   await demoCommandClient.createDemo({ /* 参数 */ });
+   import { Fetcher } from '@ahoo-wang/fetcher';
+   import { DemoClient } from '@ahoo-wang/wow-template-client';
 
-   const demoQueryClient = demoQueryClientFactory.createSnapshotQueryClient()
-   // 查询数据
+   const demo = new DemoClient({ fetcher: new Fetcher({ baseURL: 'http://localhost:8080' }) });
+   // 发送命令（默认等待到快照写入）
+   const result = await demo.demo.commands.createDemo({ data: 'hello' });
+   // 读取状态
+   const snapshot = await demo.demo.state.get(result.ref.id);
    ```
 
    详细使用说明请参考 [client/README.md](./client/README.md)。

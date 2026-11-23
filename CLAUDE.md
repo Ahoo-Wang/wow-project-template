@@ -4,19 +4,23 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a **Wow framework** microservice template implementing DDD (Domain-Driven Design) + Event Sourcing + CQRS patterns. The Wow framework handles event sourcing, command processing, and projection automatically through annotations.
+This is a **Wow framework** microservice template implementing DDD (Domain-Driven Design) + Event Sourcing + CQRS patterns, on **Wow 10 (`10.0.0-beta.18`, a pre-release)**. Wow 10 binds models at build time (KSP + the Wow Gradle plugins), keeps one event log that subscriptions read from their own checkpoints (no event bus), and derives routes, OpenAPI and clients from the service's **Manifest**.
+
+Wow 10 pre-releases carry no compatibility promise: verify every annotation, signature, route and configuration key against the pinned version (its tag's docs, `skills/wow-develop`, and the eShop example), not against 9.x knowledge.
 
 ## Skills Reference
 
 Invoke these skills when working on relevant tasks:
 
-- `/wow` — Wow framework patterns: aggregate modeling, command gateway, saga, projection, query DSL, testing DSL
+- `/wow` — Wow framework patterns (check it targets Wow 10; Wow's own `wow-develop` Skill at the pinned tag is authoritative)
 - `/fluent-assert` — Kotlin fluent assertions: use `value.assert()` instead of AssertJ's `assertThat(value)`
 
 ## Build & Test Commands
 
+Requires JDK 21 (production: JDK 25).
+
 ```bash
-# Build all modules
+# Build all modules (compile, KSP, tests, detekt, Kover, Manifest baseline check)
 ./gradlew build
 
 # Run tests
@@ -26,7 +30,7 @@ Invoke these skills when working on relevant tasks:
 ./gradlew :domain:test --tests "me.ahoo.wow.template.domain.demo.DemoSpec"
 
 # Run a single test method
-./gradlew :domain:test --tests "me.ahoo.wow.template.domain.demo.DemoSpec.*onCreate*"
+./gradlew :domain:test --tests "me.ahoo.wow.template.domain.demo.DemoSpec.*published*"
 
 # Coverage verification (domain ≥ 80%, Kover; also runs as part of `check`)
 ./gradlew :domain:koverVerify
@@ -34,152 +38,147 @@ Invoke these skills when working on relevant tasks:
 # Static analysis (detekt)
 ./gradlew detekt
 
+# Record the Manifest baseline after an intended contract change (checkWowManifest fails otherwise)
+./gradlew :server:updateWowManifestBaseline
+
 # Generate API docs (Dokka v2)
 ./gradlew dokkaGenerate
 
 # Build server distribution
 ./gradlew server:installDist
 
-# Run server locally (dev profile: debug logging, all actuator endpoints)
+# Run server locally (dev profile: debug logging, all actuator endpoints, callers from Wow-User headers)
 ./gradlew server:run --args='--spring.profiles.active=dev'
 
-# Clean build
-./gradlew clean build
+# Regenerate the TypeScript client from server/manifest/baseline.json
+cd client && pnpm generate && pnpm lint && pnpm build
 ```
 
 ## Module Structure & Dependency Flow
 
 ```
-dependencies (BOM/platform) → api → domain → server
-                               ↓                ↓
-                           api-client        client (TypeScript, generated from server OpenAPI)
+dependencies (BOM/platform) → api ⇄ domain → server
+                                              ↓
+                                     manifest/baseline.json → client (TypeScript, wow-generator)
 ```
 
-- **`build-logic`** - Included build with convention plugins (`wow.base/kotlin/library/platform/publish/wow-compiler/application/coverage-report-conventions`). All shared build configuration lives here; module scripts only declare plugins and dependencies.
-- **`dependencies`** - Centralized BOM/dependency management via Gradle platform. All version catalog entries in `gradle/libs.versions.toml`.
-- **`api`** - Published language: commands, events, state contracts, query view models (publishable library). Depends only on annotation/contract artifacts (`wow-api`, validation, jackson/swagger annotations). Uses KSP (`wow-compiler`).
-- **`api-client`** - Optional typed CoApi client for other services (`DemoClient : ReactiveSnapshotQueryApi<DemoView>`). Kept separate so `api` consumers don't inherit HTTP client infrastructure.
-- **`domain`** - Aggregate roots, state classes, and sagas (publishable library). Depends on `api` + `wow-core` only (no Spring). Uses KSP (`wow-compiler`). 80% test coverage required.
-- **`server`** - Spring Boot WebFlux host: projectors, wiring, configuration (not published). No KSP/kapt needed.
+- **`build-logic`** - Included build with convention plugins (`wow.base/kotlin/library/platform/publish/api/domain/application/coverage-report-conventions`). It puts `wow-gradle-plugin` on the class path; module scripts apply Wow's plugins only through these conventions (`wow.api-` → `me.ahoo.wow.api`, `wow.domain-` → `me.ahoo.wow`, `wow.application-` → `me.ahoo.wow.service`). Module scripts only declare plugins, `wow { }` and dependencies.
+- **`dependencies`** - Centralized BOM/dependency management via Gradle platform. All version catalog entries in `gradle/libs.versions.toml`. Jackson 3 is pinned to Spring Boot's version and enforced on every classpath (`wow.kotlin-conventions`): swagger-core 3 asks for Jackson 3.2, which Wow 10.0.0-beta.18's codecs fail on.
+- **`api`** - Published language: commands and events (publishable library). The api plugin assembles the contract of `wowContract(project(":domain"))` and generates `me.ahoo.wow.template.api.DemoContract` (aggregate types, error codes, wait hops, query fields) and the state views (`DemoStateView`, `ReviewStateView`). Other services depend on this jar alone and call the service with Wow's `CommandClient` / `QueryApi` (listed under `wow.peers`) — there is no hand-written client module.
+- **`domain`** - Bounded context, aggregate roots, state classes, error codes and sagas (publishable library). Depends on `api` + `wow-kernel` only (no Spring). KSP generates the models (`demoModel()`), processor handlers (`demoReviewSagaHandlers()`), the binding index and the Manifest fragment. 80% test coverage required.
+- **`server`** - Spring Boot WebFlux host (not published): `Server` class, configuration, service tests. Commits `manifest/baseline.json`, which `check` holds the merged Manifest to.
 - **`bom`** - Bill of Materials for consumers.
 - **`code-coverage-report`** - Aggregated Kover coverage report (uploaded to Codecov).
-- **`client`** - Generated TypeScript client via `fetcher-generator`. Regenerate with the server running: `pnpm generate && pnpm lint && pnpm build`. CI fails if `client/src/generated` drifts from the server contract.
+- **`client`** - TypeScript clients generated by `@ahoo-wang/wow-generator` from `server/manifest/baseline.json` (no running server). CI fails if `client/src/generated` drifts from the baseline.
 
-## Architecture (Wow Framework Patterns)
+## Architecture (Wow 10 Patterns)
 
-### Service Definition
+### Bounded Context and Service
 
-Each bounded context is defined by a service object (in `api`) that declares constants and aggregate scopes. Register every new aggregate here:
+The domain module declares its context once; aggregates register themselves with `@AggregateRoot`:
 
 ```kotlin
-@BoundedContext(name = SERVICE_NAME, alias = SERVICE_ALIAS,
-    aggregates = [
-        BoundedContext.Aggregate(DEMO_AGGREGATE_NAME, packageScopes = [CreateDemo::class]),
-        BoundedContext.Aggregate(REVIEW_AGGREGATE_NAME, packageScopes = [CreateReview::class]),
-    ])
-object DemoService {
-    const val SERVICE_NAME = "demo-service" // must equal spring.application.name
-    const val SERVICE_ALIAS = "demo"
-    const val DEMO_AGGREGATE_NAME = "demo"
-    const val REVIEW_AGGREGATE_NAME = "review"
+@BoundedContext(name = DemoBoundedContext.NAME, description = "Demo 及其审核流程")
+object DemoBoundedContext {
+    const val NAME = "demo" // lower-case letters, digits, hyphens; prefixes every type, route, topic and table
 }
 ```
 
-`domain` also needs `@BoundedContext(name = SERVICE_NAME)` (`DemoBoundedContext`): its KSP fails without it. `server` does not need one — the `api` scope (`me.ahoo.wow.template`) already covers it.
+`domain/build.gradle.kts` sets `wow { contractPackage = "me.ahoo.wow.template.api"; service = "demo-service" }`. `service` must equal `spring.application.name`, or the service refuses to start.
 
 ### API Module Conventions
 
-- **Contract interfaces** define shared input/state shapes: `IDemoInfo` (data), `IDemoState` extends `Identifier` + `IDemoInfo` + `status`. Commands and state may implement them.
-- **Commands** are data classes with `@CommandRoute` (and `@CreateAggregate` for creation). Validate with `@field:NotBlank` etc. A command and its resulting event live in the same file.
-- **Internal commands** (only sent by sagas, e.g. `PublishDemo`, `CreateReview`) use `@CommandRoute(enabled = false)` so they cannot be invoked over HTTP — neither via their own route nor via `/wow/command/send`.
-- **Events** are self-contained data classes with `@Event`, named in past tense (`CreateDemo` → `DemoCreated`). **Events must not implement shared contract interfaces**: persisted events are immutable and their schema must evolve independently.
-- **Query view models** (e.g. `DemoView`) are concrete data classes used to deserialize snapshot query results.
+- **Commands** are data classes (`data object` when they carry nothing). No routes, tenant, owner or version fields: tenant/owner/space come from the authenticated caller, the expected version from `If-Match`, the aggregate id from the route (`command.ref.id`) unless a property is marked `@AggregateId`. `@CreateAggregate` on creation commands. Validate shape with Jakarta constraints (`@field:NotBlank`), checked at admission (`wow.command.invalid`, 400). A command and its resulting event live in the same file.
+- **Internal commands** (only sent by sagas, e.g. `PublishDemo`, `RejectDemo`, `CreateReview`) are marked `@InternalCommand`: the public port serves no route of them (404).
+- **Events** are self-contained data classes named in past tense (`CreateDemo` → `DemoCreated`); no annotation is needed (`@Summary` documents them; `@Revision(n)` + `@Upgrade` when a stored shape changes). **Events must not implement shared contract interfaces**: persisted events are immutable and their schema must evolve independently.
+- **Contract interfaces** (`IDemoInfo`) may share input/state shapes between commands and state.
+- **Query view models** are generated (`DemoStateView`); do not hand-write them.
+
+Routes derived from the Manifest: `POST /demo/demo/create-demo` (server-generated id) or `POST /demo/demo/{id}/create-demo`, `POST /demo/demo/{id}/update-demo`, `POST /demo/review/{id}/approve-review`, `GET /demo/demo/{id}/state`, `POST /demo/demo/snapshot/query`, `DELETE /demo/demo/{id}`, `POST /demo/demo/{id}/wow.lifecycle.restore-aggregate`.
 
 ### Aggregate Root (`domain` module)
 
-- Aggregate class: `@AggregateRoot` annotation, takes state as constructor parameter
-- Command handlers: `@OnCommand` methods that **check invariants against current state** (`check`/`require` → `IllegalState`/`IllegalArgument` error, HTTP 400) and return events. Handlers never mutate state.
-- State class: `@OnSourcing` methods that apply events to state. Mutable properties with `private set`.
-- Delete/recover use Wow's built-in `DefaultDeleteAggregate` / `DefaultRecoverAggregate`; no custom code needed.
+- `@AggregateRoot` class taking its state as constructor parameter. Command functions are `fun onCommand(command: X): Event` (or annotated `@OnCommand`, never private), returning an event, a list, a sealed type, or `Decision`.
+- Command functions **check invariants against current state** and refuse with `reject(code, message)` (`me.ahoo.wow.api.decide.reject`), the code declared in a nested `object Rejections` with `@ErrorCode(description, status = 422 by default)`. Local codes become `demo.demo.<code>`; peers and clients read them from `DemoContract.Demo.Errors`. Handlers never mutate state.
+- State class: no-argument constructor, `fun onSourcing(event: E)` per event (public or internal), mutable properties with `private set`, every property with a value once the creation event is applied. The aggregate id is not state.
+- Delete/restore use Wow's lifecycle commands (`DeleteAggregate`, `RestoreAggregate`, `TransferOwner`, `TransferSpace` in `me.ahoo.wow.api.lifecycle`); no custom code needed.
+- Services a command function needs are parameters of it; the generated factory (`demoModel(...)`) takes them, the host passes Spring beans. Time comes from `DecideScope.now`, ids from `DecideScope.ids`.
 
 ### Saga (`domain` module)
 
-- `@StatelessSaga` annotation on the class
-- `@OnEvent` methods receive events and return `CommandBuilder` to send follow-up commands to **other** aggregates (cross-aggregate coordination). Do not use a saga to rewrite the state of the aggregate that just emitted the event.
-- Events are delivered at least once: make follow-up commands idempotent, e.g. `DemoReviewSaga` reuses the demo id as the review id so a duplicate `CreateReview` is rejected.
-- Example flow (`DemoReviewSaga`): `DemoCreated → CreateReview`, `ReviewApproved → PublishDemo`, `ReviewRejected → RejectDemo`.
+- `@Saga` class; each `@OnEvent` function is its own subscription (`DemoReviewSaga.onDemoCreated`) reading the log from its checkpoint, at least once.
+- A handler takes `StateTypedEvent<State, Event>` (or `StateEvent<State>`) and returns the commands it derives as `CommandRequest`s: `CreateReview(demoId).toCommandRequest(id)`. The target aggregate type comes from the contract by command class; tenant and scope from the handled commit. Derived commands get deterministic ids, so a redelivered commit derives the same command, decided once.
+- Use sagas for cross-aggregate coordination. A rejected derived command parks the source aggregate unless an `@OnRejected` handler accepts or compensates it.
+- Example flow (`DemoReviewSaga`): `DemoCreated → CreateReview`, `ReviewApproved → PublishDemo`, `ReviewRejected → RejectDemo`. The review id reuses the demo id.
+- Projections (`@Projection`) and reactors (`@Reactor`) also live in the domain module, with their store behind a port interface the server binds.
 
 ### Server Module
 
-- Wow auto-generates command routes (from `@CommandRoute`), snapshot/event query routes and `GET /tenant/{tenantId}/{aggregate}/{id}/state` — no controllers needed. Add a `@RestController` only for custom endpoints.
-- **Projectors**: `@ProjectionProcessor` with `@OnEvent` methods for read model updates from events
-- **Inter-service clients**: `@CoApi(serviceId)` interfaces in `api-client` (e.g., `DemoClient : ReactiveSnapshotQueryApi<DemoView>`); snapshot queries need a query backend (Mongo/Elasticsearch), not available in-memory.
-- Main class: `ServerKt` in `me.ahoo.wow.template.server`, `@SpringBootApplication(scanBasePackageClasses = [DemoBoundedContext::class, Server::class])`
-- End-to-end tests (`DemoReviewFlowTest`) drive HTTP commands with `WebTestClient` and poll aggregate state, since saga-driven commands are asynchronous.
+- `@SpringBootApplication(proxyBeanMethods = false) class Server` — no component scan of the domain, no controllers: the host loads the KSP binding index and serves the Manifest's routes. Add a route only through Wow's service routes when needed.
+- Backend: `wow.backend: auto` picks PostgreSQL with a `DataSource` (`wow-postgres`), MongoDB with a `MongoClient` (`wow-mongo`). With neither, the node runs in memory only in a development profile or on a loopback-only internal port (the `on-cloud-platform: none` document of `application.yaml`).
+- Callers: a `CallerResolver` bean (e.g. `wow-cosec`) authenticates them; without one the host reads development headers in the `dev` profile, serves the anonymous caller on a loopback internal port, and does not start elsewhere.
+- Every `wow.*` key is checked at startup: unknown keys (including 9.x keys) fail the start.
+- Service tests use `wowServer<Server>("dev")` from `wow-test-spring-boot`: typed `server.commands(caller).wait(command, id) { wait(plan) }`, `server.queries(caller).snapshots<DemoStateView>().state(id)`, `assertRejected { … }`, and `server.http` for wire-level checks. Wait plans (`DemoContract.Wait.DEMO_REVIEW_SAGA__ON_REVIEW_APPROVED` then `SNAPSHOT`) follow a saga's derived commands, so no polling is needed.
 
-### Testing (Given-When-Expect)
+### Testing (functional DSL, `wow-test`)
 
 ```kotlin
-class DemoSpec : AggregateSpec<Demo, DemoState>({
-    on {
-        val command = CreateDemo(data = "test")
-        whenCommand(command) {
-            expectNoError()
-            expectEventType(DemoCreated::class)
-            expectState {
-                data.assert().isEqualTo(command.data)
-            }
-            fork {
-                whenCommand(UpdateDemo(data = "updated")) {
-                    expectEventType(DemoUpdated::class)
-                }
+class DemoSpec {
+    private val model = demoModel()
+
+    @Test
+    fun `a reviewing demo should be published once`() = aggregateSpec(model, id = "demo-1") {
+        given(DemoCreated(data = "data"))
+        whenCommand(PublishDemo(reviewId = "demo-1")) {
+            expectEvents(DemoPublished(reviewId = "demo-1"))
+            expectState { status.assert().isEqualTo(DemoStatus.PUBLISHED) }
+            fork("publish twice") {
+                whenCommand(PublishDemo(reviewId = "demo-1")) { expectRejected(Demo.Rejections.WRONG_STATUS) }
             }
         }
     }
-})
+}
 ```
+
+- **Consecutive `whenCommand` calls chain**: each runs on the aggregate the previous one left. Use `fork("name") { … }` for independent branches from one point.
+- Expectations: `expectEvents`, `expectEventTypes`, `expectState`, `expectRejected(code)`, `expectUnchanged()`, `expectDeleted()`, `expectScope`, `expectVersion`; `expectError<X>()` only for exceptions decide throws.
+- Sagas: `sagaSpec(demoReviewSagaHandlers()) { givenAggregate(model, id, history…); whenEvent(event, by = Command::class) { expectCommand(body, to = ref); expectDeterministic() } }`.
 
 **Key testing imports:**
 - `me.ahoo.test.asserts.assert` - FluentAssert (use `.assert()` not AssertJ's `assertThat`)
-- `me.ahoo.wow.test.AggregateSpec` - Aggregate test base
-- `me.ahoo.wow.test.SagaSpec` - Saga test base
+- `me.ahoo.wow.test.aggregateSpec`, `me.ahoo.wow.test.sagaSpec` - domain test DSL
+- `me.ahoo.wow.test.server.wowServer`, `assertRejected` - service tests
 
-`fork("name") { ... }` creates a branching state to test subsequent commands on the same aggregate. Assert domain errors with `expectError<IllegalStateException> { message.assert().contains(...) }`.
+### Code Generation
 
-### Code Generation (KSP)
+- `domain` (KSP, `me.ahoo.wow`): `<Root>Model.kt` (`demoModel()`, `DemoModel.TYPE`), `<Processor>Subscriptions.kt` (`demoReviewSagaHandlers()`), `<State>Properties.kt` (query fields), `DomainModelProvider` (binding index) and `META-INF/wow/manifest/domain.json`.
+- `api` (`me.ahoo.wow.api`): `META-INF/wow/contract.json`, `DemoContract`, `<State>View`, published as the module's `contract` feature.
+- `server` (`me.ahoo.wow.service`): `build/wow/manifest.json`, the OpenAPI document, `checkWowManifest` against `manifest/baseline.json`.
 
-KSP with `wow-compiler` runs in both `api` and `domain` modules (via `wow.wow-compiler-conventions`), generating:
-- `AggregatesMetadata.kt` - Aggregate metadata registration
-- `*Properties.kt` - State property accessors
-
-Run `./gradlew build` to regenerate after annotation changes.
+Run `./gradlew build` to regenerate after annotation changes; run `./gradlew :server:updateWowManifestBaseline` and `pnpm generate` (in `client/`) when the contract changes on purpose.
 
 ## Default Configuration
 
-The default `application.yaml` uses **in-memory** implementations for all infrastructure:
-- Command bus: `in_memory`
-- Event bus: `in_memory`
-- Event sourcing store: `in_memory`
-- Snapshot storage: `in_memory`
+`server/src/main/resources/application.yaml` sets only `spring.application.name`, actuator exposure, the loopback internal port for local runs and the `dev` profile. Without a backend module the node keeps its data and topics in memory (one node, for development and tests).
 
-To use production backends, uncomment the relevant dependencies in `server/build.gradle.kts` (Mongo, Kafka, Redis, Elasticsearch) and update `application.yaml`.
+To use production backends, uncomment the relevant dependencies in `server/build.gradle.kts` (`wow-postgres`/`wow-mongo`, `wow-kafka`, `wow-elasticsearch`, `wow-cosec`, `wow-cosid`, `wow-cocache`) and configure them (`spring.datasource.*`, `spring.mongodb.uri` + `wow.mongo.database`, `wow.kafka.bootstrap-servers`, `wow.cosec.mode`).
 
-Configuration layering: `server/src/main/resources/application.yaml` (in the jar) is the baseline; the distribution's `config/application.yaml` (`server/src/dist/config`) overrides it via `spring.config.additional-location`. Defaults are production-safe (actuator exposes only `health`/`info`, info-level logging); the `dev` profile enables debug logging and all actuator endpoints.
+Configuration layering: `server/src/main/resources/application.yaml` (in the jar) is the baseline; the distribution's `config/application.yaml` (`server/src/dist/config`) overrides it via `spring.config.additional-location`. Defaults are production-safe (actuator exposes only `health`/`info`, info-level logging, no in-memory fallback on a cloud platform); the `dev` profile enables debug logging and all actuator endpoints.
 
 ## Key Dependencies
 
-- **Wow Framework**: `me.ahoo.wow:wow-*` (api, spring, webflux, test, compiler)
-- **CoApi**: `me.ahoo.coapi:coapi-*` (type-safe HTTP client auto-configuration)
-- **CoSec**: `me.ahoo.cosec:cosec-*` (authorization, optional)
-- **CoCache**: `me.ahoo.cocache:cocache-*` (distributed caching, optional)
-- **CoSiD**: `me.ahoo.cosid:cosid-*` (distributed ID generation)
-- **Spring Boot**: WebFlux-based reactive stack, Spring Boot 4.x
-- **Kotlin**: JVM 17 toolchain with `-Xjsr305=strict`, `jvmDefault = ENABLE` (configured in `wow.kotlin-conventions`)
+- **Wow Framework 10**: `me.ahoo.wow:wow-*` (`wow-api`, `wow-kernel`, `wow-spring-boot`, `wow-observability`, `wow-test`, `wow-test-spring-boot`) and the Gradle plugin `me.ahoo.wow:wow-gradle-plugin`
+- **CoSec 8**: `wow-cosec` + `me.ahoo.cosec:cosec-spring-boot`/`cosec-webflux` (authorization, optional)
+- **CoCache 8**: `wow-cocache` (shared state caches, optional)
+- **CosId 5**: `wow-cosid` (aggregate id generators, optional; node ids are UUIDv7)
+- **Spring Boot**: WebFlux-based reactive stack, Spring Boot 4.2.x, Jackson 3
+- **Kotlin**: JVM 21 toolchain with `-Xjsr305=strict`, `jvmDefault = ENABLE` (configured in `wow.kotlin-conventions`)
 
 ## Configuration Files
 
 - Detekt config: `config/detekt/detekt.yml`
 - Logback: `config/logback.xml`
 - Spring: `server/src/main/resources/application.yaml`
+- Manifest baseline: `server/manifest/baseline.json`
 - Version catalog: `gradle/libs.versions.toml` (also used by `build-logic` for Gradle plugin versions)
 - Build conventions: `build-logic/src/main/kotlin/wow.*-conventions.gradle.kts`

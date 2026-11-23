@@ -1,7 +1,7 @@
 {
-  "name": "@ahoo-wang/wow-client",
+  "name": "@ahoo-wang/wow-template-client",
   "version": "0.0.1",
-  "description": "WOW Project Client",
+  "description": "Typed TypeScript clients of the demo service, generated from its Wow Manifest",
   "keywords": [
     "wow",
     "client",
@@ -39,8 +39,8 @@
     "format": "prettier --write .",
     "clean": "pnpm clean:dist && pnpm clean:generated",
     "clean:dist": "rimraf dist",
-    "clean:generated": "rimraf src/generated",
-    "generate": "fetcher-generator generate -i http://localhost:8080/v3/api-docs -o src/generated",
+    "clean:generated": "rimraf src/generated src/.wow-generator.json",
+    "generate": "wow-generator generate --input ../server/manifest/baseline.json --output src/generated --strict",
     "prepublishOnly": "pnpm clean:dist && pnpm generate && pnpm lint && pnpm build",
     "release": "pnpm publish --access public --no-git-checks",
     "release:patch": "pnpm version patch && pnpm publish --access public --no-git-checks",
@@ -48,14 +48,13 @@
     "release:major": "pnpm version major && pnpm publish --access public --no-git-checks"
   },
   "peerDependencies": {
-    "@ahoo-wang/fetcher": "^5.1.5",
-    "@ahoo-wang/fetcher-cosec": "^5.1.5",
-    "@ahoo-wang/fetcher-decorator": "^5.1.5",
-    "@ahoo-wang/fetcher-eventstream": "^5.1.5",
-    "@ahoo-wang/fetcher-wow": "^5.1.5"
+    "@ahoo-wang/fetcher": "^6.1.1",
+    "@ahoo-wang/fetcher-eventstream": "^6.1.1",
+    "@ahoo-wang/wow-client": "~10.0.0-beta.18"
   },
   "devDependencies": {
-    "@ahoo-wang/fetcher-generator": "^5.1.5",
+    "@ahoo-wang/fetcher-decorator": "^6.1.1",
+    "@ahoo-wang/wow-generator": "10.0.0-beta.18",
     "@eslint/js": "^10.0.1",
     "@types/node": "^24.19.2",
     "@vitest/coverage-v8": "^4.1.12",
