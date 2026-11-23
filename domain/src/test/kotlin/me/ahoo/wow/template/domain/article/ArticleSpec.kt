@@ -2,8 +2,7 @@ package me.ahoo.wow.template.domain.article
 
 import me.ahoo.test.asserts.assert
 import me.ahoo.wow.api.caller.Caller
-import me.ahoo.wow.api.lifecycle.DeleteAggregate
-import me.ahoo.wow.api.lifecycle.RestoreAggregate
+import me.ahoo.wow.api.result.FrameworkCodes
 import me.ahoo.wow.template.api.article.ArticleCreated
 import me.ahoo.wow.template.api.article.ArticleEdited
 import me.ahoo.wow.template.api.article.ArticlePublished
@@ -11,6 +10,7 @@ import me.ahoo.wow.template.api.article.ArticleReturned
 import me.ahoo.wow.template.api.article.ArticleStatus
 import me.ahoo.wow.template.api.article.ArticleSubmitted
 import me.ahoo.wow.template.api.article.CreateArticle
+import me.ahoo.wow.template.api.article.DeleteArticle
 import me.ahoo.wow.template.api.article.EditArticle
 import me.ahoo.wow.template.api.article.PublishArticle
 import me.ahoo.wow.template.api.article.ReturnArticle
@@ -101,12 +101,17 @@ class ArticleSpec {
     }
 
     @Test
-    fun `a deleted article should be restored with its text`() = articleSpec {
-        given(created)
-        whenCommand(DeleteAggregate()) { expectDeleted() }
-        whenCommand(RestoreAggregate()) {
-            expectState { title.assert().isEqualTo(TITLE) }
-        }
+    fun `deleting an article should release its slug, and the article should take no more commands`() = articleSpec {
+        givenCommands(CreateArticle(TITLE, BODY, SLUG))
+        whenCommand(DeleteArticle) { expectDeleted() }
+        holds(Article.SLUGS, SLUG).assert().isFalse()
+        whenCommand(EditArticle("After", BODY)) { expectRejected(FrameworkCodes.AGGREGATE_DELETED) }
+    }
+
+    @Test
+    fun `an article under review should be deleted, as its author withdraws it`() = articleSpec {
+        givenCommands(CreateArticle(TITLE, BODY, SLUG), SubmitArticle)
+        whenCommand(DeleteArticle) { expectDeleted() }
     }
 
     private companion object {

@@ -37,17 +37,17 @@ flowchart LR
 |---|---|
 | 命令形状用 Jakarta 约束，在准入时校验（400 `wow.command.invalid`） | [`ArticleCommands.kt`](api/src/main/kotlin/me/ahoo/wow/template/api/article/ArticleCommands.kt) |
 | 业务规则用 `reject` + `@ErrorCode`，状态冲突用 409 | [`Article.kt`](domain/src/main/kotlin/me/ahoo/wow/template/domain/article/Article.kt) `Rejections` |
-| 唯一键：`DecideScope.reserve`，租户内唯一 | `Article` 创建时预留 slug |
+| 唯一键：`DecideScope.reserve` / `release`，租户内唯一 | `Article` 创建时预留 slug，删除时释放 |
 | 什么也不改变时返回 `null`（no-op） | `EditArticle`、`ExpireReview` |
 | 所有权：文章属于作者（默认 `Ownership.OWNER`），审核属于租户（`Ownership.TENANT`） | [`Review.kt`](domain/src/main/kotlin/me/ahoo/wow/template/domain/review/Review.kt) |
 | 内部命令 `@InternalCommand`：公开端口没有路由 | `CreateReview`、`PublishArticle`、`ReturnArticle`、`ExpireReview` |
 | 领域服务注入命令函数 | [`ReviewPolicy`](domain/src/main/kotlin/me/ahoo/wow/template/domain/review/ReviewPolicy.kt)，由 `blog.review.timeout` 配置 |
 | 持久化的定时命令：`schedule` / `cancelSchedule` | `Review` 开启时安排过期，裁决时取消 |
-| Saga：类型化处理函数、确定性派生、`@OnRejected` | [`ArticleReviewSaga.kt`](domain/src/main/kotlin/me/ahoo/wow/template/domain/review/ArticleReviewSaga.kt) |
+| Saga：类型化处理函数、确定性派生、`@OnRejected` 只接受预期内的拒绝 | [`ArticleReviewSaga.kt`](domain/src/main/kotlin/me/ahoo/wow/template/domain/review/ArticleReviewSaga.kt)：审核期间文章被删除，发布被拒绝时接受；其他拒绝让处理失败，最终停放 |
 | 溯源函数读取提交的时间，而不是系统时钟 | [`ArticleState`](domain/src/main/kotlin/me/ahoo/wow/template/domain/article/ArticleState.kt) 的 `publishedAt` |
 | 快照查询索引 `@QueryIndex` | `ArticleState` 的 `slug`、`status` + `publishedAt` |
 | 命令授权 `CommandAuthorizer` | [`BlogAuthorization.kt`](server/src/main/kotlin/me/ahoo/wow/template/server/BlogAuthorization.kt)：只有编辑能裁决审核、发送运维命令 |
-| 生命周期命令（删除、恢复、转移） | 内置，无需代码 |
+| 收窄生命周期命令 `@AggregateRoot(lifecycle = [...])`，领域命令产出 `AggregateDeleted` | 文章用 `DeleteArticle` 删除并释放 slug，删除不可恢复；审核不开放任何生命周期命令，没人能删掉它而让文章卡在审核中 |
 
 ## 模块
 

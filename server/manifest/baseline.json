@@ -32,6 +32,17 @@
         } ],
         "description" : "Create an article"
       }, {
+        "name" : "DeleteArticle",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.DeleteArticle",
+        "creation" : "none",
+        "produces" : [ "wow.lifecycle.AggregateDeleted" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/{id}/delete-article"
+        } ],
+        "description" : "Delete an article"
+      }, {
         "name" : "EditArticle",
         "aliases" : [ ],
         "schema" : "#/$defs/me.ahoo.wow.template.api.article.EditArticle",
@@ -77,26 +88,6 @@
           "path" : "/blog/article/{id}/submit-article"
         } ],
         "description" : "Submit an article for review"
-      }, {
-        "name" : "wow.lifecycle.DeleteAggregate",
-        "aliases" : [ ],
-        "schema" : "#/$defs/wow.lifecycle.DeleteAggregate",
-        "creation" : "none",
-        "routes" : [ {
-          "method" : "DELETE",
-          "path" : "/blog/article/{id}"
-        } ],
-        "system" : true
-      }, {
-        "name" : "wow.lifecycle.RestoreAggregate",
-        "aliases" : [ ],
-        "schema" : "#/$defs/wow.lifecycle.RestoreAggregate",
-        "creation" : "none",
-        "routes" : [ {
-          "method" : "POST",
-          "path" : "/blog/article/{id}/wow.lifecycle.restore-aggregate"
-        } ],
-        "system" : true
       }, {
         "name" : "wow.lifecycle.TransferOwner",
         "aliases" : [ ],
@@ -237,36 +228,6 @@
           "path" : "/blog/review/{id}/reject-review"
         } ],
         "description" : "Reject a review"
-      }, {
-        "name" : "wow.lifecycle.DeleteAggregate",
-        "aliases" : [ ],
-        "schema" : "#/$defs/wow.lifecycle.DeleteAggregate",
-        "creation" : "none",
-        "routes" : [ {
-          "method" : "DELETE",
-          "path" : "/blog/review/{id}"
-        } ],
-        "system" : true
-      }, {
-        "name" : "wow.lifecycle.RestoreAggregate",
-        "aliases" : [ ],
-        "schema" : "#/$defs/wow.lifecycle.RestoreAggregate",
-        "creation" : "none",
-        "routes" : [ {
-          "method" : "POST",
-          "path" : "/blog/review/{id}/wow.lifecycle.restore-aggregate"
-        } ],
-        "system" : true
-      }, {
-        "name" : "wow.lifecycle.TransferSpace",
-        "aliases" : [ ],
-        "schema" : "#/$defs/wow.lifecycle.TransferSpace",
-        "creation" : "none",
-        "routes" : [ {
-          "method" : "POST",
-          "path" : "/blog/review/{id}/wow.lifecycle.transfer-space"
-        } ],
-        "system" : true
       }, {
         "name" : "wow.snapshot.RebuildSnapshot",
         "aliases" : [ ],
@@ -725,6 +686,11 @@
       "description" : "Create an article",
       "x-wow-class" : "me.ahoo.wow.template.api.article.CreateArticle"
     },
+    "me.ahoo.wow.template.api.article.DeleteArticle" : {
+      "type" : "object",
+      "description" : "Delete an article",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.DeleteArticle"
+    },
     "me.ahoo.wow.template.api.article.EditArticle" : {
       "type" : "object",
       "properties" : {
@@ -912,16 +878,6 @@
       },
       "required" : [ "articleId", "remark", "status" ],
       "x-wow-class" : "me.ahoo.wow.template.domain.review.ReviewState"
-    },
-    "wow.lifecycle.DeleteAggregate" : {
-      "type" : "object",
-      "description" : "Marks the aggregate deleted; its events stay in the log.",
-      "x-wow-class" : "me.ahoo.wow.api.lifecycle.DeleteAggregate"
-    },
-    "wow.lifecycle.RestoreAggregate" : {
-      "type" : "object",
-      "description" : "Takes back the deletion of a deleted aggregate.",
-      "x-wow-class" : "me.ahoo.wow.api.lifecycle.RestoreAggregate"
     },
     "wow.lifecycle.TransferOwner" : {
       "type" : "object",

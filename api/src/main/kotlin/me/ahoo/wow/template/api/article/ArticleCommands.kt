@@ -36,6 +36,13 @@ data class EditArticle(
     @field:NotBlank val body: String,
 )
 
+/**
+ * 作者删除文章：释放它的 slug，删除不可恢复。审核中的文章也可以删除，相当于撤稿；审核结果随后到达时，
+ * 审核 Saga 接受“文章已删除”的拒绝。
+ */
+@Summary("Delete an article")
+data object DeleteArticle
+
 /** 作者提交草稿以供审核。 */
 @Summary("Submit an article for review")
 data object SubmitArticle

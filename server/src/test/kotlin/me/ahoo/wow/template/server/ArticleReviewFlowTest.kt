@@ -12,6 +12,7 @@ import me.ahoo.wow.template.api.BlogContract
 import me.ahoo.wow.template.api.article.ArticleStateView
 import me.ahoo.wow.template.api.article.ArticleStatus
 import me.ahoo.wow.template.api.article.CreateArticle
+import me.ahoo.wow.template.api.article.DeleteArticle
 import me.ahoo.wow.template.api.article.EditArticle
 import me.ahoo.wow.template.api.article.SubmitArticle
 import me.ahoo.wow.template.api.review.ApproveReview
@@ -94,6 +95,31 @@ class ArticleReviewFlowTest {
         val review = submit(create(gina), gina)
         val refused = assertRejected { server.commands(gina).wait(ApproveReview("Looks great to me"), review) }
         refused.code.assert().isEqualTo(FrameworkCodes.AUTH_FORBIDDEN)
+        review(review).status.assert().isEqualTo(ReviewStatus.PENDING)
+    }
+
+    @Test
+    fun `a deleted article should free its slug for good`() {
+        val slug = slug()
+        val lena = author("lena")
+        val article = create(lena, slug)
+        runBlocking { server.commands(lena).wait(DeleteArticle, article) }
+
+        create(author("mike"), slug)
+        // 删除不可恢复：文章没有恢复命令，它的 slug 可能已被别人占用。
+        server.http.post("/blog/article/$article/wow.lifecycle.restore-aggregate", "{}", caller = lena)
+            .status.assert().isEqualTo(NOT_FOUND)
+    }
+
+    /** 审核不开放生命周期命令：谁删了审核，文章就会一直停在审核中。 */
+    @Test
+    fun `nobody should delete a review`() {
+        val nina = author("nina")
+        val review = submit(create(nina), nina)
+        for (caller in listOf(nina, EDITOR)) {
+            server.http.request("DELETE", "/blog/review/$review", caller = caller)
+                .status.assert().isEqualTo(NOT_FOUND)
+        }
         review(review).status.assert().isEqualTo(ReviewStatus.PENDING)
     }
 

@@ -2,7 +2,7 @@
 
 import { CommandClient, type CommandOptions, type CommandResult, type CommandResultStream, type CreateCommandOptions, LifecycleCommands, type WowClientOptions } from '@ahoo-wang/wow-client';
 import { BlogManifest } from '../manifest.js';
-import type { CreateArticle, EditArticle, SubmitArticle, TransferOwner, TransferSpace } from '../types.js';
+import type { CreateArticle, DeleteArticle, EditArticle, SubmitArticle, TransferOwner, TransferSpace } from '../types.js';
 
 /** Sends the commands of `blog.article` by its service's routes (`BlogManifest`). Each method answers the result its wait plan ends with, as `CommandClient.wait` does: the server's default plan unless the options give one, `{ wait: WaitPlan.ACCEPTED }` to answer once it is accepted. A rejected command rejects with a `CommandRejectedError`; anything else that did not succeed with a `WowProblemError`. */
 export class ArticleCommandClient {
@@ -26,6 +26,20 @@ export class ArticleCommandClient {
   /** `CreateArticle`, answered as one result per hop of its wait (`text/event-stream`). */
   createArticleStream(body: CreateArticle, options?: CreateCommandOptions): Promise<CommandResultStream> {
     return this.client.stream({ ...options, command: 'blog.article.CreateArticle', body });
+  }
+
+  /**
+   * Delete an article
+   * `DeleteArticle`: `POST /blog/article/{id}/delete-article`.
+   * Produces `wow.lifecycle.AggregateDeleted`.
+   */
+  deleteArticle(id: string, body: DeleteArticle = {}, options?: CommandOptions): Promise<CommandResult> {
+    return this.client.wait({ ...options, command: 'blog.article.DeleteArticle', body, id });
+  }
+
+  /** `DeleteArticle`, answered as one result per hop of its wait (`text/event-stream`). */
+  deleteArticleStream(id: string, body: DeleteArticle = {}, options?: CommandOptions): Promise<CommandResultStream> {
+    return this.client.stream({ ...options, command: 'blog.article.DeleteArticle', body, id });
   }
 
   /**
@@ -54,22 +68,6 @@ export class ArticleCommandClient {
   /** `SubmitArticle`, answered as one result per hop of its wait (`text/event-stream`). */
   submitArticleStream(id: string, body: SubmitArticle = {}, options?: CommandOptions): Promise<CommandResultStream> {
     return this.client.stream({ ...options, command: 'blog.article.SubmitArticle', body, id });
-  }
-
-  /**
-   * Marks the aggregate deleted; its events stay in the log.
-   * The lifecycle command `wow.lifecycle.DeleteAggregate`.
-   */
-  deleteAggregate(id: string, options?: CommandOptions): Promise<CommandResult> {
-    return this.client.wait({ ...options, command: LifecycleCommands.DELETE_AGGREGATE, type: { context: 'blog', name: 'article' }, id });
-  }
-
-  /**
-   * Takes back the deletion of a deleted aggregate.
-   * The lifecycle command `wow.lifecycle.RestoreAggregate`.
-   */
-  restoreAggregate(id: string, options?: CommandOptions): Promise<CommandResult> {
-    return this.client.wait({ ...options, command: LifecycleCommands.RESTORE_AGGREGATE, type: { context: 'blog', name: 'article' }, id });
   }
 
   /**

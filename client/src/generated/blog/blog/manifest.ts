@@ -13,10 +13,9 @@ export const BlogManifest: RoutingManifest = {
           name: 'article',
           commands: [
             { name: 'CreateArticle', routes: [{ method: 'POST', path: '/blog/article/{id}/create-article' }, { method: 'POST', path: '/blog/article/create-article' }] },
+            { name: 'DeleteArticle', routes: [{ method: 'POST', path: '/blog/article/{id}/delete-article' }] },
             { name: 'EditArticle', routes: [{ method: 'POST', path: '/blog/article/{id}/edit-article' }] },
             { name: 'SubmitArticle', routes: [{ method: 'POST', path: '/blog/article/{id}/submit-article' }] },
-            { name: 'wow.lifecycle.DeleteAggregate', routes: [{ method: 'DELETE', path: '/blog/article/{id}' }] },
-            { name: 'wow.lifecycle.RestoreAggregate', routes: [{ method: 'POST', path: '/blog/article/{id}/wow.lifecycle.restore-aggregate' }] },
             { name: 'wow.lifecycle.TransferOwner', routes: [{ method: 'POST', path: '/blog/article/{id}/wow.lifecycle.transfer-owner' }] },
             { name: 'wow.lifecycle.TransferSpace', routes: [{ method: 'POST', path: '/blog/article/{id}/wow.lifecycle.transfer-space' }] },
           ],
@@ -26,9 +25,6 @@ export const BlogManifest: RoutingManifest = {
           commands: [
             { name: 'ApproveReview', routes: [{ method: 'POST', path: '/blog/review/{id}/approve-review' }] },
             { name: 'RejectReview', routes: [{ method: 'POST', path: '/blog/review/{id}/reject-review' }] },
-            { name: 'wow.lifecycle.DeleteAggregate', routes: [{ method: 'DELETE', path: '/blog/review/{id}' }] },
-            { name: 'wow.lifecycle.RestoreAggregate', routes: [{ method: 'POST', path: '/blog/review/{id}/wow.lifecycle.restore-aggregate' }] },
-            { name: 'wow.lifecycle.TransferSpace', routes: [{ method: 'POST', path: '/blog/review/{id}/wow.lifecycle.transfer-space' }] },
           ],
         },
       ],

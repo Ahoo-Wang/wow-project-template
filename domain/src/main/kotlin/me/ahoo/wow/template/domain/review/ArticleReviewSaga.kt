@@ -51,7 +51,8 @@ class ArticleReviewSaga {
         ReturnArticle(reviewId = event.ref.id, reason = EXPIRED_REASON).toCommandRequest(event.event.articleId)
 
     /**
-     * 审核期间作者删除了文章，发布被拒绝（`wow.aggregate.deleted`）：无需补偿，接受即可。
+     * 审核期间作者删除了文章（[me.ahoo.wow.template.api.article.DeleteArticle]，相当于撤稿），发布被拒绝
+     * （`wow.aggregate.deleted`）：无需补偿，接受即可。
      * 没有 `@OnRejected` 处理函数，派生命令被拒绝会停放（park）审核聚合，等待人工处理。
      */
     @OnRejected
@@ -65,7 +66,7 @@ class ArticleReviewSaga {
         const val EXPIRED_REASON = "The review expired before an editor decided it."
 
         /**
-         * 只接受预期内的拒绝：文章已被删除。其他拒绝不该发生（文章只会被本 Saga 移出审核，重复投递由确定性 ID 去重），
+         * 只接受预期内的拒绝：文章已被删除。其他拒绝不该发生（文章只会被本 Saga 移出审核，删除不可恢复，重复投递由确定性 ID 去重），
          * 一旦发生就让处理失败：订阅按规则重试，最终停放审核聚合，交给运维排查（`/wow/ops/parked`），而不是被悄悄吞掉。
          */
         private fun acceptArticleDeleted(rejected: CommandReceipt.Rejected<*>) {

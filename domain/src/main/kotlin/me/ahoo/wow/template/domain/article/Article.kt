@@ -5,6 +5,9 @@ import me.ahoo.wow.api.annotation.Description
 import me.ahoo.wow.api.annotation.ErrorCode
 import me.ahoo.wow.api.decide.DecideScope
 import me.ahoo.wow.api.decide.reject
+import me.ahoo.wow.api.lifecycle.AggregateDeleted
+import me.ahoo.wow.api.lifecycle.TransferOwner
+import me.ahoo.wow.api.lifecycle.TransferSpace
 import me.ahoo.wow.template.api.article.ArticleCreated
 import me.ahoo.wow.template.api.article.ArticleEdited
 import me.ahoo.wow.template.api.article.ArticlePublished
@@ -12,6 +15,7 @@ import me.ahoo.wow.template.api.article.ArticleReturned
 import me.ahoo.wow.template.api.article.ArticleStatus
 import me.ahoo.wow.template.api.article.ArticleSubmitted
 import me.ahoo.wow.template.api.article.CreateArticle
+import me.ahoo.wow.template.api.article.DeleteArticle
 import me.ahoo.wow.template.api.article.EditArticle
 import me.ahoo.wow.template.api.article.PublishArticle
 import me.ahoo.wow.template.api.article.ReturnArticle
@@ -28,9 +32,11 @@ import me.ahoo.wow.template.api.article.SubmitArticle
  *
  * 聚合只做决策：基于命令与当前状态校验规则，返回事件；状态只由 [ArticleState] 的溯源函数修改。
  * 文章属于创建它的作者（默认的 `Ownership.OWNER`）：其他作者既读不到，也改不了（404）。
- * 删除与恢复是内置的生命周期命令（`DELETE /blog/article/{id}`），无需在此声明。
+ *
+ * 生命周期：删除要释放 slug，内置的 `DeleteAggregate` 不经过领域代码，所以 `lifecycle` 去掉了它，改由 [DeleteArticle]
+ * 删除；也去掉了 `RestoreAggregate`：slug 一旦释放可能被别人占用，删除不可恢复。转移 owner 与空间仍是内置命令。
  */
-@AggregateRoot
+@AggregateRoot(lifecycle = [TransferOwner::class, TransferSpace::class])
 @Description("作者的一篇文章，从草稿到发布")
 class Article(private val state: ArticleState) {
 
@@ -65,6 +71,16 @@ class Article(private val state: ArticleState) {
     fun onCommand(command: ReturnArticle): ArticleReturned {
         requireStatus(ArticleStatus.IN_REVIEW, "be returned")
         return ArticleReturned(reviewId = command.reviewId, reason = command.reason)
+    }
+
+    /**
+     * 释放 slug，并以生命周期事件 `AggregateDeleted` 删除文章：与内置删除效果相同，此后文章拒绝一切命令。
+     * 释放随事件一起提交，追加失败则不生效。
+     */
+    @Suppress("UnusedParameter") // 命令没有字段：函数处理的是它的类型。
+    fun onCommand(command: DeleteArticle, scope: DecideScope): AggregateDeleted {
+        scope.release(SLUGS, state.slug)
+        return AggregateDeleted()
     }
 
     private fun requireStatus(required: ArticleStatus, action: String) {

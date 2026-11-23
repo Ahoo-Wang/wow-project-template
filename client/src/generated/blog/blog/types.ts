@@ -79,6 +79,12 @@ export interface CreateArticle {
 
 
 /**
+ * Delete an article
+ * - key: `me.ahoo.wow.template.api.article.DeleteArticle`
+ */
+export type DeleteArticle = Record<string, unknown>;
+
+/**
  * Edit an article
  * - key: `me.ahoo.wow.template.api.article.EditArticle`
  */

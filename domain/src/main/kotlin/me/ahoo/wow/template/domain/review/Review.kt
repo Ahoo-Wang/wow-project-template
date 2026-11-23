@@ -24,10 +24,12 @@ import me.ahoo.wow.template.api.review.ReviewStatus
  * 审核属于租户（`Ownership.TENANT`），不属于提交文章的作者：租户内的调用方都能读到它，
  * 谁能裁决由宿主的 `CommandAuthorizer` 决定（只有编辑）。
  *
+ * 审核不开放任何生命周期命令（`lifecycle = []`）：审核被删除后，文章会一直停在审核中，因为只有审核结果能让它离开。
+ *
  * 过期是一条持久化的定时命令：开启审核时安排 [ExpireReview]，随事件一起提交；裁决时取消。
  * 定时命令至少投递一次、绝不提前，到期时审核已裁决则什么也不做。
  */
-@AggregateRoot(ownership = Ownership.TENANT)
+@AggregateRoot(ownership = Ownership.TENANT, lifecycle = [])
 @Description("编辑对一次提交的审核")
 class Review(private val state: ReviewState) {
 
