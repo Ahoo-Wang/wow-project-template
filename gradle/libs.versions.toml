@@ -15,7 +15,7 @@ jakarta-validation = "3.1.1"
 cosid = "5.0.1"
 cocache = "8.2.0"
 coapi = "3.1.0"
-cosky = "8.0.0-beta.11"
+cosky = "8.0.0-beta.15"
 # test
 junit = "6.1.3"
 fluent-assert = "1.3.0"
