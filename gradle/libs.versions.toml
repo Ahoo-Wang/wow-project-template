@@ -4,7 +4,7 @@
 wow = "10.0.0-beta.19"
 # Wow 10.0.0-beta.19 构建与测试所用的版本组合（取自它的 gradle/libs.versions.toml）。
 spring-boot = "4.2.0"
-cosec = "8.0.0-beta.7"
+cosec = "8.0.0-beta.8"
 springdoc = "3.2.1"
 testcontainers = "2.0.5"
 # api 模块的约束注解。wow-bom 只约束 Wow 自己的模块，所以发布的 api 自己写明版本，取 Spring Boot 4.2.0 的。
