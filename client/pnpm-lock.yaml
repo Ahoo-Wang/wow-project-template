@@ -15,15 +15,15 @@ importers:
         specifier: ^6.1.1
         version: 6.1.1(@ahoo-wang/fetcher@6.1.1)
       '@ahoo-wang/wow-client':
-        specifier: ~10.0.0-beta.19
-        version: 10.0.0-beta.19(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)
+        specifier: ~10.0.0-beta.22
+        version: 10.0.0-beta.22(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)
     devDependencies:
       '@ahoo-wang/fetcher-decorator':
         specifier: ^6.1.1
         version: 6.1.1(@ahoo-wang/fetcher@6.1.1)
       '@ahoo-wang/wow-generator':
-        specifier: 10.0.0-beta.19
-        version: 10.0.0-beta.19(@ahoo-wang/fetcher-decorator@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)(@ahoo-wang/wow-client@10.0.0-beta.19(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1))
+        specifier: 10.0.0-beta.22
+        version: 10.0.0-beta.22(@ahoo-wang/fetcher-decorator@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)(@ahoo-wang/wow-client@10.0.0-beta.22(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1))
       '@eslint/js':
         specifier: ^10.0.1
         version: 10.0.1(eslint@10.15.0(supports-color@7.2.0))
@@ -85,26 +85,28 @@ packages:
     resolution: {integrity: sha512-VTFHST0vi2iZo+Tg5ILXNCZNUg8CqdMFLHvwKNT4ha7Zzdi2RQUnfTGMZv4L7ME6S9qKb0DgM12un7epOu8Low==}
     engines: {node: '>=18.20.8'}
 
-  '@ahoo-wang/wow-client@10.0.0-beta.19':
-    resolution: {integrity: sha512-Y1tUSshdlQW+wPKB4TwqTSpYFzjVksVlzl+FneVqrwOOBUcvAirXFIwvSGmCVE6b2oSZnLvuDQR4OfrC9q4WCA==}
+  '@ahoo-wang/wow-client@10.0.0-beta.22':
+    resolution: {integrity: sha512-tk6R7BQNvfNsNg//oLqBpl2GT6ZSXC3xPF/xF4qj7feeGOX61ZfTSsSu3yw9AHJ+fisvNunasHdj84R7s5aKSA==}
     engines: {node: '>=22.12.0'}
     peerDependencies:
-      '@ahoo-wang/fetcher': ^5.1.5 || ^6.0.0
-      '@ahoo-wang/fetcher-eventstream': ^5.1.5 || ^6.0.0
+      '@ahoo-wang/fetcher': ^5.1.5 || ^6.0.0 || ^8.0.0-rc.1
+      '@ahoo-wang/fetcher-eventstream': ^5.1.5 || ^6.0.0 || ^8.0.0-rc.1
 
-  '@ahoo-wang/wow-generator@10.0.0-beta.19':
-    resolution: {integrity: sha512-PntxS4fAlThwyoQ77+vefIeIvA7XN0mbbMySUoT/8DHAgt2KPC6K/qrRqF3k9e4pCMr5p+0hYYEgxRiM4yCfQA==}
+  '@ahoo-wang/wow-generator@10.0.0-beta.22':
+    resolution: {integrity: sha512-5RMt9//eNEaFhSJEESjlGbhbSNPVSY89dPKSFCr62saw0gEIYi2LGsVqM8X7zVnrCJsYhXoCZZ11+lGxr+ryFQ==}
     engines: {node: '>=22.12.0'}
     hasBin: true
     peerDependencies:
-      '@ahoo-wang/fetcher': ^5.1.5 || ^6.0.0
-      '@ahoo-wang/fetcher-decorator': ^5.1.5 || ^6.0.0
-      '@ahoo-wang/fetcher-eventstream': ^5.1.5 || ^6.0.0
-      '@ahoo-wang/wow-client': ~10.0.0-beta.19
+      '@ahoo-wang/fetcher': ^5.1.5 || ^6.0.0 || ^8.0.0-rc.1
+      '@ahoo-wang/fetcher-decorator': ^5.1.5 || ^6.0.0 || ^8.0.0-rc.1
+      '@ahoo-wang/fetcher-eventstream': ^5.1.5 || ^6.0.0 || ^8.0.0-rc.1
+      '@ahoo-wang/wow-client': ~10.0.0-beta.22
     peerDependenciesMeta:
       '@ahoo-wang/fetcher-decorator':
         optional: true
       '@ahoo-wang/fetcher-eventstream':
+        optional: true
+      '@ahoo-wang/wow-client':
         optional: true
 
   '@babel/helper-string-parser@7.27.1':
@@ -1506,21 +1508,21 @@ snapshots:
 
   '@ahoo-wang/fetcher@6.1.1': {}
 
-  '@ahoo-wang/wow-client@10.0.0-beta.19(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)':
+  '@ahoo-wang/wow-client@10.0.0-beta.22(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)':
     dependencies:
       '@ahoo-wang/fetcher': 6.1.1
       '@ahoo-wang/fetcher-eventstream': 6.1.1(@ahoo-wang/fetcher@6.1.1)
 
-  '@ahoo-wang/wow-generator@10.0.0-beta.19(@ahoo-wang/fetcher-decorator@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)(@ahoo-wang/wow-client@10.0.0-beta.19(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1))':
+  '@ahoo-wang/wow-generator@10.0.0-beta.22(@ahoo-wang/fetcher-decorator@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)(@ahoo-wang/wow-client@10.0.0-beta.22(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1))':
     dependencies:
       '@ahoo-wang/fetcher': 6.1.1
-      '@ahoo-wang/wow-client': 10.0.0-beta.19(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)
       commander: 14.0.3
       ts-morph: 28.0.0
       yaml: 2.9.1
     optionalDependencies:
       '@ahoo-wang/fetcher-decorator': 6.1.1(@ahoo-wang/fetcher@6.1.1)
       '@ahoo-wang/fetcher-eventstream': 6.1.1(@ahoo-wang/fetcher@6.1.1)
+      '@ahoo-wang/wow-client': 10.0.0-beta.22(@ahoo-wang/fetcher-eventstream@6.1.1(@ahoo-wang/fetcher@6.1.1))(@ahoo-wang/fetcher@6.1.1)
 
   '@babel/helper-string-parser@7.27.1': {}
 

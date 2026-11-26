@@ -1,7 +1,7 @@
 [versions]
 # Wow 10 目前只有预发布版：固定确切版本。Gradle 插件（build-logic）会加入同版本的 BOM，Wow 依赖都不必写版本。
 # wow-service Helm chart 的版本与它相同（deploy/values.yaml、CI 的 Helm 校验）。
-wow = "10.0.0-beta.19"
+wow = "10.0.0-beta.21"
 # Wow 10.0.0-beta.19 构建与测试所用的版本组合（取自它的 gradle/libs.versions.toml）。
 spring-boot = "4.2.0"
 cosec = "8.0.0"
