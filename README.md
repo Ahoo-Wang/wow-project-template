@@ -7,7 +7,7 @@
 再把示例领域换成你自己的。
 
 > [!WARNING]
-> 本模板基于 **Wow 10.0.0-beta.19**（预发布版）：API、配置、存储与线上格式在 10.0.0 GA 前仍可能变化，不承诺兼容，不建议用于生产。
+> 本模板基于 **Wow 10.0.0-beta.22**（预发布版）：API、配置、存储与线上格式在 10.0.0 GA 前仍可能变化，不承诺兼容，不建议用于生产。
 
 ## 设计原则
 
@@ -43,10 +43,10 @@ flowchart LR
 | 内部命令 `@InternalCommand`：公开端口没有路由 | `CreateReview`、`PublishArticle`、`ReturnArticle`、`ExpireReview` |
 | 领域服务注入命令函数 | [`ReviewPolicy`](domain/src/main/kotlin/me/ahoo/wow/template/domain/review/ReviewPolicy.kt)，由 `blog.review.timeout` 配置 |
 | 持久化的定时命令：`schedule` / `cancelSchedule` | `Review` 开启时安排过期，裁决时取消 |
-| Saga：类型化处理函数、确定性派生、`@OnRejected` 只接受预期内的拒绝 | [`ArticleReviewSaga.kt`](domain/src/main/kotlin/me/ahoo/wow/template/domain/review/ArticleReviewSaga.kt)：审核期间文章被删除，发布被拒绝时接受；其他拒绝让处理失败，最终停放 |
+| Saga：类型化处理函数、确定性派生、`@OnRejected` 用 `rejected.accept(<codes>)` 只接受预期内的拒绝 | [`ArticleReviewSaga.kt`](domain/src/main/kotlin/me/ahoo/wow/template/domain/review/ArticleReviewSaga.kt)：审核期间文章被删除，发布被拒绝时接受；其他拒绝照常停放 |
 | 溯源函数读取提交的时间，而不是系统时钟 | [`ArticleState`](domain/src/main/kotlin/me/ahoo/wow/template/domain/article/ArticleState.kt) 的 `publishedAt` |
 | 快照查询索引 `@QueryIndex` | `ArticleState` 的 `slug`、`status` + `publishedAt` |
-| 命令授权 `CommandAuthorizer` | [`BlogAuthorization.kt`](server/src/main/kotlin/me/ahoo/wow/template/server/BlogAuthorization.kt)：只有编辑能裁决审核、发送运维命令 |
+| 命令授权 `CommandAuthorizer`，运维命令用 `CommandAuthorizer.operational` | [`BlogAuthorization.kt`](server/src/main/kotlin/me/ahoo/wow/template/server/BlogAuthorization.kt)：只有编辑（`caller.hasRole`）能裁决审核、发送运维命令 |
 | 收窄生命周期命令 `@AggregateRoot(lifecycle = [...])`，领域命令产出 `AggregateDeleted` / `AggregateRestored` | 文章用 `DeleteArticle` 删除并释放 slug，用 `RestoreArticle`（`@OnCommand(onDeleted = true)`）恢复并重新预留 slug，审核中删除的文章不能恢复；审核不开放任何生命周期命令，没人能删掉它而让文章卡在审核中 |
 
 ## 模块
@@ -138,7 +138,7 @@ curl -X POST localhost:8080/blog/article/snapshot/query -H 'Content-Type: applic
 ```bash
 ./gradlew :blog-server:installDist :blog-server:generateWowHelmValues   # values 也由 assemble 生成
 docker build -t registry.example.com/blog-server:0.0.1 server
-helm upgrade --install blog oci://ghcr.io/ahoo-wang/wow-service --version 10.0.0-beta.19 \
+helm upgrade --install blog oci://ghcr.io/ahoo-wang/wow-service --version 10.0.0-beta.22 \
   -f server/build/wow/helm/values.yaml -f deploy/values.yaml --wait
 ```
 

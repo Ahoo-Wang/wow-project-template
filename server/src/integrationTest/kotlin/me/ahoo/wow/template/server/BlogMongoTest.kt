@@ -76,9 +76,6 @@ class BlogMongoTest {
             BlogContract.Wait.ARTICLE_REVIEW_SAGA__ON_REVIEW_APPROVED,
             BlogContract.Wait.SNAPSHOT,
         )
-        val EDITOR: Caller = Caller.of(
-            subject = "erin",
-            attributes = mapOf(BlogAuthorization.ROLES to listOf(BlogAuthorization.EDITOR)),
-        )
+        val EDITOR: Caller = Caller.of(subject = "erin", roles = listOf(BlogAuthorization.EDITOR))
     }
 }

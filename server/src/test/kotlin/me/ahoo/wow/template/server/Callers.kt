@@ -6,8 +6,5 @@ import me.ahoo.wow.api.caller.Caller
 object Callers {
     fun author(name: String): Caller = Caller.owner(name)
 
-    val EDITOR: Caller = Caller.of(
-        subject = "erin",
-        attributes = mapOf(BlogAuthorization.ROLES to listOf(BlogAuthorization.EDITOR)),
-    )
+    val EDITOR: Caller = Caller.of(subject = "erin", roles = listOf(BlogAuthorization.EDITOR))
 }

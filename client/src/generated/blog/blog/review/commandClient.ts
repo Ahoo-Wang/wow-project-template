@@ -6,11 +6,12 @@ import type { ApproveReview, RejectReview } from '../types.js';
 
 /** Sends the commands of `blog.review` by its service's routes (`BlogManifest`). Each method answers the result its wait plan ends with, as `CommandClient.wait` does: the server's default plan unless the options give one, `{ wait: WaitPlan.ACCEPTED }` to answer once it is accepted. A rejected command rejects with a `CommandRejectedError`; anything else that did not succeed with a `WowProblemError`. */
 export class ReviewCommandClient {
-  readonly client: CommandClient;
+  /** Sends the commands, as the context client's `commands` does. */
+  readonly commands: CommandClient;
 
   /** @param options - How the service is reached */
   constructor(options?: WowClientOptions) {
-    this.client = new CommandClient(options, { manifest: BlogManifest });
+    this.commands = new CommandClient(options, { manifest: BlogManifest });
   }
 
   /**
@@ -19,12 +20,12 @@ export class ReviewCommandClient {
    * Produces `ReviewApproved`.
    */
   approveReview(id: string, body: ApproveReview = {}, options?: CommandOptions): Promise<CommandResult> {
-    return this.client.wait({ ...options, command: 'blog.review.ApproveReview', body, id });
+    return this.commands.wait({ ...options, command: 'blog.review.ApproveReview', body, aggregateId: id });
   }
 
   /** `ApproveReview`, answered as one result per hop of its wait (`text/event-stream`). */
   approveReviewStream(id: string, body: ApproveReview = {}, options?: CommandOptions): Promise<CommandResultStream> {
-    return this.client.stream({ ...options, command: 'blog.review.ApproveReview', body, id });
+    return this.commands.stream({ ...options, command: 'blog.review.ApproveReview', body, aggregateId: id });
   }
 
   /**
@@ -33,11 +34,11 @@ export class ReviewCommandClient {
    * Produces `ReviewRejected`.
    */
   rejectReview(id: string, body: RejectReview, options?: CommandOptions): Promise<CommandResult> {
-    return this.client.wait({ ...options, command: 'blog.review.RejectReview', body, id });
+    return this.commands.wait({ ...options, command: 'blog.review.RejectReview', body, aggregateId: id });
   }
 
   /** `RejectReview`, answered as one result per hop of its wait (`text/event-stream`). */
   rejectReviewStream(id: string, body: RejectReview, options?: CommandOptions): Promise<CommandResultStream> {
-    return this.client.stream({ ...options, command: 'blog.review.RejectReview', body, id });
+    return this.commands.stream({ ...options, command: 'blog.review.RejectReview', body, aggregateId: id });
   }
 }
