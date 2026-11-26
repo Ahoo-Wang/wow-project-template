@@ -12,7 +12,7 @@ jakarta-validation = "3.1.1"
 # Wow 生态的其余组件，不在本模板的类路径上：服务采用其中某个组件时以这里的版本为基线
 # （Wow 的 wow-migrate Skill 以这份目录作为生态版本基线）。
 # 不再列 Simba：Wow 10 内置调度（聚合的定时命令 `DecideScope.schedule`、Saga 的 `@OnSchedule` 定时任务）。
-cosid = "5.0.1"
+cosid = "5.1.0"
 cocache = "8.2.0"
 coapi = "3.1.0"
 cosky = "8.0.0-beta.11"
