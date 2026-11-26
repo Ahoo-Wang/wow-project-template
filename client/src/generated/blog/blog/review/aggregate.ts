@@ -10,8 +10,8 @@ import type { ReviewApproved, ReviewCreated, ReviewExpired, ReviewRejected } fro
 export const ReviewAggregate = {
   context: 'blog',
   name: 'review',
-  path: '/blog/review',
   ownership: 'tenant',
+  idSource: 'assigned',
   snapshot: true,
   Errors: {
     /** 409: The review was already approved, rejected or expired. */

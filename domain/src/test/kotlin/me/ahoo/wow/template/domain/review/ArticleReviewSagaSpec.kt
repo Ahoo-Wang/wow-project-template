@@ -104,7 +104,9 @@ class ArticleReviewSagaSpec {
         givenAggregate(reviews, REVIEW, ReviewCreated(ARTICLE))
         whenEvent(ReviewApproved(ARTICLE, "LGTM"), by = ApproveReview::class) {
             whenRejected(commands.single(), Article.Rejections.WRONG_STATUS) {
-                expectError<IllegalStateException> { message.assert().contains("rejected unexpectedly") }
+                expectError<IllegalStateException> {
+                    message.assert().contains("accepts wow.aggregate.deleted", "blog.article.wrong-status")
+                }
             }
         }
     }

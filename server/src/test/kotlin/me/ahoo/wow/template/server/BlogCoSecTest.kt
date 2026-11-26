@@ -28,12 +28,13 @@ import org.junit.jupiter.api.TestInstance
 class BlogCoSecTest {
     private val server = wowServer<BlogServer>(
         "cosec",
-        properties = mapOf(IdentityHeader.ONLY_GATEWAY_CAN_REACH_KEY to "true"),
+        // 网关后面的节点是部署，不是开发：只有开发 profile 才以内存运行，这里显式声明内存后端。
+        properties = mapOf(IdentityHeader.ONLY_GATEWAY_CAN_REACH_KEY to "true", "wow.backend" to "memory"),
     )
 
     /** 网关转发的凭据：网关验证过的主体及其角色。 */
     private val gateway = UserCredential { caller ->
-        CoSecIdentity(caller.subject!!, caller.attributes[DevelopmentHeaders.ROLES_ATTRIBUTE].orEmpty()).headers()
+        CoSecIdentity(caller.subject!!, caller.roles).headers()
     }
 
     @AfterAll

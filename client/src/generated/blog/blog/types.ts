@@ -82,7 +82,7 @@ export interface CreateArticle {
  * Delete an article
  * - key: `me.ahoo.wow.template.api.article.DeleteArticle`
  */
-export type DeleteArticle = Record<string, unknown>;
+export type DeleteArticle = Record<string, never>;
 
 /**
  * Edit an article
@@ -107,7 +107,7 @@ export interface RejectReview {
  * Restore an article
  * - key: `me.ahoo.wow.template.api.article.RestoreArticle`
  */
-export type RestoreArticle = Record<string, unknown>;
+export type RestoreArticle = Record<string, never>;
 
 /**
  * A review approved its article
@@ -159,21 +159,4 @@ export interface ReviewState {
  * Submit an article for review
  * - key: `me.ahoo.wow.template.api.article.SubmitArticle`
  */
-export type SubmitArticle = Record<string, unknown>;
-
-/**
- * Gives the aggregate to the owner ownerId.
- * - key: `wow.lifecycle.TransferOwner`
- */
-export interface TransferOwner {
-  ownerId: string;
-}
-
-
-/**
- * Moves the aggregate to the space spaceId.
- * - key: `wow.lifecycle.TransferSpace`
- */
-export interface TransferSpace {
-  spaceId: string;
-}
+export type SubmitArticle = Record<string, never>;

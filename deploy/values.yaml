@@ -1,7 +1,7 @@
 # blog-service 自己的 wow-service chart values：构建不知道的部分。放在构建生成的 values 之后，覆盖它们：
 #
 #   ./gradlew :blog-server:assemble        # 生成 server/build/wow/helm/values.yaml（generateWowHelmValues）
-#   helm upgrade --install blog oci://ghcr.io/ahoo-wang/wow-service --version 10.0.0-beta.19 \
+#   helm upgrade --install blog oci://ghcr.io/ahoo-wang/wow-service --version 10.0.0-beta.22 \
 #     -f server/build/wow/helm/values.yaml -f deploy/values.yaml --wait
 #
 # chart 的版本就是 Wow 的版本（gradle/libs.versions.toml 的 `wow`），两者一起升级。

@@ -10,8 +10,8 @@ import type { ArticleCreated, ArticleEdited, ArticlePublished, ArticleReturned, 
 export const ArticleAggregate = {
   context: 'blog',
   name: 'article',
-  path: '/blog/article',
   ownership: 'owner',
+  idSource: 'assigned',
   snapshot: true,
   textNumbers: {
     state: { publishedAt: true },

@@ -19,6 +19,7 @@ export const BlogManifest: RoutingManifest = {
             { name: 'SubmitArticle', routes: [{ method: 'POST', path: '/blog/article/{id}/submit-article' }] },
             { name: 'wow.lifecycle.TransferOwner', routes: [{ method: 'POST', path: '/blog/article/{id}/wow.lifecycle.transfer-owner' }] },
             { name: 'wow.lifecycle.TransferSpace', routes: [{ method: 'POST', path: '/blog/article/{id}/wow.lifecycle.transfer-space' }] },
+            { name: 'wow.snapshot.RebuildSnapshot', routes: [{ method: 'POST', path: '/blog/article/wow.snapshot.rebuild-snapshot' }] },
           ],
         },
         {
@@ -26,6 +27,7 @@ export const BlogManifest: RoutingManifest = {
           commands: [
             { name: 'ApproveReview', routes: [{ method: 'POST', path: '/blog/review/{id}/approve-review' }] },
             { name: 'RejectReview', routes: [{ method: 'POST', path: '/blog/review/{id}/reject-review' }] },
+            { name: 'wow.snapshot.RebuildSnapshot', routes: [{ method: 'POST', path: '/blog/review/wow.snapshot.rebuild-snapshot' }] },
           ],
         },
       ],
