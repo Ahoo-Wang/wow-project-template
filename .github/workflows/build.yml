@@ -1,3 +1,13 @@
+# CI：合并前给出快速、可信、可复现的信号，并保证 main 随时可发布。
+#
+# - gradle：编译与 KSP、单元与服务测试、detekt、覆盖率门禁、Manifest 兼容性、Jackson 校验（`./gradlew build`），
+#   再构建要发布的镜像，对容器做冒烟测试（JDK 25、非 root，与生产相同），最后用 Wow 的 Helm chart 渲染 values。
+# - integration：在容器中的 MongoDB 副本集上运行服务（`./gradlew integrationTest`，不属于 `check`）。
+# - client：TypeScript 客户端的 lint、与 Manifest 基线的漂移测试、构建。
+# - ci：汇总以上作业。分支保护只需要求这一项检查，GitHub 的自动合并就会等它通过。
+#
+# 每一步都能在本地复现：同样的 Gradle 任务、scripts/smoke-test.sh、client/ 下的 pnpm 脚本。
+# 第三方 action 按提交哈希固定（Renovate 负责更新哈希与注释中的版本）。
 name: Build
 
 on:
@@ -11,7 +21,8 @@ permissions:
 
 concurrency:
   group: build-${{ github.workflow }}-${{ github.ref }}
-  cancel-in-progress: true
+  # 只取消同一 PR 的旧运行；main 的每个提交都跑完，覆盖率基线不缺提交。
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 env:
   CI: GITHUB_ACTIONS
@@ -20,131 +31,129 @@ jobs:
   gradle:
     name: Gradle Build
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Cache Gradle
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', 'build-logic/src/**', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      - name: Set up Gradle
+        # 校验 gradle-wrapper.jar，缓存依赖、wrapper 与构建缓存（只在 main 上写入缓存）。
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
 
-      - name: Build (compile + KSP + tests + detekt + coverage gate + Manifest compatibility)
-        run: ./gradlew build koverXmlReport --stacktrace
+      - name: Build (compile + KSP + tests + detekt + coverage gate + Manifest compatibility + Jackson check)
+        run: ./gradlew build koverXmlReport
 
       - name: Upload coverage to Codecov
         # fork 的 PR 拿不到 CODECOV_TOKEN，跳过上报而不是让构建失败。
         if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
-        uses: codecov/codecov-action@v7
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           flags: unittests
           fail_ci_if_error: true
           files: ./build/reports/kover/report.xml
 
-      - name: Smoke test (the distribution boots and serves real commands)
+      - name: Build the image
+        # `build` 已经生成发行版（server/build/install/blog-server）与 Helm values。
         run: |
-          ./gradlew :blog-server:installDist --stacktrace
-          cd server/build/install/blog-server
-          # 只有显式启用开发 profile 才以内存运行、服务开发身份；不带 profile 的节点会因没有后端与调用方认证而拒绝启动。
-          nohup bin/blog-server --spring.profiles.active=dev > smoke.log 2>&1 &
-          for i in $(seq 1 60); do
-            if curl -fs http://localhost:8080/actuator/health | grep -q '"UP"'; then echo "healthy after ${i}s"; break; fi
-            if [ "$i" = 60 ]; then cat smoke.log; exit 1; fi
-            sleep 1
-          done
-          # 创建并提交一篇文章：等待计划跟着审核 Saga 等到审核写入快照，回答中的 ref 就是这次审核。
-          curl -fsS -X POST http://localhost:8080/blog/article/smoke/create-article -H 'Content-Type: application/json' \
-            -d '{"title":"Smoke","body":"The distribution boots.","slug":"smoke"}' > /dev/null
-          review=$(curl -fsS -X POST http://localhost:8080/blog/article/smoke/submit-article -H 'Content-Type: application/json' \
-            -H 'Wow-Wait: handled(ArticleReviewSaga.onArticleSubmitted)>snapshot' -d '{}' | jq -r .ref.id)
-          curl -fsS http://localhost:8080/blog/article/smoke/state | jq -e '.state.status == "IN_REVIEW"' > /dev/null
-          curl -fsS "http://localhost:8080/blog/review/${review}/state" | jq -e '.state.status == "PENDING"' > /dev/null
-          # 内部命令没有公开路由；匿名调用方不是编辑，不能裁决审核。
-          test "$(curl -s -o /dev/null -w '%{http_code}' -X POST http://localhost:8080/blog/article/smoke/publish-article \
-            -H 'Content-Type: application/json' -d '{"reviewId":"x"}')" = 404
-          test "$(curl -s -o /dev/null -w '%{http_code}' -X POST "http://localhost:8080/blog/review/${review}/approve-review" \
-            -H 'Content-Type: application/json' -d '{}')" = 403
-          echo "smoke test passed"
+          ./gradlew :blog-server:installDist
+          docker build --tag blog-server:ci server
 
-      - name: Stop server
-        if: always()
-        run: pkill -f me.ahoo.wow.template.server.BlogServerKt || true
+      - name: Smoke test (the image serves real commands)
+        run: |
+          docker run --detach --name blog-server --publish 8080:8080 blog-server:ci --spring.profiles.active=dev
+          scripts/smoke-test.sh http://localhost:8080
 
       - name: Helm values check (the wow-service chart renders with the build's and the deployment's values)
         # chart 自带 values.schema.json：拼错的键、错误的类型都会让渲染失败。chart 版本即 Wow 版本。
-        # server/build/wow/helm/values.yaml 由 `assemble`（`build` 的一部分）生成。
         run: |
           wow=$(sed -n 's/^wow = "\(.*\)"/\1/p' gradle/libs.versions.toml)
           helm template blog oci://ghcr.io/ahoo-wang/wow-service --version "$wow" \
             -f server/build/wow/helm/values.yaml -f deploy/values.yaml > /dev/null
 
+      - name: Collect the server's log
+        if: failure()
+        run: docker logs blog-server > server.log 2>&1 || true
+
+      - name: Upload reports on failure
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: gradle-reports
+          path: |
+            */build/reports/
+            */build/test-results/
+            build/reports/
+            server.log
+          if-no-files-found: ignore
+          retention-days: 7
+
   integration:
     name: Integration Tests (MongoDB)
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
 
       - name: Set up JDK 21
-        uses: actions/setup-java@v6
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
         with:
           java-version: '21'
           distribution: 'temurin'
 
-      - name: Cache Gradle
-        uses: actions/cache@v6
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', 'build-logic/src/**', '**/gradle-wrapper.properties', '**/libs.versions.toml') }}
-          restore-keys: |
-            ${{ runner.os }}-gradle-
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1
 
       - name: Integration tests (the service on a MongoDB replica set in a container)
-        run: ./gradlew integrationTest --stacktrace
+        run: ./gradlew integrationTest
+
+      - name: Upload reports on failure
+        if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: integration-reports
+          path: |
+            server/build/reports/
+            server/build/test-results/
+          if-no-files-found: ignore
+          retention-days: 7
 
   client:
     name: Client Build
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     defaults:
       run:
         working-directory: client
     steps:
       - name: Checkout
-        uses: actions/checkout@v7
-
-      - name: Set up Node
-        uses: actions/setup-node@v7
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          node-version: '24.22.3'
+          persist-credentials: false
 
       - name: Set up pnpm
-        run: corepack enable && corepack prepare pnpm@9 --activate
-
-      - name: Get pnpm store directory
-        id: pnpm-cache
-        run: echo "STORE_PATH=$(pnpm store path)" >> $GITHUB_OUTPUT
-
-      - name: Cache pnpm store
-        uses: actions/cache@v6
+        # 版本取自 client/package.json 的 packageManager。
+        uses: pnpm/action-setup@73e46992e05b19abd31f2f3c20e0e7370d762115 # v6.1.1
         with:
-          path: ${{ steps.pnpm-cache.outputs.STORE_PATH }}
-          key: ${{ runner.os }}-pnpm-${{ hashFiles('client/pnpm-lock.yaml') }}
-          restore-keys: |
-            ${{ runner.os }}-pnpm-
+          package_json_file: client/package.json
+
+      - name: Set up Node
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: client/.node-version
+          cache: pnpm
+          cache-dependency-path: client/pnpm-lock.yaml
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -157,3 +166,16 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+  ci:
+    name: CI
+    # 汇总门禁：任何一个作业失败或被取消，这一项就失败。分支保护只需要求它。
+    if: always()
+    needs: [gradle, integration, client]
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: All jobs passed
+        run: |
+          echo '${{ toJSON(needs) }}' | jq -e 'to_entries | all(.value.result == "success")' > /dev/null \
+            || { echo '${{ toJSON(needs) }}' | jq -r 'to_entries[] | "\(.key): \(.value.result)"'; exit 1; }

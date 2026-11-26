@@ -28,8 +28,13 @@ Requires JDK 21 (production: JDK 25); Docker for `integrationTest`; Node.js 24 +
 ./gradlew :blog-server:updateWowManifestBaseline   # record an intended contract change
 ./gradlew :blog-server:run                         # local run: memory backend + `dev` profile
 ./gradlew :blog-server:assemble                   # distribution + build/wow/helm/values.yaml (generateWowHelmValues runs in assemble)
+scripts/smoke-test.sh [http://localhost:8080]      # real commands against a running dev-profile server (CI runs it against the image)
 cd client && pnpm generate && pnpm lint && pnpm test && pnpm build
 ```
+
+## CI
+
+`.github/workflows/build.yml`: `gradle` (`build` + Codecov, `docker build` of `server/` and `scripts/smoke-test.sh` against the container, `helm template` of the wow-service chart), `integration` (`integrationTest`), `client` (pnpm from `packageManager`, Node from `client/.node-version`), and `ci`, a gate over the three that branch protection can require alone. Actions are pinned by commit SHA (Renovate updates them); permissions are read-only by default; reports and the server log are uploaded on failure. `dependency-graph.yml` submits Gradle's resolved dependencies so Dependabot alerts cover them. Keep every CI step runnable locally: add logic to a script or a Gradle task, not inline YAML.
 
 ## Layout
 

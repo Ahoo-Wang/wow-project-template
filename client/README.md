@@ -46,8 +46,8 @@
 
 ### 环境要求
 
-- Node.js 24 或更高版本
-- pnpm 包管理器
+- Node.js：版本见 `.node-version`（CI 使用同一文件）
+- pnpm：版本见 `package.json` 的 `packageManager`，用 `corepack enable` 启用即与 CI 一致
 
 ### 常用脚本
 

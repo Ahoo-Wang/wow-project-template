@@ -1,0 +1,33 @@
+# 把 Gradle 的解析结果提交到 GitHub 的依赖图：Gradle 依赖不在清单文件里，GitHub 读不出它们，
+# 提交之后 Dependabot 才能对 Gradle 依赖（含传递依赖）发出漏洞告警。npm 依赖由 client/pnpm-lock.yaml 直接读取。
+name: Dependency Graph
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gradle:
+    name: Submit Gradle dependencies
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up JDK 21
+        uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Submit the dependency graph
+        uses: gradle/actions/dependency-submission@8da46b539cd8fe6ab27ca75128919a18d757604c # v6.4.1

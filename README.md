@@ -149,14 +149,23 @@ helm upgrade --install blog oci://ghcr.io/ahoo-wang/wow-service --version 10.0.0
 
 ## CI
 
-[`.github/workflows/build.yml`](.github/workflows/build.yml) 有三个作业：
+CI 只做一件事：在合并前给出快速、可信、可复现的信号，并保证 `main` 随时可发布。[`.github/workflows/build.yml`](.github/workflows/build.yml) 有四个作业：
 
 - **Gradle Build**：
-  - 执行 `build`（包含覆盖率门禁与 Manifest 兼容性），上报 Codecov。
-  - 冒烟测试：启动发行版，用 curl 创建并提交文章，校验状态、内部路由 404 与授权 403。
-  - 用 chart 渲染 Helm values（chart 自带 schema 校验）。
-- **Integration Tests**：`./gradlew integrationTest`，在容器中的 MongoDB 上运行。
-- **Client Build**：lint、客户端漂移测试、构建。
+  - 执行 `build`：编译与 KSP、测试、detekt、覆盖率门禁、Manifest 兼容性、Jackson 校验，并上报 Codecov。
+  - 构建要发布的镜像，用 [`scripts/smoke-test.sh`](scripts/smoke-test.sh) 对容器做冒烟测试：JDK 25、非 root 用户，与生产相同；发送真实命令，校验状态、内部路由 404、授权 403、非 JSON 请求体 415。
+  - 用 Wow 的 chart 渲染 Helm values（chart 自带 schema 校验）。
+- **Integration Tests**：`./gradlew integrationTest`，在容器中的 MongoDB 副本集上运行服务。
+- **Client Build**：lint、与 Manifest 基线的漂移测试、构建。Node 与 pnpm 的版本取自 `client/.node-version` 与 `client/package.json` 的 `packageManager`，本地与 CI 相同。
+- **CI**：汇总以上三个作业，任一失败或被取消它就失败。给 `main` 加分支保护时只需要求这一项检查，GitHub 的自动合并就会等 CI 通过后再合并。
+
+每一步都能在本地复现：同样的 Gradle 任务；`./gradlew :blog-server:run` 之后执行 `scripts/smoke-test.sh`；`client/` 下的 pnpm 脚本。失败时，测试报告与服务日志会作为构建产物上传（保留 7 天）。
+
+安全：
+- 第三方 action 都按提交哈希固定，由 Renovate（`helpers:pinGitHubActionDigests`）更新哈希与注释中的版本。
+- 工作流默认只读权限，检出时不保留凭据。
+- `setup-gradle` 会校验 `gradle-wrapper.jar`。
+- [`dependency-graph.yml`](.github/workflows/dependency-graph.yml) 把 Gradle 解析出的依赖（含传递依赖）提交到 GitHub 的依赖图，Dependabot 才能对它们发出漏洞告警。
 
 Renovate 把 Wow 的预发布版（Gradle 与 npm）作为一组一起升级。Jackson 不再固定：Wow 支持 3.1 与 3.2，`check` 中的 `checkWowJackson` 与宿主启动时的检查会拒绝未验证的版本或混用的模块版本。
 
