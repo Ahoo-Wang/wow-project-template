@@ -19,7 +19,7 @@
     "url": "https://github.com/Ahoo-Wang/wow-project-template/issues"
   },
   "type": "module",
-  "packageManager": "pnpm@9.15.9",
+  "packageManager": "pnpm@12.23.0",
   "engines": {
     "node": ">=24"
   },
