@@ -39,6 +39,8 @@ jobs:
           persist-credentials: false
 
       - name: Set up JDK 21
+        # 与构建的工具链一致（build-logic：JDK 21，即发布的 blog-api 的字节码基线）；detekt 1.23 也还不能在 JDK 25 上运行。
+        # 生产的 JDK 25 由下面对镜像的冒烟测试覆盖。
         uses: actions/setup-java@d1374f8ac74474200d16ef8ecee22c7ae7a51880 # v6.3.0
         with:
           java-version: '21'

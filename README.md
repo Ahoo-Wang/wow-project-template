@@ -66,7 +66,7 @@ build-logic/                                  约定插件：wow.kotlin / wow.ap
 
 ## 快速开始
 
-需要 JDK 21。集成测试另需 Docker，客户端需要 Node.js 24 与 pnpm。
+需要 JDK 21。集成测试另需 Docker，客户端需要 Node.js（版本见 `client/.node-version`）与 pnpm（`corepack enable` 后使用 `packageManager` 声明的版本）。
 
 ```bash
 ./gradlew :blog-server:run

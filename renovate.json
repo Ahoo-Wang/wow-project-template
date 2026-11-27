@@ -73,6 +73,26 @@
       ],
       "ignoreUnstable": false,
       "respectLatest": false
+    },
+    {
+      "description": "engines.node is the published client's promise to its users (the oldest supported Node LTS): change it by hand. The Node used to develop and build is client/.node-version",
+      "matchDepTypes": [
+        "engines"
+      ],
+      "enabled": false
+    },
+    {
+      "description": "CI's JDK must equal the build toolchain (JDK 21 in build-logic, the bytecode baseline of blog-api), and detekt 1.23 cannot run on JDK 25: raise its major together with the toolchain, by hand",
+      "matchManagers": [
+        "github-actions"
+      ],
+      "matchPackageNames": [
+        "java-jdk"
+      ],
+      "matchUpdateTypes": [
+        "major"
+      ],
+      "enabled": false
     }
   ]
 }

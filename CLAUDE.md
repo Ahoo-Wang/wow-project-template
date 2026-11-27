@@ -17,7 +17,7 @@ Code comments, README and docs in this repository are written in Chinese.
 
 ## Commands
 
-Requires JDK 21 (production: JDK 25); Docker for `integrationTest`; Node.js 24 + pnpm for `client/`.
+Requires JDK 21 (production: JDK 25); Docker for `integrationTest`; Node.js (version in `client/.node-version`) + pnpm (`packageManager`, via corepack) for `client/`.
 
 ```bash
 ./gradlew build                                    # compile, KSP, tests, detekt, Kover gate, checkWowManifest
