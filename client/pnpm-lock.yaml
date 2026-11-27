@@ -55,7 +55,7 @@ importers:
         specifier: ^6.0.3
         version: 6.0.3
       typescript-eslint:
-        specifier: ^8.73.0
+        specifier: ^8.74.0
         version: 8.74.0(eslint@10.15.0)(typescript@6.0.3)
       unplugin-dts:
         specifier: 1.1.2
