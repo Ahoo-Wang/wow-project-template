@@ -35,7 +35,7 @@ jackson2 = "2.22.3"
 # kover 0.9.11：插件类路径上的 intellij-coverage-reporter（HTML 报告）带入 freemarker 2.3.32
 freemarker = "2.3.35"
 # kotlin 2.4.21：signing 插件存在时创建 kotlinBouncyCastleConfiguration（generatePgpKeys 等签名辅助任务），默认依赖 1.84
-bouncycastle = "1.85"
+bouncycastle = "1.87"
 
 [libraries]
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
