@@ -1,12 +1,14 @@
 plugins {
-    id("wow.library-conventions")
-    id("wow.wow-compiler-conventions")
+    // me.ahoo.wow.api：引入 wow-api，并把下面声明的 domain 模块的契约编译为 `BlogContract`
+    // 与状态视图（`ArticleStateView`、`ReviewStateView`）。
+    id("wow.api-conventions")
 }
 
 dependencies {
-    // 发布语言只依赖注解与契约类型，避免把基础设施传递给消费方。
-    api("me.ahoo.wow:wow-api")
-    api("jakarta.validation:jakarta.validation-api")
-    api("com.fasterxml.jackson.core:jackson-annotations")
-    api(libs.swagger.annotations)
+    // 本模块承载其契约的 domain 模块。
+    wowContract(project(":blog-domain"))
+    // 命令的 Jakarta 约束，在准入时校验（`wow.command.invalid`，400）。
+    api(libs.jakarta.validation.api)
+    // 生成的契约代码中的查询字段（`BlogContract.Article.STATE__*`）。
+    api("me.ahoo.wow:wow-query-api")
 }

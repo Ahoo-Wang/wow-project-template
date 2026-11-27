@@ -1,9 +1,7 @@
-# 环境覆盖配置：优先级高于 jar 内的基线 application.yaml。
-# 示例：切换到生产存储
-#wow:
-#  command:
-#    bus:
-#      type: kafka
-#  eventsourcing:
-#    store:
-#      storage: mongo
+# 发行版的环境覆盖配置：优先级高于 jar 内的基线 application.yaml（见 server/build.gradle.kts）。
+# 在 Kubernetes 上改用 Helm values（deploy/values.yaml）设置环境变量，不需要这个文件。
+#
+# 示例：连接 MongoDB（以 --spring.profiles.active=mongo 启动）
+#spring:
+#  mongodb:
+#    uri: mongodb://mongo-1,mongo-2,mongo-3/?replicaSet=rs0

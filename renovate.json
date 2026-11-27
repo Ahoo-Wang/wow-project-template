@@ -1,35 +1,78 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:recommended"],
+  "extends": [
+    "config:recommended",
+    "helpers:pinGitHubActionDigests"
+  ],
   "timezone": "Asia/Shanghai",
-  "labels": ["dependencies"],
+  "labels": [
+    "dependencies"
+  ],
   "commitMessagePrefix": "fix(deps)",
   "commitMessageTopic": "{{depName}}",
   "gitAuthor": "Ahoo Wang <4384159+Ahoo-Wang@users.noreply.github.com>",
   "rangeStrategy": "bump",
-  "lockFileMaintenance": { "enabled": false },
+  "lockFileMaintenance": {
+    "enabled": false
+  },
   "prHourlyLimit": 10,
   "prConcurrentLimit": 10,
   "packageRules": [
     {
+      "description": "Wow 10 ships pre-releases only: follow them, Gradle plugin, BOM and TypeScript packages together (one version everywhere)",
+      "groupName": "wow",
+      "matchPackageNames": [
+        "/^me\\.ahoo\\.wow/",
+        "@ahoo-wang/wow-client",
+        "@ahoo-wang/wow-generator"
+      ],
+      "ignoreUnstable": false,
+      "respectLatest": false
+    },
+    {
       "description": "Group Spring ecosystem updates into a single PR",
       "groupName": "spring",
-      "matchPackageNames": ["/^org\\.springframework/"]
+      "matchPackageNames": [
+        "/^org\\.springframework/"
+      ]
     },
     {
       "description": "Group Kotlin + KSP updates (KSP version must match Kotlin version)",
       "groupName": "kotlin-ksp",
-      "matchPackageNames": ["/^org\\.jetbrains\\.kotlin/", "/^com\\.google\\.devtools\\.ksp/"]
+      "matchPackageNames": [
+        "/^org\\.jetbrains\\.kotlin/",
+        "/^com\\.google\\.devtools\\.ksp/"
+      ]
     },
     {
       "description": "Pin typescript until typescript-eslint supports TS 7 (typescript-eslint/typescript-eslint#10940)",
-      "matchPackageNames": ["typescript"],
+      "matchPackageNames": [
+        "typescript"
+      ],
       "allowedVersions": "< 7.0.0"
     },
     {
       "description": "Group @ahoo-wang/fetcher ecosystem updates into a single PR",
       "groupName": "ahoo-wang-fetcher",
-      "matchPackageNames": ["/^@ahoo-wang\\/fetcher/"]
+      "matchPackageNames": [
+        "/^@ahoo-wang\\/fetcher/"
+      ]
+    },
+    {
+      "description": "Group Testcontainers modules into a single PR",
+      "groupName": "testcontainers",
+      "matchPackageNames": [
+        "/^org\\.testcontainers/"
+      ]
+    },
+    {
+      "description": "CoSec 8 ships pre-releases alongside Wow 10: follow them as one group",
+      "groupName": "cosec",
+      "matchPackageNames": [
+        "/^me\\.ahoo\\.cosec/"
+      ],
+      "ignoreUnstable": false,
+      "respectLatest": false
     }
   ]
 }

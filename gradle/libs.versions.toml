@@ -1,25 +1,28 @@
 [versions]
-# libraries
-spring-boot = "4.1.1"
-cosid = "3.2.1"
-wow = "9.8.0"
-coapi = "2.2.0"
-cocache = "5.1.0"
-cosec = "6.0.1"
-cosky = "5.8.1"
-simba = "3.1.3"
-guava = "33.7.2-jre"
-kotlin-logging = "8.0.4"
-swagger = "2.2.55"
-springdoc = "3.1.1"
+# Wow 10 目前只有预发布版：固定确切版本。Gradle 插件（build-logic）会加入同版本的 BOM，Wow 依赖都不必写版本。
+# wow-service Helm chart 的版本与它相同（deploy/values.yaml、CI 的 Helm 校验）。
+wow = "10.0.0-beta.22"
+# Wow 10.0.0-beta.22 构建与测试所用的版本组合（取自它的 gradle/libs.versions.toml）。
+spring-boot = "4.2.0"
+cosec = "8.0.0"
+springdoc = "3.2.1"
+testcontainers = "2.0.5"
+# api 模块的约束注解。wow-bom 只约束 Wow 自己的模块，所以发布的 api 自己写明版本，取 Spring Boot 4.2.0 的。
+jakarta-validation = "3.1.1"
+# Wow 生态的其余组件，不在本模板的类路径上：服务采用其中某个组件时以这里的版本为基线
+# （Wow 的 wow-migrate Skill 以这份目录作为生态版本基线）。
+# 不再列 Simba：Wow 10 内置调度（聚合的定时命令 `DecideScope.schedule`、Saga 的 `@OnSchedule` 定时任务）。
+cosid = "5.1.0"
+cocache = "8.2.0"
+coapi = "3.1.0"
+cosky = "8.0.0-rc.3"
 # test
 junit = "6.1.3"
-fluent-assert = "1.2.1"
-mockk = "1.14.11"
+fluent-assert = "1.3.1"
 # plugins
 kotlin = "2.4.21"
-ksp = "2.3.12"
-dokka = "2.2.0"
+ksp = "2.3.14"
+dokka = "2.3.0"
 detekt = "1.23.8"
 publish-plugin = "2.0.0"
 kover = "0.9.11"
@@ -27,25 +30,23 @@ test-retry = "1.6.6"
 
 [libraries]
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
-cosid-bom = { module = "me.ahoo.cosid:cosid-bom", version.ref = "cosid" }
-wow-bom = { module = "me.ahoo.wow:wow-bom", version.ref = "wow" }
-coapi-bom = { module = "me.ahoo.coapi:coapi-bom", version.ref = "coapi" }
-cocache-bom = { module = "me.ahoo.cocache:cocache-bom", version.ref = "cocache" }
-cosec-bom = { module = "me.ahoo.cosec:cosec-bom", version.ref = "cosec" }
-cosky-bom = { module = "me.ahoo.cosky:cosky-bom", version.ref = "cosky" }
-simba-bom = { module = "me.ahoo.simba:simba-bom", version.ref = "simba" }
-guava = { module = "com.google.guava:guava", version.ref = "guava" }
-kotlin-logging = { module = "io.github.oshai:kotlin-logging-jvm", version.ref = "kotlin-logging" }
-swagger-annotations = { module = "io.swagger.core.v3:swagger-annotations", version.ref = "swagger" }
 springdoc-bom = { module = "org.springdoc:springdoc-openapi-bom", version.ref = "springdoc" }
+cosec-bom = { module = "me.ahoo.cosec:cosec-bom", version.ref = "cosec" }
+jakarta-validation-api = { module = "jakarta.validation:jakarta.validation-api", version.ref = "jakarta-validation" }
+testcontainers-bom = { module = "org.testcontainers:testcontainers-bom", version.ref = "testcontainers" }
+cosid-bom = { module = "me.ahoo.cosid:cosid-bom", version.ref = "cosid" }
+cocache-bom = { module = "me.ahoo.cocache:cocache-bom", version.ref = "cocache" }
+coapi-bom = { module = "me.ahoo.coapi:coapi-bom", version.ref = "coapi" }
+cosky-bom = { module = "me.ahoo.cosky:cosky-bom", version.ref = "cosky" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 fluent-assert-bom = { module = "me.ahoo.test:fluent-assert-bom", version.ref = "fluent-assert" }
-mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
 detekt-formatting = { module = "io.gitlab.arturbosch.detekt:detekt-formatting", version.ref = "detekt" }
 # gradle plugins (build-logic)
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 kotlin-allopen = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:symbol-processing-gradle-plugin", version.ref = "ksp" }
+# Wow 的 Gradle 插件：me.ahoo.wow（domain）、me.ahoo.wow.api（api）、me.ahoo.wow.service（server）
+wow-gradle-plugin = { module = "me.ahoo.wow:wow-gradle-plugin", version.ref = "wow" }
 detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin", version.ref = "detekt" }
 dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kover" }

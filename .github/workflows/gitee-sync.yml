@@ -6,12 +6,18 @@ on:
     branches:
       - main
   workflow_dispatch:
+
+permissions:
+  contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Sync to Gitee
-        uses: wearerequired/git-mirror-action@master
+        # 这一步拿着 SSH 私钥：按提交哈希固定，而不是跟随会变的 master 分支。
+        uses: wearerequired/git-mirror-action@6bbc55f2f0082bca533b72dc711f7d37154d40cc # v1.3.1
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
         with:

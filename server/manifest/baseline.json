@@ -1,0 +1,938 @@
+{
+  "format" : 1,
+  "line" : 0,
+  "service" : {
+    "name" : "blog-service"
+  },
+  "contexts" : [ {
+    "name" : "blog",
+    "description" : "作者撰写文章，编辑审核后发布",
+    "aggregates" : [ {
+      "name" : "article",
+      "description" : "作者的一篇文章，从草稿到发布",
+      "state" : {
+        "schema" : "#/$defs/me.ahoo.wow.template.domain.article.ArticleState",
+        "fingerprint" : "2b971abfb3c19a9b"
+      },
+      "snapshot" : {
+        "enabled" : true
+      },
+      "commands" : [ {
+        "name" : "CreateArticle",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.CreateArticle",
+        "creation" : "required",
+        "produces" : [ "ArticleCreated" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/{id}/create-article"
+        }, {
+          "method" : "POST",
+          "path" : "/blog/article/create-article"
+        } ],
+        "description" : "Create an article"
+      }, {
+        "name" : "DeleteArticle",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.DeleteArticle",
+        "creation" : "none",
+        "produces" : [ "wow.lifecycle.AggregateDeleted" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/{id}/delete-article"
+        } ],
+        "description" : "Delete an article"
+      }, {
+        "name" : "EditArticle",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.EditArticle",
+        "creation" : "none",
+        "produces" : [ "ArticleEdited" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/{id}/edit-article"
+        } ],
+        "description" : "Edit an article"
+      }, {
+        "name" : "PublishArticle",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.PublishArticle",
+        "creation" : "none",
+        "produces" : [ "ArticlePublished" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/{id}/publish-article"
+        } ],
+        "internal" : true,
+        "description" : "Publish an article"
+      }, {
+        "name" : "RestoreArticle",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.RestoreArticle",
+        "creation" : "none",
+        "produces" : [ "wow.lifecycle.AggregateRestored" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/{id}/restore-article"
+        } ],
+        "description" : "Restore an article"
+      }, {
+        "name" : "ReturnArticle",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.ReturnArticle",
+        "creation" : "none",
+        "produces" : [ "ArticleReturned" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/{id}/return-article"
+        } ],
+        "internal" : true,
+        "description" : "Return an article to its author"
+      }, {
+        "name" : "SubmitArticle",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.SubmitArticle",
+        "creation" : "none",
+        "produces" : [ "ArticleSubmitted" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/{id}/submit-article"
+        } ],
+        "description" : "Submit an article for review"
+      }, {
+        "name" : "wow.lifecycle.TransferOwner",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.lifecycle.TransferOwner",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/{id}/wow.lifecycle.transfer-owner"
+        } ],
+        "system" : true
+      }, {
+        "name" : "wow.lifecycle.TransferSpace",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.lifecycle.TransferSpace",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/{id}/wow.lifecycle.transfer-space"
+        } ],
+        "system" : true
+      }, {
+        "name" : "wow.snapshot.RebuildSnapshot",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.snapshot.RebuildSnapshot",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/wow.snapshot.rebuild-snapshot"
+        } ],
+        "system" : true
+      } ],
+      "events" : [ {
+        "name" : "ArticleCreated",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.ArticleCreated",
+        "description" : "An article was created"
+      }, {
+        "name" : "ArticleEdited",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.ArticleEdited",
+        "description" : "An article's text was edited"
+      }, {
+        "name" : "ArticlePublished",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.ArticlePublished",
+        "description" : "An article was published"
+      }, {
+        "name" : "ArticleReturned",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.ArticleReturned",
+        "description" : "An article was returned to its author"
+      }, {
+        "name" : "ArticleSubmitted",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.article.ArticleSubmitted",
+        "description" : "An article was submitted for review"
+      } ],
+      "queries" : [ {
+        "model" : "snapshot",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/snapshot/query"
+        }, {
+          "method" : "GET",
+          "path" : "/blog/article/snapshot/query"
+        } ]
+      }, {
+        "model" : "events",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/article/events/query"
+        }, {
+          "method" : "GET",
+          "path" : "/blog/article/events/query"
+        } ]
+      } ]
+    }, {
+      "name" : "review",
+      "description" : "编辑对一次提交的审核",
+      "state" : {
+        "schema" : "#/$defs/me.ahoo.wow.template.domain.review.ReviewState",
+        "fingerprint" : "6c7c641f40f56f9d"
+      },
+      "snapshot" : {
+        "enabled" : true
+      },
+      "commands" : [ {
+        "name" : "ApproveReview",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.ApproveReview",
+        "creation" : "none",
+        "produces" : [ "ReviewApproved" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/review/{id}/approve-review"
+        } ],
+        "description" : "Approve a review"
+      }, {
+        "name" : "CreateReview",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.CreateReview",
+        "creation" : "required",
+        "produces" : [ "ReviewCreated" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/review/{id}/create-review"
+        }, {
+          "method" : "POST",
+          "path" : "/blog/review/create-review"
+        } ],
+        "internal" : true,
+        "description" : "Open a review"
+      }, {
+        "name" : "ExpireReview",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.ExpireReview",
+        "creation" : "none",
+        "produces" : [ "ReviewExpired" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/review/{id}/expire-review"
+        } ],
+        "internal" : true,
+        "description" : "Expire a review"
+      }, {
+        "name" : "RejectReview",
+        "aliases" : [ ],
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.RejectReview",
+        "creation" : "none",
+        "produces" : [ "ReviewRejected" ],
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/review/{id}/reject-review"
+        } ],
+        "description" : "Reject a review"
+      }, {
+        "name" : "wow.snapshot.RebuildSnapshot",
+        "aliases" : [ ],
+        "schema" : "#/$defs/wow.snapshot.RebuildSnapshot",
+        "creation" : "none",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/review/wow.snapshot.rebuild-snapshot"
+        } ],
+        "system" : true
+      } ],
+      "events" : [ {
+        "name" : "ReviewApproved",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.ReviewApproved",
+        "description" : "A review approved its article"
+      }, {
+        "name" : "ReviewCreated",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.ReviewCreated",
+        "description" : "A review was opened"
+      }, {
+        "name" : "ReviewExpired",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.ReviewExpired",
+        "description" : "A review expired undecided"
+      }, {
+        "name" : "ReviewRejected",
+        "aliases" : [ ],
+        "revision" : 1,
+        "schema" : "#/$defs/me.ahoo.wow.template.api.review.ReviewRejected",
+        "description" : "A review rejected its article"
+      } ],
+      "queries" : [ {
+        "model" : "snapshot",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/review/snapshot/query"
+        }, {
+          "method" : "GET",
+          "path" : "/blog/review/snapshot/query"
+        } ]
+      }, {
+        "model" : "events",
+        "routes" : [ {
+          "method" : "POST",
+          "path" : "/blog/review/events/query"
+        }, {
+          "method" : "GET",
+          "path" : "/blog/review/events/query"
+        } ]
+      } ],
+      "schedules" : [ "blog.review.ExpireReview" ],
+      "ownership" : "tenant"
+    } ],
+    "subscriptions" : [ {
+      "name" : "ArticleReviewSaga.onArticleSubmitted",
+      "kind" : "saga",
+      "source" : {
+        "context" : "blog",
+        "aggregates" : [ "article" ],
+        "events" : [ "ArticleSubmitted" ]
+      },
+      "function" : {
+        "kind" : "saga",
+        "context" : "blog",
+        "processor" : "ArticleReviewSaga",
+        "name" : "onArticleSubmitted"
+      },
+      "derives" : [ "blog.review.CreateReview" ],
+      "start" : "end"
+    }, {
+      "name" : "ArticleReviewSaga.onPublishRejected",
+      "kind" : "saga",
+      "source" : {
+        "aggregates" : [ ],
+        "events" : [ ]
+      },
+      "function" : {
+        "kind" : "saga",
+        "context" : "blog",
+        "processor" : "ArticleReviewSaga",
+        "name" : "onPublishRejected"
+      },
+      "derives" : [ ],
+      "rejected" : [ "blog.article.PublishArticle" ]
+    }, {
+      "name" : "ArticleReviewSaga.onReturnRejected",
+      "kind" : "saga",
+      "source" : {
+        "aggregates" : [ ],
+        "events" : [ ]
+      },
+      "function" : {
+        "kind" : "saga",
+        "context" : "blog",
+        "processor" : "ArticleReviewSaga",
+        "name" : "onReturnRejected"
+      },
+      "derives" : [ ],
+      "rejected" : [ "blog.article.ReturnArticle" ]
+    }, {
+      "name" : "ArticleReviewSaga.onReviewApproved",
+      "kind" : "saga",
+      "source" : {
+        "context" : "blog",
+        "aggregates" : [ "review" ],
+        "events" : [ "ReviewApproved" ]
+      },
+      "function" : {
+        "kind" : "saga",
+        "context" : "blog",
+        "processor" : "ArticleReviewSaga",
+        "name" : "onReviewApproved"
+      },
+      "derives" : [ "blog.article.PublishArticle" ],
+      "start" : "end"
+    }, {
+      "name" : "ArticleReviewSaga.onReviewExpired",
+      "kind" : "saga",
+      "source" : {
+        "context" : "blog",
+        "aggregates" : [ "review" ],
+        "events" : [ "ReviewExpired" ]
+      },
+      "function" : {
+        "kind" : "saga",
+        "context" : "blog",
+        "processor" : "ArticleReviewSaga",
+        "name" : "onReviewExpired"
+      },
+      "derives" : [ "blog.article.ReturnArticle" ],
+      "start" : "end"
+    }, {
+      "name" : "ArticleReviewSaga.onReviewRejected",
+      "kind" : "saga",
+      "source" : {
+        "context" : "blog",
+        "aggregates" : [ "review" ],
+        "events" : [ "ReviewRejected" ]
+      },
+      "function" : {
+        "kind" : "saga",
+        "context" : "blog",
+        "processor" : "ArticleReviewSaga",
+        "name" : "onReviewRejected"
+      },
+      "derives" : [ "blog.article.ReturnArticle" ],
+      "start" : "end"
+    } ],
+    "published" : [ {
+      "aggregate" : "article",
+      "topic" : "wow.blog.article.state",
+      "includeState" : true
+    }, {
+      "aggregate" : "review",
+      "topic" : "wow.blog.review.state",
+      "includeState" : true
+    } ],
+    "errors" : [ {
+      "code" : "blog.article.slug-taken",
+      "status" : 409,
+      "description" : "Another article of the tenant is at the slug."
+    }, {
+      "code" : "blog.article.wrong-status",
+      "status" : 409,
+      "description" : "The article's status does not allow the command."
+    }, {
+      "code" : "blog.review.already-decided",
+      "status" : 409,
+      "description" : "The review was already approved, rejected or expired."
+    } ]
+  } ],
+  "errors" : [ {
+    "code" : "wow.auth.unauthenticated",
+    "status" : 401,
+    "description" : "The request carries no valid credentials."
+  }, {
+    "code" : "wow.auth.forbidden",
+    "status" : 403,
+    "description" : "The caller may not do what the request asks: send this command, call this route, or act or read across scopes."
+  }, {
+    "code" : "wow.auth.unavailable",
+    "status" : 503,
+    "description" : "CoSec could not decide whether the request may proceed; nothing was done, so it may be sent again. Only CoSec's refusals carry it, when wow.cosec.problems is wow: their headers are CoSec's, which sets no Retry-After on a 503, so the wait here is the catalog's default for a client, not a header.",
+    "retry" : "new-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.aggregate.forbidden",
+    "status" : 403,
+    "description" : "The caller may read the aggregate but may not change it, or the command would create one outside the caller's reach."
+  }, {
+    "code" : "wow.request.malformed",
+    "status" : 400,
+    "description" : "A request header or parameter does not parse, or names what Wow does not take."
+  }, {
+    "code" : "wow.request.invalid",
+    "status" : 400,
+    "description" : "A request to the application's own route failed validation; the problem lists the violations."
+  }, {
+    "code" : "wow.request.rate-limited",
+    "status" : 429,
+    "description" : "CoSec refused the request for a rate limit it spent; nothing was done, so it may be sent again after the Retry-After CoSec sets. Written for CoSec's refusals when wow.cosec.problems is wow.",
+    "retry" : "new-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.command.malformed",
+    "status" : 400,
+    "description" : "The command body cannot be read as the command type."
+  }, {
+    "code" : "wow.command.invalid",
+    "status" : 400,
+    "description" : "The command failed validation; the problem lists the violations."
+  }, {
+    "code" : "wow.wait.invalid",
+    "status" : 400,
+    "description" : "The wait is not a chain the runtime can follow; the command was not run."
+  }, {
+    "code" : "wow.command.unhandled",
+    "status" : 400,
+    "description" : "The aggregate does not handle this command."
+  }, {
+    "code" : "wow.aggregate.not-found",
+    "status" : 404,
+    "description" : "The aggregate does not exist, or is outside the caller's reach."
+  }, {
+    "code" : "wow.aggregate.exists",
+    "status" : 409,
+    "description" : "The aggregate already exists."
+  }, {
+    "code" : "wow.aggregate.version-mismatch",
+    "status" : 409,
+    "description" : "The aggregate is not at the expected version (412 when the request carried If-Match)."
+  }, {
+    "code" : "wow.command.request-id-reused",
+    "status" : 409,
+    "description" : "The request id was used by another command."
+  }, {
+    "code" : "wow.command.contended",
+    "status" : 409,
+    "description" : "Concurrent writers kept winning the version; retrying with the same request id is safe.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.aggregate.deleted",
+    "status" : 410,
+    "description" : "The aggregate is deleted; only RestoreAggregate applies."
+  }, {
+    "code" : "wow.command.busy",
+    "status" : 429,
+    "description" : "The command was not taken: its aggregate has too many commands waiting, or the node too many in flight; retry later.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.command.unknown",
+    "status" : 503,
+    "description" : "Whether the command committed is unknown; retrying with the same request id is safe.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.command.failed",
+    "status" : 500,
+    "description" : "The command's handling failed with an unexpected error; it committed nothing, and a retry fails alike."
+  }, {
+    "code" : "wow.command.refused",
+    "status" : 409,
+    "description" : "The aggregate's current state refuses the command (a check of its decide function); the message says why."
+  }, {
+    "code" : "wow.command.undeclared-event",
+    "status" : 500,
+    "description" : "The command's handling produced an event its decide function or after hooks do not declare, a rejection's events held to the same declaration: a bug in the model, which the message names; it committed nothing."
+  }, {
+    "code" : "wow.node.closing",
+    "status" : 503,
+    "description" : "The node is shutting down; retry on another node.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.node.standby",
+    "status" : 503,
+    "description" : "The node is on standby until the cut-over: it serves reads only.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.storage.unavailable",
+    "status" : 503,
+    "description" : "A store could not be reached or did not answer in time; retry later, a command with the same request id.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.schedule.not-due",
+    "status" : 503,
+    "description" : "A scheduled command arrived too long before its due time on this node's clock; it is sent again later.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.schedule.job-invalid",
+    "status" : 400,
+    "description" : "The job command does not fit its job or instance: an unknown job, another scope, or an instance not enabled."
+  }, {
+    "code" : "wow.ledger.stale",
+    "status" : 409,
+    "description" : "The action names a parking the entry no longer is: the aggregate was resolved and parked again since; read the entry again before acting on it."
+  }, {
+    "code" : "wow.subscription.parked",
+    "status" : 500,
+    "description" : "A subscription on the wait chain parked the aggregate; the wait cannot be reached until the aggregate is retried."
+  }, {
+    "code" : "wow.wait.timeout",
+    "status" : 504,
+    "description" : "The wait ran out of time; the command may have committed. The problem carries the last stage reached.",
+    "retry" : "same-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.route.malformed",
+    "status" : 400,
+    "description" : "A service route's parameter or body cannot be read as its type, or the request gives a query parameter the route does not declare, or one twice; the violation names the parameter."
+  }, {
+    "code" : "wow.query.malformed",
+    "status" : 400,
+    "description" : "The query body cannot be read as a query."
+  }, {
+    "code" : "wow.query.invalid",
+    "status" : 400,
+    "description" : "The query failed admission; the problem lists the violations, each with its code (unknown-field, ...)."
+  }, {
+    "code" : "wow.query.failed",
+    "status" : 500,
+    "description" : "The query backend failed to run the query."
+  }, {
+    "code" : "wow.query.not-found",
+    "status" : 404,
+    "description" : "A single query matched no record: a query result, not a statement that an aggregate does not exist."
+  }, {
+    "code" : "wow.query.dataset-not-found",
+    "status" : 404,
+    "description" : "No dataset of that name is served to the caller."
+  }, {
+    "code" : "wow.query.too-many-groups",
+    "status" : 400,
+    "description" : "An aggregation that names no sort has more groups than its limit; add a sort for a top-N, or raise limit."
+  }, {
+    "code" : "wow.query.out-of-range",
+    "status" : 400,
+    "description" : "A computed value went beyond a double's range on this backend; narrow the operands, or compute from stored fields."
+  }, {
+    "code" : "wow.query.timeout",
+    "status" : 504,
+    "description" : "The query ran longer than its budget allows; narrow it rather than run it again."
+  }, {
+    "code" : "wow.query.min-version-not-reached",
+    "status" : 409,
+    "description" : "The state read asked for a version the aggregate has not reached within the wait; the problem carries its current version: retry later.",
+    "retry" : "new-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.query.busy",
+    "status" : 429,
+    "description" : "The query was not run: its store has as many queries running as it allows; retry later.",
+    "retry" : "new-request",
+    "retryAfter" : 1
+  }, {
+    "code" : "wow.query.dataset-unavailable",
+    "status" : 409,
+    "description" : "The dataset is served but cannot be queried now, for the reason the problem names (it needs revision)."
+  }, {
+    "code" : "wow.call.command-forbidden",
+    "status" : 403,
+    "description" : "The calling service may not call this command: its wow.callers.<service>.commands do not list it."
+  }, {
+    "code" : "wow.peer.unavailable",
+    "status" : 503,
+    "description" : "A client reached no node of the peer, or lost the connection before a query's answer; nothing was changed, so the request may be sent again.",
+    "retry" : "new-request",
+    "retryAfter" : 1
+  } ],
+  "$defs" : {
+    "me.ahoo.wow.template.api.article.ArticleCreated" : {
+      "type" : "object",
+      "properties" : {
+        "body" : {
+          "type" : "string"
+        },
+        "slug" : {
+          "type" : "string"
+        },
+        "title" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "body", "slug", "title" ],
+      "description" : "An article was created",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.ArticleCreated"
+    },
+    "me.ahoo.wow.template.api.article.ArticleEdited" : {
+      "type" : "object",
+      "properties" : {
+        "body" : {
+          "type" : "string"
+        },
+        "title" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "body", "title" ],
+      "description" : "An article's text was edited",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.ArticleEdited"
+    },
+    "me.ahoo.wow.template.api.article.ArticlePublished" : {
+      "type" : "object",
+      "properties" : {
+        "reviewId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "reviewId" ],
+      "description" : "An article was published",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.ArticlePublished"
+    },
+    "me.ahoo.wow.template.api.article.ArticleReturned" : {
+      "type" : "object",
+      "properties" : {
+        "reason" : {
+          "type" : "string"
+        },
+        "reviewId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "reason", "reviewId" ],
+      "description" : "An article was returned to its author",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.ArticleReturned"
+    },
+    "me.ahoo.wow.template.api.article.ArticleSubmitted" : {
+      "type" : "object",
+      "description" : "An article was submitted for review",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.ArticleSubmitted"
+    },
+    "me.ahoo.wow.template.api.article.CreateArticle" : {
+      "type" : "object",
+      "properties" : {
+        "body" : {
+          "type" : "string",
+          "minLength" : 1
+        },
+        "slug" : {
+          "type" : "string",
+          "pattern" : "^[a-z0-9]+(-[a-z0-9]+)*$"
+        },
+        "title" : {
+          "type" : "string",
+          "minLength" : 1,
+          "maxLength" : 200
+        }
+      },
+      "required" : [ "body", "slug", "title" ],
+      "description" : "Create an article",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.CreateArticle"
+    },
+    "me.ahoo.wow.template.api.article.DeleteArticle" : {
+      "type" : "object",
+      "description" : "Delete an article",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.DeleteArticle"
+    },
+    "me.ahoo.wow.template.api.article.EditArticle" : {
+      "type" : "object",
+      "properties" : {
+        "body" : {
+          "type" : "string",
+          "minLength" : 1
+        },
+        "title" : {
+          "type" : "string",
+          "minLength" : 1,
+          "maxLength" : 200
+        }
+      },
+      "required" : [ "body", "title" ],
+      "description" : "Edit an article",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.EditArticle"
+    },
+    "me.ahoo.wow.template.api.article.PublishArticle" : {
+      "type" : "object",
+      "properties" : {
+        "reviewId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "reviewId" ],
+      "description" : "Publish an article",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.PublishArticle"
+    },
+    "me.ahoo.wow.template.api.article.RestoreArticle" : {
+      "type" : "object",
+      "description" : "Restore an article",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.RestoreArticle"
+    },
+    "me.ahoo.wow.template.api.article.ReturnArticle" : {
+      "type" : "object",
+      "properties" : {
+        "reason" : {
+          "type" : "string"
+        },
+        "reviewId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "reason", "reviewId" ],
+      "description" : "Return an article to its author",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.ReturnArticle"
+    },
+    "me.ahoo.wow.template.api.article.SubmitArticle" : {
+      "type" : "object",
+      "description" : "Submit an article for review",
+      "x-wow-class" : "me.ahoo.wow.template.api.article.SubmitArticle"
+    },
+    "me.ahoo.wow.template.api.review.ApproveReview" : {
+      "type" : "object",
+      "properties" : {
+        "comment" : {
+          "type" : "string"
+        }
+      },
+      "description" : "Approve a review",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.ApproveReview"
+    },
+    "me.ahoo.wow.template.api.review.CreateReview" : {
+      "type" : "object",
+      "properties" : {
+        "articleId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "articleId" ],
+      "description" : "Open a review",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.CreateReview"
+    },
+    "me.ahoo.wow.template.api.review.ExpireReview" : {
+      "type" : "object",
+      "description" : "Expire a review",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.ExpireReview"
+    },
+    "me.ahoo.wow.template.api.review.RejectReview" : {
+      "type" : "object",
+      "properties" : {
+        "reason" : {
+          "type" : "string",
+          "minLength" : 1
+        }
+      },
+      "required" : [ "reason" ],
+      "description" : "Reject a review",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.RejectReview"
+    },
+    "me.ahoo.wow.template.api.review.ReviewApproved" : {
+      "type" : "object",
+      "properties" : {
+        "articleId" : {
+          "type" : "string"
+        },
+        "comment" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "articleId", "comment" ],
+      "description" : "A review approved its article",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewApproved"
+    },
+    "me.ahoo.wow.template.api.review.ReviewCreated" : {
+      "type" : "object",
+      "properties" : {
+        "articleId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "articleId" ],
+      "description" : "A review was opened",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewCreated"
+    },
+    "me.ahoo.wow.template.api.review.ReviewExpired" : {
+      "type" : "object",
+      "properties" : {
+        "articleId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "articleId" ],
+      "description" : "A review expired undecided",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewExpired"
+    },
+    "me.ahoo.wow.template.api.review.ReviewRejected" : {
+      "type" : "object",
+      "properties" : {
+        "articleId" : {
+          "type" : "string"
+        },
+        "reason" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "articleId", "reason" ],
+      "description" : "A review rejected its article",
+      "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewRejected"
+    },
+    "me.ahoo.wow.template.domain.article.ArticleState" : {
+      "type" : "object",
+      "properties" : {
+        "body" : {
+          "type" : "string"
+        },
+        "publishedAt" : {
+          "type" : [ "integer", "null" ],
+          "format" : "int64"
+        },
+        "reviewId" : {
+          "type" : [ "string", "null" ]
+        },
+        "slug" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string",
+          "enum" : [ "DRAFT", "IN_REVIEW", "PUBLISHED" ],
+          "x-wow-class" : "me.ahoo.wow.template.api.article.ArticleStatus"
+        },
+        "title" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "body", "slug", "status", "title" ],
+      "x-wow-class" : "me.ahoo.wow.template.domain.article.ArticleState",
+      "x-wow-index" : [ {
+        "name" : "ix_article_state_slug",
+        "keys" : [ "state.slug" ]
+      }, {
+        "name" : "ix_article_state_status_state_published_at",
+        "keys" : [ "state.status", "state.publishedAt" ]
+      } ]
+    },
+    "me.ahoo.wow.template.domain.review.ReviewState" : {
+      "type" : "object",
+      "properties" : {
+        "articleId" : {
+          "type" : "string"
+        },
+        "remark" : {
+          "type" : "string"
+        },
+        "status" : {
+          "type" : "string",
+          "enum" : [ "PENDING", "APPROVED", "REJECTED", "EXPIRED" ],
+          "x-wow-class" : "me.ahoo.wow.template.api.review.ReviewStatus"
+        }
+      },
+      "required" : [ "articleId", "remark", "status" ],
+      "x-wow-class" : "me.ahoo.wow.template.domain.review.ReviewState"
+    },
+    "wow.lifecycle.TransferOwner" : {
+      "type" : "object",
+      "properties" : {
+        "ownerId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "ownerId" ],
+      "description" : "Gives the aggregate to the owner ownerId.",
+      "x-wow-class" : "me.ahoo.wow.api.lifecycle.TransferOwner"
+    },
+    "wow.lifecycle.TransferSpace" : {
+      "type" : "object",
+      "properties" : {
+        "spaceId" : {
+          "type" : "string"
+        }
+      },
+      "required" : [ "spaceId" ],
+      "description" : "Moves the aggregate to the space spaceId.",
+      "x-wow-class" : "me.ahoo.wow.api.lifecycle.TransferSpace"
+    },
+    "wow.snapshot.RebuildSnapshot" : {
+      "type" : "object",
+      "properties" : {
+        "ids" : {
+          "type" : "array",
+          "items" : {
+            "type" : "string"
+          }
+        }
+      },
+      "required" : [ "ids" ],
+      "x-wow-class" : "me.ahoo.wow.spi.snapshot.RebuildSnapshot"
+    }
+  }
+}

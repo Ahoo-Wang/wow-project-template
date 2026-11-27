@@ -1,4 +1,9 @@
-# 基线配置（随 jar 发布）。环境差异通过发布包 config/application.yaml 或环境变量覆盖。
+# 基线配置（随 jar 发布）。环境差异由 profile、发行版的 config/application.yaml、环境变量或 Helm values 覆盖。
+# Wow 在启动时校验每个 wow.* 键：拼错或已移除的键会让启动失败，而不是被静默忽略。
+spring:
+  application:
+    # 服务名：必须等于 domain 模块的 `wow { service = "blog-service" }`；Helm chart 以它命名所有对象。
+    name: blog-service
 management:
   endpoint:
     health:
@@ -11,45 +16,19 @@ management:
         include:
           - health
           - info
-spring:
-  application:
-    # 运行时服务名的唯一来源；需与 DemoService.SERVICE_NAME 保持一致（CoApi 服务发现依赖该名称）。
-    name: demo-service
-  jackson:
-    mapper:
-      accept-case-insensitive-enums: true
-    datatype:
-      datetime:
-        write-durations-as-timestamps: true
-        write-dates-as-timestamps: true
-cosid:
-  machine:
-    enabled: true
-    distributor:
-      type: manual
-      manual:
-        machine-id: 1
-  generator:
-    enabled: true
+blog:
+  review:
+    # 审核从开启到过期的时长。
+    timeout: 7d
 wow:
-  kafka:
-    enabled: false
-  command:
-    bus:
-      type: in_memory
-  event:
-    bus:
-      type: in_memory
-  eventsourcing:
-    store:
-      storage: in_memory
-    snapshot:
-      storage: in_memory
-    state:
-      bus:
-        type: in_memory
+  # 只在 cosec profile 下启用 CoSec（见下）。
+  cosec:
+    mode: disabled
 ---
-# 本地开发：--spring.profiles.active=dev
+# 本地开发：`./gradlew :blog-server:run` 自动启用；运行发行版时用 `bin/blog-server --spring.profiles.active=dev`。
+# 只有显式启用开发 profile 才进入开发模式：内部端口默认只绑定 127.0.0.1，没有配置后端时以内存保存数据，
+# 调用方由开发身份请求头声明：Wow-User（subject）、Wow-Owner（作者以自己为 owner）、Wow-Roles（如 editor）。
+# 不启用开发 profile 时，节点必须有后端（mongo）与调用方认证（cosec），否则拒绝启动，不会意外以内存或匿名方式运行。
 spring:
   config:
     activate:
@@ -67,3 +46,29 @@ springdoc:
 logging:
   level:
     me.ahoo.wow: debug
+---
+# MongoDB 副本集（Wow 推荐的默认存储）：宿主由 URI 创建客户端，日志、快照、预留与定时都在本服务自己的数据库里。
+# 生产环境的 URI 来自 Secret（SPRING_MONGODB_URI），见 deploy/values.yaml。
+spring:
+  config:
+    activate:
+      on-profile: mongo
+  mongodb:
+    uri: mongodb://localhost:27017/?replicaSet=rs0
+wow:
+  mongo:
+    database: blog
+---
+# 在 CoSec 网关之后：网关验证每个请求的令牌并做出决策，再以 CoSec-Identity 请求头转发它验证过的主体；
+# 本服务读取该请求头作为调用方，不持有任何密钥。服务信任任何 CoSec-Identity，因此只能让网关访问公开端口
+# （Helm chart 的 NetworkPolicy，以及 chart 设置的 COSEC_PIPELINE_IDENTITY_ONLYGATEWAYCANREACH）。
+spring:
+  config:
+    activate:
+      on-profile: cosec
+wow:
+  cosec:
+    mode: gateway
+    # 编辑是租户级调用方：没有 owner，能读到租户内的所有文章。其他主体都是作者，只触及自己的文章。
+    tenant-level:
+      roles: editor

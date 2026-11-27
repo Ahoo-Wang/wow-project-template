@@ -1,0 +1,43 @@
+# blog-service 自己的 wow-service chart values：构建不知道的部分。放在构建生成的 values 之后，覆盖它们：
+#
+#   ./gradlew :blog-server:assemble        # 生成 server/build/wow/helm/values.yaml（generateWowHelmValues）
+#   helm upgrade --install blog oci://ghcr.io/ahoo-wang/wow-service --version 10.0.0-beta.22 \
+#     -f server/build/wow/helm/values.yaml -f deploy/values.yaml --wait
+#
+# chart 的版本就是 Wow 的版本（gradle/libs.versions.toml 的 `wow`），两者一起升级。
+# chart 负责：节点 ID 与内部地址（WOW_NODE_ID、WOW_INTERNAL_HOST）、探针、滚动发布、PDB、拓扑分布、非 root 运行、
+# 优雅停机的时限，以及只放行网关的 NetworkPolicy。这些都不要在这里重复设置。
+image:
+  # server/Dockerfile 构建的镜像。
+  repository: registry.example.com/blog-server
+  tag: "0.0.1"
+# 镜像自身配置的端口（application.yaml），chart 据此设置 SERVER_PORT 与 WOW_INTERNAL_PORT。
+ports:
+  http: 8080
+  internal: 9090
+# 节点通过服务数据库中的租约分配分区：不需要 ZooKeeper，也不需要消费组。
+replicas: 2
+config:
+  # mongo：数据在 MongoDB 副本集（URI 来自下面的 Secret）；cosec：调用方取自前置的 CoSec 网关。
+  SPRING_PROFILES_ACTIVE: mongo,cosec
+  # 集合与索引（含 @QueryIndex）默认由节点在启动时创建（auto）。由 DBA 预先建好时改为 validate：节点只校验，缺失则拒绝启动。
+  # WOW_DDL: validate
+  # 日志的分区数：一旦日志有数据就不能再改。
+  WOW_LOG_PARTITIONS: "64"
+  # 链路与指标经 OpenTelemetry Java agent 以 OTLP 导出（agent 由 OpenTelemetry Operator 注入，见 podAnnotations）；
+  # 没有 agent 时为空操作。
+  OTEL_EXPORTER_OTLP_ENDPOINT: http://otel-collector:4318
+  OTEL_EXPORTER_OTLP_PROTOCOL: http/protobuf
+  OTEL_INSTRUMENTATION_MICROMETER_ENABLED: "true"
+# 数据库连接：一个 Secret，其中 SPRING_MONGODB_URI=mongodb://.../?replicaSet=rs0&w=majority（见 secret.example.yaml）。
+envFrom:
+  - secretRef:
+      name: blog-service-mongo
+podAnnotations:
+  instrumentation.opentelemetry.io/inject-java: "true"
+resources:
+  requests:
+    cpu: 500m
+    memory: 768Mi
+  limits:
+    memory: 1Gi
