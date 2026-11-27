@@ -27,6 +27,15 @@ detekt = "1.23.8"
 publish-plugin = "2.0.0"
 kover = "0.9.11"
 test-retry = "1.6.6"
+# 构建工具传递依赖的安全下限：引入它们的工具（上面的插件均已是最新稳定版）仍带着有漏洞的版本，Dependabot 从依赖图中报出。
+# 只约束构建期的配置，不进服务的运行时类路径（blog-server 的 Jackson 2 由 com.auth0:java-jwt 引入，已是 2.22.3）。
+# 引入它的工具自带不低于这里的版本后，删除对应的条目与约束。
+# dokka 2.3.0：插件类路径与 Dokka 生成器（dokkaGenerate）带入 jackson-core/databind 2.22.2
+jackson2 = "2.22.3"
+# kover 0.9.11：插件类路径上的 intellij-coverage-reporter（HTML 报告）带入 freemarker 2.3.32
+freemarker = "2.3.35"
+# kotlin 2.4.21：signing 插件存在时创建 kotlinBouncyCastleConfiguration（generatePgpKeys 等签名辅助任务），默认依赖 1.84
+bouncycastle = "1.85"
 
 [libraries]
 spring-boot-dependencies = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "spring-boot" }
@@ -51,6 +60,14 @@ detekt-gradle-plugin = { module = "io.gitlab.arturbosch.detekt:detekt-gradle-plu
 dokka-gradle-plugin = { module = "org.jetbrains.dokka:dokka-gradle-plugin", version.ref = "dokka" }
 kover-gradle-plugin = { module = "org.jetbrains.kotlinx:kover-gradle-plugin", version.ref = "kover" }
 test-retry-gradle-plugin = { module = "org.gradle:test-retry-gradle-plugin", version.ref = "test-retry" }
+# 构建工具传递依赖的安全下限（只用作约束，见 [versions]）
+jackson2-core = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "jackson2" }
+jackson2-databind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "jackson2" }
+freemarker = { module = "org.freemarker:freemarker", version.ref = "freemarker" }
+bouncycastle-bcprov = { module = "org.bouncycastle:bcprov-jdk18on", version.ref = "bouncycastle" }
+bouncycastle-bcpkix = { module = "org.bouncycastle:bcpkix-jdk18on", version.ref = "bouncycastle" }
+bouncycastle-bcpg = { module = "org.bouncycastle:bcpg-jdk18on", version.ref = "bouncycastle" }
+bouncycastle-bcutil = { module = "org.bouncycastle:bcutil-jdk18on", version.ref = "bouncycastle" }
 
 [plugins]
 publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "publish-plugin" }

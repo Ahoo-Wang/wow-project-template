@@ -6,6 +6,18 @@ plugins {
     signing
 }
 
+val libs = the<VersionCatalogsExtension>().named("libs")
+
+// Kotlin Gradle 插件在 signing 插件存在时创建 kotlinBouncyCastleConfiguration，作为它的签名辅助任务（generatePgpKeys、
+// checkSigningConfiguration、uploadPublicPgpKey，只在手动执行时运行）的类路径，以默认依赖写死 BouncyCastle 1.84。
+// 加约束（而非依赖）不会取消默认依赖，只把版本抬到修复版本；BouncyCastle 的各模块须同一版本。发布签名用的是 Gradle 自带的
+// BouncyCastle，不经过这个配置。
+configurations.named { it == "kotlinBouncyCastleConfiguration" }.configureEach {
+    for (module in listOf("bcprov", "bcpkix", "bcpg", "bcutil")) {
+        project.dependencies.constraints.add(name, libs.findLibrary("bouncycastle-$module").get())
+    }
+}
+
 publishing {
     repositories {
         maven {
