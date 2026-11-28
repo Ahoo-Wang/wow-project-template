@@ -31,7 +31,7 @@ test-retry = "1.6.6"
 # 只约束构建期的配置，不进服务的运行时类路径（blog-server 的 Jackson 2 由 com.auth0:java-jwt 引入，已是 2.22.3）。
 # 引入它的工具自带不低于这里的版本后，删除对应的条目与约束。
 # dokka 2.3.0：插件类路径与 Dokka 生成器（dokkaGenerate）带入 jackson-core/databind 2.22.2
-jackson2 = "2.22.3"
+jackson2 = "2.23.0"
 # kover 0.9.11：插件类路径上的 intellij-coverage-reporter（HTML 报告）带入 freemarker 2.3.32
 freemarker = "2.3.35"
 # kotlin 2.4.21：signing 插件存在时创建 kotlinBouncyCastleConfiguration（generatePgpKeys 等签名辅助任务），默认依赖 1.84
